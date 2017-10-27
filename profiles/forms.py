@@ -51,3 +51,23 @@ class SignUpForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class LoginForm(UserCreationForm):
+    email = forms.EmailField(help_text='envelope', widget=forms.TextInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder':'Email'
+        }
+    ))
+
+    password = forms.CharField(help_text='lock', widget=forms.PasswordInput(
+        attrs={
+            'class': 'form-control',
+            'placeholder':'Password'
+        }
+    ))
+
+    class Meta:
+        model = User
+        fields = ('email', 'password')

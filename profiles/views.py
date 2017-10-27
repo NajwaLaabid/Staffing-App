@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 
-from .forms import SignUpForm
+from .forms import SignUpForm, LoginForm
 
 def signup(request):
     if request.method == 'POST':
@@ -15,14 +15,21 @@ def signup(request):
             user_password = form.cleaned_data.get('user_password')
             user = authenticate(username=user_name, password=user_password, email=user_email)
             login(request, user)
-            return HttpResponse("the user is login")
+            return HttpResponseRedirect('/profiles/login')
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
 def login(request):
-    return HttpResponse("Login Page")
-
-
-def detail(request, user_id):
-    return HttpResponse("the user ID %s." % user_id)
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user_name = form.cleaned_data.get('user_name')
+            user_password = form.cleaned_data.get('user_password')
+            user = authenticate(username=user_name, password=user_password)
+            login(request, user)
+            return HttpResponseRedirect('/')
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {'form': form})
