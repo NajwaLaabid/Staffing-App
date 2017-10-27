@@ -20,5 +20,9 @@ def signup(request):
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
 
+def login(request):
+    return HttpResponse("Login Page")
+
+
 def detail(request, user_id):
     return HttpResponse("the user ID %s." % user_id)
