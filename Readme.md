@@ -3,3 +3,6 @@ Run the server with the following command line
 
 Deploy staticfiles
 `python manage.py collectstatic`
+
+Start an app
+`python manage.py startapp APP_NAME`
