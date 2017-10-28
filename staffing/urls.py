@@ -19,9 +19,13 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.conf.urls.static import static
 
+from django.http import HttpResponseRedirect
+
 urlpatterns = [
+    url(r'^$', lambda r: HttpResponseRedirect('profiles/login')),
     url(r'^admin/', admin.site.urls),
     url(r'^profiles/', include('profiles.urls')),
+    url(r'^dashboard/', include('dashboard.urls')),
 ]
 
 if settings.DEBUG:

@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 from .forms import SignUpForm, LoginForm
 
 def signup(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/dashboard')
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -21,8 +23,9 @@ def signup(request):
     return render(request, 'signup.html', {'form': form})
 
 def login(request):
+    if request.user.is_authenticated():
+        return HttpResponseRedirect('/dashboard')
     if request.method == 'POST':
-        print ('POST')
         form = LoginForm(request.POST)
         username = request.POST['username']
         password = request.POST['password']
@@ -30,7 +33,7 @@ def login(request):
         if user is not None:
             if user.is_active:
                 dj_login(request, user)
-                return HttpResponseRedirect('/')
+                return HttpResponseRedirect('/dashboard')
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
