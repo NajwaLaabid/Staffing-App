@@ -1,0 +1,13 @@
+.widget-user-2 .widget-user-image>img {
+    width: 65px;
+    height: 65px;
+    float: left;
+}
+
+.box-action{
+  background-color: #f9f9f9;
+}
+
+.box-action .pull-right{
+  margin-left: 8px;
+}

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect
-from django.contrib.auth import login as dj_login, authenticate
+from django.contrib.auth import login as dj_login, authenticate, logout as dj_logout
 from django.contrib.auth.models import User
 
 from .forms import SignUpForm, LoginForm
@@ -37,3 +37,7 @@ def login(request):
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})
+
+def logout(request):
+    dj_logout(request)
+    return HttpResponseRedirect('/profiles/login')

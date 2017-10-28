@@ -1,5 +1,53 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block content %}
-  <p class="login-box-msg">Dashboard Index</p>
+  <section class="content-header">
+      <h1>
+        Projects
+        <!-- <small>Preview page</small> -->
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Projects</li>
+      </ol> -->
+  </section>
+  <section class="content">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+      <!-- Widget: user widget style 1 -->
+      <div class="box box-widget widget-user-2">
+        <!-- Add the bg color to the header using any of the bg-* classes -->
+        <div class="widget-user-header bg-yellow">
+          <div class="widget-user-image">
+            <img class="img-circle" src="{% static "dist/img/photo2.png" %}" alt="Project Logo">
+          </div>
+          <!-- /.widget-user-image -->
+          <h3 class="widget-user-username">Project Title</h3>
+          <h5 class="widget-user-desc">Project Code</h5>
+        </div>
+        <div class="progress active">
+          <div class="progress-bar progress-bar-aqua progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+            120 Hours Left
+          </div>
+        </div>
+        <div class="box-footer no-padding">
+          <ul class="nav nav-stacked">
+            <li><a href="#">Status <span class="pull-right badge bg-yellow">On Going</span></a></li>
+            <li><a href="#">Phase <span class="pull-right badge bg-muted">Basic Engineering</span></a></li>
+            <li><a href="#">Team <span class="pull-right badge bg-muted">6</span></a></li>
+            <li><a href="#">JESA Role <span class="pull-right badge bg-light-muted">EPCM</span></a></li>
+          </ul>
+        </div>
+        <div class="box-footer box-action">
+          <div class="pull-right">
+            <a href="#" class="btn btn-flat btn-danger">Close</a>
+          </div>
+          <div class="pull-right">
+            <a href="#" class="btn btn-default btn-flat">View</a>
+          </div>
+        </div>
+      </div>
+      <!-- /.widget-user -->
+    </div>
+  </section>
 {% endblock %}
