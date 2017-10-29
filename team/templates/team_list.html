@@ -12,12 +12,15 @@
               <h3 class="box-title">Team</h3>
 
               <div class="box-tools">
-                <div class="input-group input-group-sm pull-right" style="width: 320px;">
-                  <input type="text" class="form-control" name="new_member" placeholder="Add a new team member">
-                    <span class="input-group-btn">
-                      <button type="submit" class="btn btn-info btn-flat">Add</button>
-                    </span>
-                </div>
+                <form action="{% url 'team:add'%}" method="post">
+                  <div class="input-group input-group-sm pull-right" style="width: 320px;">
+                      {% csrf_token %}
+                      <input type="text" class="form-control" name="new_member" placeholder="Add a new team member">
+                        <span class="input-group-btn">
+                          <button type="submit" class="btn btn-info btn-flat">Add</button>
+                        </span>
+                  </div>
+                </form>
                 <!-- <div class="input-group input-group-sm pull-right" style="width: 150px;">
                   <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
 
@@ -73,7 +76,13 @@
                   <td>xxx</td>
                   <td>xxx</td>
                   <td>xxxxx</td>
-                  <td><button type="button" class="btn btn-danger"><i class="fa fa-close"></i></button></td>
+                  <td>
+                    <form action="{% url 'team:delete' %}" method="post">
+                      {% csrf_token %}
+                      <input type="hidden" class="form-control" name="member_id" value="32">
+                      <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
+                    </form>
+                  </td>
                 </tr>
                 <!-- <tr>
                   <td>175</td>
