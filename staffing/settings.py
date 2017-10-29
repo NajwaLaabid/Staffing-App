@@ -55,7 +55,7 @@ ROOT_URLCONF = 'staffing.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ['staffing/templates', 'profiles/templates', 'dashboard/templates'],
+        'DIRS': ['staffing/templates', 'profiles/templates', 'dashboard/templates', 'team/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

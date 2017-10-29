@@ -25,6 +25,7 @@ urlpatterns = [
     url(r'^$', lambda r: HttpResponseRedirect('profiles/login')),
     url(r'^admin/', admin.site.urls),
     url(r'^profiles/', include('profiles.urls')),
+    url(r'^team/', include('team.urls')),
     url(r'^dashboard/', include('dashboard.urls')),
 ]
 

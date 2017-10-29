@@ -6,3 +6,6 @@ Deploy staticfiles
 
 Start an app
 `python manage.py startapp APP_NAME`
+
+In case Github does not wanna proceed with the add & commit
+`rm ./.git/index.lock`
