@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <section class="content-header">
+      <h1>
+        Add Project
+        <!-- <small>Preview page</small> -->
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}"><i class="fa fa-dashboard"></i> Projects</a></li>
+        <li class="active">create</li>
+      </ol>
+  </section>
+  <section class="content col-md-6 col-centered">
+    <div class="box box-primary">
+      <!-- /.box-header -->
+      <!-- form start -->
+      <form action="{% url 'dashboard:create'%}" method="post" role="form">
+        {% csrf_token %}
+        <div class="box-body">
+          <div class="form-group">
+            <label for="project_title">Project Title</label>
+            <input type="text" name="project_title" class="form-control" id="project_title" placeholder="Project Title">
+          </div>
+          <div class="form-group">
+            <label>Team</label>
+            <select class="form-control select2" multiple="multiple" name="team_names" data-placeholder="Select a State"
+                    style="width: 100%;">
+              <option value="user_id_1">Wahibi Imane</option>
+              <option value="user_id_2">Agourram Abdellah</option>
+              <option value="user_id_3">Koufane Fahd</option>
+              <option value="user_id_4">Bhosale Sagar</option>
+              <option value="user_id_5">Zaaboul Ibtissam</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="estimate_hours">Estimated Hours</label>
+            <input type="number" class="form-control" id="estimate_hours" name="estimate_hours" placeholder="Estimated Hours">
+          </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary pull-right">Submit</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    $(function () {
+      //Initialize Select2 Elements
+      $('.select2').select2()
+      $('.slider').slider()
+    })
+  </script>
+{% endblock %}
