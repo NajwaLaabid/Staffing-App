@@ -9,3 +9,6 @@ Start an app
 
 In case Github does not wanna proceed with the add & commit
 `rm ./.git/index.lock`
+
+migrate db after creating the Models
+`python manage.py makemigrations dashboard`

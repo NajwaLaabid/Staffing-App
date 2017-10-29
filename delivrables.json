@@ -1,0 +1,10 @@
+{
+  "DR" : "Drawings",
+  "SP" : "Specifications",
+  "ST" : "Studies/calculations",
+  "SC" : "Schedules",
+  "MA" : "manuals/procedures",
+  "CR" : "certification",
+  "SP" : "Spares",
+  "WE" : "weight"
+}
