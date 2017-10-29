@@ -6,6 +6,12 @@ def index(request):
 def view(request, project_id):
     return render(request, 'details.html', {})
 
+def deleteMember(request):
+    return render(request, 'details.html', {})
+
+def addMember(request):
+    return render(request, 'details.html', {})
+
 def create(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/profiles/login')

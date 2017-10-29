@@ -61,7 +61,7 @@
             <h3 class="box-title">Team</h3>
 
             <div class="box-tools">
-              <form action="{% url 'project:add'%}" method="post">
+              <form action="{% url 'dashboard:addMember'%}" method="post">
                 <div class="input-group input-group-sm pull-right" style="width: 320px;">
                     {% csrf_token %}
                     <select class="form-control select2" name="team_names" data-placeholder="Select a State"
@@ -133,7 +133,7 @@
                 <td>xxx</td>
                 <td>xxxxx</td>
                 <td>
-                  <form action="{% url 'team:delete' %}" method="post">
+                  <form action="{% url 'dashboard:deleteMember' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" class="form-control" name="member_id" value="32">
                     <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>

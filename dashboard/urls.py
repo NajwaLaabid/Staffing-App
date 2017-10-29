@@ -8,4 +8,6 @@ urlpatterns =  [
     url(r'^create/$', views.create, name='create'),
     url(r'^close/$', views.close, name='close'),
     url(r'^view/(?P<project_id>\d+)/$', views.view, name='view'),
+    url(r'^deleteMember/$', views.deleteMember, name='deleteMember'),
+    url(r'^addMember/$', views.addMember, name='addMember'),
 ]
