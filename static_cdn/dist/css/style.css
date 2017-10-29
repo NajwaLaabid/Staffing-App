@@ -17,12 +17,6 @@
     margin: 0 auto;
 }
 
-.navbar-nav>.user-menu>.dropdown-menu>li.user-header,
-.widget-user .widget-user-header
-{
+.navbar-nav>.user-menu>.dropdown-menu>li.user-header{
   height : auto;
-}
-
-.widget-user-2 .widget-user-username, .widget-user-2 .widget-user-desc{
-  margin-left: 0;
 }

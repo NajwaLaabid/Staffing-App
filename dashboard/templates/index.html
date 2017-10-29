@@ -13,14 +13,14 @@
       </ol> -->
   </section>
   <section class="content">
-    <div class="col-12 col-sm-6 col-md-4 col-lg-4 col-xl-4">
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
       <!-- Widget: user widget style 1 -->
       <div class="box box-widget widget-user-2">
         <!-- Add the bg color to the header using any of the bg-* classes -->
         <div class="widget-user-header bg-yellow">
-          <div class="widget-user-image">
+          <!-- <div class="widget-user-image">
             <img class="img-circle" src="{% static "dist/img/photo2.png" %}" alt="Project Logo">
-          </div>
+          </div> -->
           <!-- /.widget-user-image -->
           <h3 class="widget-user-username">Project Title</h3>
           <h5 class="widget-user-desc">Project Code</h5>
@@ -39,11 +39,16 @@
           </ul>
         </div>
         <div class="box-footer box-action">
+          <form action="{% url 'dashboard:close' %}" method="post">
+            {% csrf_token %}
+            <div class="pull-right">
+              <input type="hidden" class="form-control" name="project_id" value="32">
+              <button type="submit" class="btn btn-flat btn-danger">Close</button>
+            </div>
+          </form>
+
           <div class="pull-right">
-            <a href="#" class="btn btn-flat btn-danger">Close</a>
-          </div>
-          <div class="pull-right">
-            <a href="#" class="btn btn-default btn-flat">View</a>
+            <a href="{% url 'dashboard:view' 32 %}" class="btn btn-default btn-flat">View</a>
           </div>
         </div>
       </div>
