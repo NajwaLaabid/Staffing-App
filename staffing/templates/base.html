@@ -100,7 +100,7 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
           <li class="header">MAIN NAVIGATION</li>
-          <li class="active treeview">
+          <li class="treeview">
             <a href="#">
               <i class="fa fa-files-o"></i> <span>Projects</span>
               <span class="pull-right-container">
@@ -112,11 +112,17 @@
               <li><a href="{% url 'dashboard:create' %}"><i class="fa fa-plus"></i>Add Project</a></li>
             </ul>
           </li>
-          <li>
-            <a href="{% url 'team:index' %}">
-              <i class="fa fa-users"></i>
-              <span>Team</span>
+          <li class="treeview">
+            <a href="#">
+              <i class="fa fa-users"></i> <span>Team</span>
+              <span class="pull-right-container">
+                <i class="fa fa-angle-left pull-right"></i>
+              </span>
             </a>
+            <ul class="treeview-menu">
+              <li class="active"><a href="{% url 'team:index' %}"><i class="fa fa-eye"></i>View Team Members</a></li>
+              <li><a href="{% url 'team:addEmployee' %}"><i class="fa fa-plus"></i>Add Employee</a></li>
+            </ul>
           </li>
         </ul>
       </section>

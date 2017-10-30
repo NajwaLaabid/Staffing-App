@@ -1,0 +1,9 @@
+db.sqlite3
+team/migrations
+team/__pycache__
+dashboard/migrations
+dashboard/__pycache__
+profiles/migrations
+profiles/__pycache__
+staffing/__pycache__
+team/migrations/__pycache__/
