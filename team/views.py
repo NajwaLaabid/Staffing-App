@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from .models import Employee
+from django.http import HttpResponse, HttpResponseRedirect
 
 def index(request):
     return render(request, 'team_list.html', {})

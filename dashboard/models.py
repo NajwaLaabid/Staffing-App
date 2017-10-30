@@ -40,7 +40,7 @@ class Project(models.Model):
 
 	estimated_hours = models.IntegerField()
 
-	actual_hours = models.IntegerField()
+	actual_hours = models.IntegerField(default=0)
 
 	start_date = models.DateTimeField()
 

@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from datetime import datetime
 
 from .models import Project
@@ -37,6 +38,8 @@ def create(request):
         # TO BE REMOVED, DATA to be saved in DB
         print(team_names)
 
+        return HttpResponseRedirect('/dashboard')
+
         # choose where to redirect the user after successul data addition
         #return HttpResponseRedirect('/dashboard')
     return render(request, 'create.html', {})
@@ -45,12 +48,13 @@ def close(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/profiles/login')
     if request.method == 'POST':
+
         project_id = request.POST['project_id']
+        Project.objects.filter(project_ID=project_id).delete()
 
-        # TO BE REMOVED, DATA to be saved in DB
-        print(project_id)
+        return HttpResponseRedirect('/dashboard')
 
-        return render(request, 'index.html', {})
+    return render(request, 'index.html', {})
 
         # choose where to redirect the user after successul data addition
         # render(request, 'team_list.html', {})

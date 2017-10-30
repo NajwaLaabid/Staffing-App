@@ -16,7 +16,7 @@ def signup(request):
             user_name = form.cleaned_data.get('user_name')
             user_password = form.cleaned_data.get('user_password')
             user = authenticate(username=user_name, password=user_password, email=user_email)
-            login(request, user)
+            dj_login(request, user)
             return HttpResponseRedirect('/profiles/login')
     else:
         form = SignUpForm()
