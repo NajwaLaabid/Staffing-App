@@ -1,22 +1,37 @@
 from django.shortcuts import render
+from .models import Employee
 
 def index(request):
     return render(request, 'team_list.html', {})
 
-def add(request):
+def addEmployee(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/profiles/login')
     if request.method == 'POST':
-        new_member = request.POST['new_member']
+        '''employee_code = request.POST['employee_code']
+        employee_firstName = request.POST['employee_firstName']
+        employee_lastName = request.POST['employee_lastName']
+        employee_email = request.POST['employee_email']
+        employee_phoneNumber = request.POST['employee_phoneNumber']
+        employee_status = request.POST['employee_status']
+        employee_totalHours = request.POST['employee_totalHours']'''
 
-        # TO BE REMOVED, DATA to be saved in DB
-        print(new_member)
+        # ADD TO DB
+        employee = Employee.objects.create(employee_code = request.POST['employee_code']
+        , employee_firstName = request.POST['employee_firstName']
+        , employee_lastName = request.POST['employee_lastName']
+        , employee_email = request.POST['employee_email']
+        , employee_phoneNumber = request.POST['employee_phoneNumber']
+        , employee_status = request.POST['employee_status']
+        , employee_totalHours = 0)
 
-        return render(request, 'team_list.html', {})
+        employee.save()
+
+    return render(request, 'addEmployee.html', {})
 
         # choose where to redirect the user after successul data addition
         # render(request, 'team_list.html', {})
-def delete(request):
+def deleteEmployee(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/profiles/login')
     if request.method == 'POST':

@@ -44,7 +44,7 @@ class Project(models.Model):
 	end_date = models.DateTimeField()
 
 class Resources(models.Model):
-    Employee = models.ForeignKey('profiles.Employee', default='SOME STRING')
+    Employee = models.ForeignKey('team.Employee', default='SOME STRING')
     Project = models.ForeignKey(Project)
     Implication_Percentage = models.IntegerField()
     actual_hours = models.IntegerField()

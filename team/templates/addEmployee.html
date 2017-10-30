@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <section class="content-header">
+      <h1>
+        Add Employee
+        <!-- <small>Preview page</small> -->
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'team:index' %}"><i class="fa fa-team"></i> Team</a></li>
+        <li class="active">Add Employee</li>
+      </ol>
+  </section>
+  <section class="content col-md-6 col-centered">
+    <div class="box box-primary">
+      <!-- /.box-header -->
+      <!-- form start -->
+      <form action="{% url 'team:addEmployee'%}" method="post" role="form">
+        {% csrf_token %}
+        <div class="box-body">
+          <div class="form-group">
+            <label for="employee_code">Code</label>
+            <input type="text" name="employee_code" class="form-control" id="employee_code" placeholder="Employee Code">
+          </div>
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" name="employee_firstName" class="form-control" id="employee_firstName" placeholder="Employee First Name">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" name="employee_lastName" class="form-control" id="employee_lastName" placeholder="Employee Last Name">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="text" name="employee_email" class="form-control" id="employee_email" placeholder="Employee Email">
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" name="employee_phoneNumber" class="form-control" id="employee_phoneNumber" placeholder="Employee Phone Number">
+          </div>
+          <div class="form-group">
+            <label>Status</label>
+            <select class="form-control select2" multiple="multiple" name="employee_status" id="employee_status" data-placeholder="Select a Status" style="width: 100%;">
+              <option value="user_id_1">Under-charge</option>
+              <option value="user_id_2">Normal-charge</option>
+              <option value="user_id_3">Over-charge</option>
+            </select>
+          </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary pull-right">Submit</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    $(function () {
+      //Initialize Select2 Elements
+      $('.select2').select2()
+      $('.slider').slider()
+    })
+  </script>
+{% endblock %}
