@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <section class="content-header">
+      <h1>
+        Employees
+        <!-- <small>Preview page</small> -->
+      </h1>
+      <!-- <ol class="breadcrumb">
+        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
+        <li class="active">Projects</li>
+      </ol> -->
+  </section>
+  <section class="content">
+    {% for employee in employees %}
+      <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+        <!-- Widget: user widget style 1 -->
+        <div class="box box-widget widget-user-2">
+          <!-- Add the bg color to the header using any of the bg-* classes -->
+          <div class="widget-user-header bg-yellow">
+            <!-- <div class="widget-user-image">
+              <img class="img-circle" src="{% static "dist/img/photo2.png" %}" alt="Project Logo">
+            </div> -->
+            <!-- /.widget-user-image -->
+            <h3 class="widget-user-username">{{employee.employee_firstName}} {{employee.employee_lastName}}</h3>
+            <h5 class="widget-user-desc">{{employee.employee_code}}</h5>
+          </div>
+          <div class="progress active">
+            <div class="progress-bar progress-bar-aqua progress-bar-striped" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+              120 Hours Left
+            </div>
+          </div>
+          <div class="box-footer no-padding">
+            <ul class="nav nav-stacked">
+              <li><a href="#">Status <span class="pull-right badge bg-yellow">{{employee.employee_status}}</span></a></li>
+              <li><a href="#">Total Hours<span class="pull-right badge bg-muted">{{employee.employee_totalHours}}</span></a></li>
+            </ul>
+          </div>
+          <div class="box-footer box-action">
+            <form action="{% url 'dashboard:close' %}" method="post">
+              {% csrf_token %}
+              <div class="pull-right">
+                <input type="hidden" class="form-control" name="project_id" value="32">
+                <button type="submit" class="btn btn-flat btn-danger">Close</button>
+              </div>
+            </form>
+
+            <div class="pull-right">
+              <a href="{% url 'dashboard:view' 32 %}" class="btn btn-default btn-flat">View</a>
+            </div>
+          </div>
+        </div>
+        <!-- /.widget-user -->
+      </div>
+    {% endfor %}
+  </section>
+{% endblock %}

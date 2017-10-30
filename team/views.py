@@ -1,9 +1,15 @@
 from django.shortcuts import render
+from django.template.response import TemplateResponse
 from .models import Employee
 from django.http import HttpResponse, HttpResponseRedirect
 
 def index(request):
-    return render(request, 'team_list.html', {})
+    employees = Employee.objects.all()
+    return TemplateResponse(request, 'teamIndex.html', {'employees': employees,})
+
+def getEmployeeStatus(request):
+    statuses = Employee.objects.all()
+    return TemplateResponse(request, 'teamIndex.html', {'employees': employees,})
 
 def addEmployee(request):
     if not request.user.is_authenticated():

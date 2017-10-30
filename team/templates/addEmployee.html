@@ -42,6 +42,7 @@
           <div class="form-group">
             <label>Status</label>
             <select class="form-control select2" multiple="multiple" name="employee_status" id="employee_status" data-placeholder="Select a Status" style="width: 100%;">
+              {% for employee in employees %}
               <option value="user_id_1">Under-charge</option>
               <option value="user_id_2">Normal-charge</option>
               <option value="user_id_3">Over-charge</option>
