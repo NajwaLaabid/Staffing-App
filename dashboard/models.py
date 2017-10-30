@@ -9,31 +9,34 @@ class Project(models.Model):
 	ON_GOING = 'GO'
 	HOLD = 'HO'
 	AT_RISK = 'RI'
-	project_status = (
+	PROJECT_STATUS = (
         (ON_GOING, 'On going'),
         (HOLD, 'Hold'),
         (AT_RISK, 'At risk'),
     )
+	project_status = models.CharField(max_length=2, choices=PROJECT_STATUS, default='GO')
 
 	CASE_STUDY = 'CS'
 	CONCEPTUAL = 'CO'
 	BASIC_ENGINEERING = 'BE'
 	DETAILED_ENGINEERING = 'DE'
-	project_phase = (
+	PROJECT_PHASE = (
 		(CASE_STUDY, 'Case Study'),
         (CONCEPTUAL, 'Conceptual'),
         (BASIC_ENGINEERING, 'Basic Engineering'),
         (DETAILED_ENGINEERING, 'Detailed Engineering'),
 	)
+	project_phase = models.CharField(max_length=1, choices=PROJECT_PHASE, default='CS')
 
 	EPC = 'EP'
 	PMC = 'PM'
 	EPCM = 'EM'
-	jesa_role = (
+	JESA_ROLE = (
 		(EPC, 'EPC'),
 		(PMC,'PMC'),
 		(EPCM, 'EPCM'),
 	)
+	jesa_role = models.CharField(max_length=1, choices=JESA_ROLE, default='EP')
 
 	estimated_hours = models.IntegerField()
 
@@ -44,7 +47,7 @@ class Project(models.Model):
 	end_date = models.DateTimeField()
 
 class Resources(models.Model):
-    Employee = models.ForeignKey('profiles.Employee', default='SOME STRING')
+    Employee = models.ForeignKey('profiles.Employee')
     Project = models.ForeignKey(Project)
     Implication_Percentage = models.IntegerField()
     actual_hours = models.IntegerField()
