@@ -8,8 +8,8 @@
           <div class="box box-widget widget-user">
             <!-- Add the bg color to the header using any of the bg-* classes -->
             <div class="widget-user-header bg-aqua-active">
-              <h3 class="widget-user-username">Project Title</h3>
-              <h5 class="widget-user-desc">Project Code</h5>
+              <h3 class="widget-user-username">{{project.project_title}}</h3>
+              <h5 class="widget-user-desc">{{project.project_code}}</h5>
             </div>
             <div>
             </div>
@@ -17,7 +17,7 @@
               <div class="row">
                 <div class="col-sm-3 border-right">
                   <div class="description-block">
-                    <h5 class="description-header">On Going</h5>
+                    <h5 class="description-header">{{project.project_status}}</h5>
                     <span class="description-text">STATUS</span>
                   </div>
                   <!-- /.description-block -->
@@ -25,7 +25,7 @@
                 <!-- /.col -->
                 <div class="col-sm-3 border-right">
                   <div class="description-block">
-                    <h5 class="description-header">Basic Engineering</h5>
+                    <h5 class="description-header">{{project.project_phase}}</h5>
                     <span class="description-text">PHASE</span>
                   </div>
                   <!-- /.description-block -->
@@ -33,7 +33,7 @@
                 <!-- /.col -->
                 <div class="col-sm-3 border-right">
                   <div class="description-block">
-                    <h5 class="description-header">6</h5>
+                    <h5 class="description-header">{{resources|length}}</h5>
                     <span class="description-text">TEAM</span>
                   </div>
                   <!-- /.description-block -->
@@ -41,7 +41,7 @@
                 <!-- /.col -->
                 <div class="col-sm-3">
                   <div class="description-block">
-                    <h5 class="description-header">EPCM</h5>
+                    <h5 class="description-header">{{project.jesa_role}}</h5>
                     <span class="description-text">JESA ROLE</span>
                   </div>
                   <!-- /.description-block -->
@@ -61,16 +61,14 @@
             <h3 class="box-title">Team</h3>
 
             <div class="box-tools">
-              <form action="{% url 'dashboard:addMember'%}" method="post">
+              <form action="{% url 'dashboard:addMember' project.project_ID %}" method="post">
                 <div class="input-group input-group-sm pull-right" style="width: 320px;">
                     {% csrf_token %}
-                    <select class="form-control select2" name="team_names" data-placeholder="Select a State"
+                    <select class="form-control select2" name="potential_member" data-placeholder="Select a State"
                             style="width: 100%;">
-                      <option value="user_id_1">Wahibi Imane</option>
-                      <option value="user_id_2">Agourram Abdellah</option>
-                      <option value="user_id_3">Koufane Fahd</option>
-                      <option value="user_id_4">Bhosale Sagar</option>
-                      <option value="user_id_5">Zaaboul Ibtissam</option>
+                      {% for potential_member in potential_members %}
+                        <option value="{{potential_member.employee_ID}}">{{potential_member.employee_lastName}} {{potential_member.employee_firstName}}</option>
+                      {% endfor %}
                     </select>
                     <span class="input-group-btn">
                       <button type="submit" class="btn btn-info btn-flat">Add</button>
@@ -111,35 +109,38 @@
                 <th>Dec-18</th>
                 <th>Total</th>
               </tr>
-              <tr>
-                <td>Agourram Abdellah</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxxxx</td>
-                <td>
-                  <form action="{% url 'dashboard:deleteMember' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" class="form-control" name="member_id" value="32">
-                    <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
-                  </form>
-                </td>
-              </tr>
+
+              {% for resource in resources %}
+                <tr>
+                  <td>{{resource.Employee.employee_lastName}} {{resource.Employee.employee_firstName}}</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxx</td>
+                  <td>xxxxx</td>
+                  <td>
+                    <form action="{% url 'dashboard:deleteMember' project.project_ID %}" method="post">
+                      {% csrf_token %}
+                      <input type="hidden" class="form-control" name="member_id" value="{{resource.Employee.employee_ID}}">
+                      <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
               <!-- <tr>
                 <td>175</td>
                 <td>Mike Doe</td>

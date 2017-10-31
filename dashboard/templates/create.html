@@ -31,30 +31,28 @@
             <label>Team</label>
             <select class="form-control select2" multiple="multiple" name="team_names" data-placeholder="Select a State"
                     style="width: 100%;">
-              <option value="user_id_1">Wahibi Imane</option>
-              <option value="user_id_2">Agourram Abdellah</option>
-              <option value="user_id_3">Koufane Fahd</option>
-              <option value="user_id_4">Bhosale Sagar</option>
-              <option value="user_id_5">Zaaboul Ibtissam</option>
+              {% for employee in employees %}
+                <option value="{{employee.employee_ID}}">{{employee.employee_lastName}} {{employee.employee_firstName}}</option>
+              {% endfor %}
             </select>
           </div>
           <div class="form-group">
             <label>Project Phase</label>
             <select class="form-control select2" name="project_phase" data-placeholder="Select a Project Phase"
                     style="width: 100%;">
-              <option value="CS">Case Study</option>
-              <option value="CO">Conceptual</option>
-              <option value="BE">Basic Engineering</option>
-              <option value="DE">Detailed Engineering</option>
+              <option value="Case Study">Case Study</option>
+              <option value="Conceptual">Conceptual</option>
+              <option value="Basic Engineering">Basic Engineering</option>
+              <option value="Detailed Engineering">Detailed Engineering</option>
             </select>
           </div>
           <div class="form-group">
             <label>JESA Role</label>
             <select class="form-control select2" name="jesa_role" data-placeholder="Select a JESA Role"
                     style="width: 100%;">
-              <option value="EP">EPC</option>
-              <option value="PM">PMC</option>
-              <option value="EM">EPCM</option>
+              <option value="EPC">EPC</option>
+              <option value="PMC">PMC</option>
+              <option value="EPCM">EPCM</option>
             </select>
           </div>
           <div class="form-group">
