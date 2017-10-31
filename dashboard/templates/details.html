@@ -64,7 +64,7 @@
               <form action="{% url 'dashboard:addMember' project.project_ID %}" method="post">
                 <div class="input-group input-group-sm pull-right" style="width: 320px;">
                     {% csrf_token %}
-                    <select class="form-control select2" name="potential_member" data-placeholder="Select a State"
+                    <select class="form-control select2" name="potential_member" data-placeholder="Select an employee"
                             style="width: 100%;">
                       {% for potential_member in potential_members %}
                         <option value="{{potential_member.employee_ID}}">{{potential_member.employee_lastName}} {{potential_member.employee_firstName}}</option>

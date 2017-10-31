@@ -1,39 +1,46 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from .models import Employee
-<<<<<<< HEAD
 from dashboard.models import Project
 from dashboard.models import Resources
-=======
 from django.http import HttpResponse, HttpResponseRedirect
->>>>>>> 668c5d986597628a0e250a649098d2b9dd0b40fe
 
 def index(request):
     employees = Employee.objects.all()
     return TemplateResponse(request, 'teamIndex.html', {'employees': employees,})
 
+def addProject(request, employee_ID):
+   if request.method == 'POST':
+        potential_project = request.POST['potential_project']
+        #potential_project = 1
+        r = Resources(Employee=Employee.objects.get(employee_ID=employee_ID)
+                    , Project=Project.objects.get(project_ID=potential_project))
+        r.save()
+        return HttpResponseRedirect('/team/viewEmployee/'+ employee_ID)
+
+def deleteProject(request, employee_ID):
+    if request.method == 'POST':
+        project_ID = request.POST['project_ID']
+        Resources.objects.get(Employee=Employee.objects.get(employee_ID=employee_ID), Project=Project.objects.get(project_ID=project_ID)).delete()
+        return HttpResponseRedirect('/team/viewEmployee/'+ employee_ID)
+
 def viewEmployee(request, employee_ID):
     employee = Employee.objects.get(pk=employee_ID)
-    projects = Project.objects.all()
-    resources = Resources.objects.get(Employee=employee_ID).select_related()
-    return render(request, 'teamDetails.html', {'employee' : employee}, {'projects' : projects}, {'resources' : resources},)
+    potential_projects = Project.objects.all()
+    resources = Resources.objects.filter(Employee=employee)
+    for resource in resources:
+        potential_projects = potential_projects.exclude(project_ID=resource.Project.project_ID)
+    
+    return TemplateResponse(request, 'teamDetails.html', {'employee' : employee, 'potential_projects' : potential_projects, 'resources' : resources},)
 
 def getEmployeeStatus(request):
     statuses = Employee.objects.all()
     return TemplateResponse(request, 'teamIndex.html', {'employees': employees,})
 
 def addEmployee(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/profiles/login')
+    #if not request.user.is_authenticated():
+     #   return HttpResponseRedirect('/profiles/login')
     if request.method == 'POST':
-        '''employee_code = request.POST['employee_code']
-        employee_firstName = request.POST['employee_firstName']
-        employee_lastName = request.POST['employee_lastName']
-        employee_email = request.POST['employee_email']
-        employee_phoneNumber = request.POST['employee_phoneNumber']
-        employee_status = request.POST['employee_status']
-        employee_totalHours = request.POST['employee_totalHours']'''
-
         # ADD TO DB
         employee = Employee.objects.create(employee_code = request.POST['employee_code']
         , employee_firstName = request.POST['employee_firstName']
@@ -47,18 +54,7 @@ def addEmployee(request):
 
     return render(request, 'addEmployee.html', {})
 
-        # choose where to redirect the user after successul data addition
-        # render(request, 'team_list.html', {})
-def deleteEmployee(request):
-    if not request.user.is_authenticated():
-        return HttpResponseRedirect('/profiles/login')
-    if request.method == 'POST':
-        member_id = request.POST['member_id']
+def deleteEmployee(request, employee_ID):
+    Employee.objects.get(pk=employee_ID).delete()
 
-        # TO BE REMOVED, DATA to be saved in DB
-        print(member_id)
-
-        return render(request, 'team_list.html', {})
-
-        # choose where to redirect the user after successul data addition
-        # render(request, 'team_list.html', {})
+    return HttpResponseRedirect('/team/')

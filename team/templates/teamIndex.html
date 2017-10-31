@@ -38,10 +38,10 @@
             </ul>
           </div>
           <div class="box-footer box-action">
-            <form action="{% url 'dashboard:close' %}" method="post">
+            <form action="{% url 'team:deleteEmployee' employee.employee_ID %}" method="post">
               {% csrf_token %}
               <div class="pull-right">
-                <button type="submit" class="btn btn-flat btn-danger">Close</button>
+                <button type="submit" class="btn btn-flat btn-danger">Delete</button>
               </div>
             </form>
 

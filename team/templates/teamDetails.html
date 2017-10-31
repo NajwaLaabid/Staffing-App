@@ -61,13 +61,13 @@
             <h3 class="box-title">Team</h3>
 
             <div class="box-tools">
-              <form action="{% url 'dashboard:addMember'%}" method="post">
+              <form action="{% url 'team:addProject' employee.employee_ID %}" method="post">
                 <div class="input-group input-group-sm pull-right" style="width: 320px;">
                     {% csrf_token %}
-                    <select class="form-control select2" name="team_names" data-placeholder="Select a Project"
+                    <select class="form-control select2" name="potential_project" data-placeholder="Select a Project"
                             style="width: 100%;">
-                      {% for project in projects %}
-                      <option value="project.project_ID">{{project.project_title}}</option>
+                      {% for potential_project in potential_projects %}
+                      <option value="{{potential_project.project_ID}}">{{potential_project.project_title}}</option>
                       {% endfor %}
                     </select>
                     <span class="input-group-btn">
@@ -109,8 +109,8 @@
                 <th>Dec-18</th>
                 <th>Total</th>
               </tr>
+              {% for resource in resources %}
               <tr>
-                {{% for resource in resources %}}
                 <td>{{resource.Project.project_title}}</td>
                 <td>xxx</td>
                 <td>xxx</td>
@@ -131,14 +131,15 @@
                 <td>xxx</td>
                 <td>xxx</td>
                 <td>xxxxx</td>
-                {% endfor %}
                 <td>
-                  <form action="{% url 'dashboard:deleteMember' %}" method="post">
+                  <form action="{% url 'team:deleteProject' employee.employee_ID %}" method="post">
                     {% csrf_token %}
+                    <input id="project_ID" name="project_ID" type="hidden" value="{{resource.Project.project_ID}}">
                     <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
                   </form>
                 </td>
               </tr>
+              {% endfor %}
               <!-- <tr>
                 <td>175</td>
                 <td>Mike Doe</td>
