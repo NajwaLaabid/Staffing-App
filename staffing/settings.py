@@ -58,6 +58,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': ['staffing/templates', 'profiles/templates', 'dashboard/templates', 'team/templates'],
+        #'DIRS': ['staffing/staffing/templates', 'profiles/templates', 'dashboard/templates', 'team/templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -65,7 +66,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'dashboard.context_processors.add_user_context',
             ],
         },
     },
