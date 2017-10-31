@@ -7,3 +7,7 @@ profiles/migrations
 profiles/__pycache__
 staffing/__pycache__
 team/migrations/__pycache__/
+venv
+*.pyc
+.env
+staticfiles
