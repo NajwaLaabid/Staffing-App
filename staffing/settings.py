@@ -25,7 +25,7 @@ SECRET_KEY = '3n6=$#_n&ffxi$%0$--^=yvdo$v9qn7t_i82_8c5q#6&hiva!5'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['staffing.pythonanywhere.com', 'localhost']
+ALLOWED_HOSTS = ['staffing.pythonanywhere.com', 'localhost', 'staffing-app.herokuapp.com']
 
 
 # Application definition
