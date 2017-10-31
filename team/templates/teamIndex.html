@@ -41,13 +41,12 @@
             <form action="{% url 'dashboard:close' %}" method="post">
               {% csrf_token %}
               <div class="pull-right">
-                <input type="hidden" class="form-control" name="project_id" value="32">
                 <button type="submit" class="btn btn-flat btn-danger">Close</button>
               </div>
             </form>
 
             <div class="pull-right">
-              <a href="{% url 'dashboard:view' 32 %}" class="btn btn-default btn-flat">View</a>
+              <a href="{% url 'team:viewEmployee' employee.employee_ID %}" class="btn btn-default btn-flat">View</a>
             </div>
           </div>
         </div>

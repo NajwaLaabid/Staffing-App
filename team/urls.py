@@ -7,4 +7,5 @@ urlpatterns =  [
     url(r'^$', views.index, name='index'),
     url(r'^add/$', views.addEmployee, name='addEmployee'),
     url(r'^delete/$', views.deleteEmployee, name='deleteEmployee'),
+    url(r'^viewEmployee/(?P<employee_ID>\d+)/$', views.viewEmployee, name='viewEmployee'),
 ]

@@ -1,10 +1,18 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from .models import Employee
+from dashboard.models import Project
+from dashboard.models import Resources
 
 def index(request):
     employees = Employee.objects.all()
     return TemplateResponse(request, 'teamIndex.html', {'employees': employees,})
+
+def viewEmployee(request, employee_ID):
+    employee = Employee.objects.get(pk=employee_ID)
+    projects = Project.objects.all()
+    resources = Resources.objects.get(Employee=employee_ID).select_related()
+    return render(request, 'teamDetails.html', {'employee' : employee}, {'projects' : projects}, {'resources' : resources},)
 
 def getEmployeeStatus(request):
     statuses = Employee.objects.all()
