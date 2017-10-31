@@ -1,12 +1,9 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from .models import Employee
-<<<<<<< HEAD
 from dashboard.models import Project
 from dashboard.models import Resources
-=======
 from django.http import HttpResponse, HttpResponseRedirect
->>>>>>> 668c5d986597628a0e250a649098d2b9dd0b40fe
 
 def index(request):
     employees = Employee.objects.all()
