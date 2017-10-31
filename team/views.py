@@ -1,11 +1,22 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from .models import Employee
+<<<<<<< HEAD
+from dashboard.models import Project
+from dashboard.models import Resources
+=======
 from django.http import HttpResponse, HttpResponseRedirect
+>>>>>>> 668c5d986597628a0e250a649098d2b9dd0b40fe
 
 def index(request):
     employees = Employee.objects.all()
     return TemplateResponse(request, 'teamIndex.html', {'employees': employees,})
+
+def viewEmployee(request, employee_ID):
+    employee = Employee.objects.get(pk=employee_ID)
+    projects = Project.objects.all()
+    resources = Resources.objects.get(Employee=employee_ID).select_related()
+    return render(request, 'teamDetails.html', {'employee' : employee}, {'projects' : projects}, {'resources' : resources},)
 
 def getEmployeeStatus(request):
     statuses = Employee.objects.all()

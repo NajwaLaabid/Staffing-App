@@ -8,8 +8,8 @@
           <div class="box box-widget widget-user">
             <!-- Add the bg color to the header using any of the bg-* classes -->
             <div class="widget-user-header bg-aqua-active">
-              <h3 class="widget-user-username"></h3>
-              <h5 class="widget-user-desc">Project Code</h5>
+              <h3 class="widget-user-username">{{employee.employee_firstName}} {{employee.employee_lastName}}</h3>
+              <h5 class="widget-user-desc">{{employee.employee_code}}</h5>
             </div>
             <div>
             </div>
@@ -17,7 +17,7 @@
               <div class="row">
                 <div class="col-sm-3 border-right">
                   <div class="description-block">
-                    <h5 class="description-header">On Going</h5>
+                    <h5 class="description-header">{{employee.employee_status}}</h5>
                     <span class="description-text">STATUS</span>
                   </div>
                   <!-- /.description-block -->
@@ -25,24 +25,24 @@
                 <!-- /.col -->
                 <div class="col-sm-3 border-right">
                   <div class="description-block">
-                    <h5 class="description-header">Basic Engineering</h5>
-                    <span class="description-text">PHASE</span>
+                    <h5 class="description-header">{{employee.employee_totalHours}}</h5>
+                    <span class="description-text">Total Hours</span>
                   </div>
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-3 border-right">
                   <div class="description-block">
-                    <h5 class="description-header">6</h5>
-                    <span class="description-text">TEAM</span>
+                    <h5 class="description-header">{{employee.employee_email}}</h5>
+                    <span class="description-text">EMAIL</span>
                   </div>
                   <!-- /.description-block -->
                 </div>
                 <!-- /.col -->
                 <div class="col-sm-3">
                   <div class="description-block">
-                    <h5 class="description-header">EPCM</h5>
-                    <span class="description-text">JESA ROLE</span>
+                    <h5 class="description-header">{{employee.employee_phoneNumber}}</h5>
+                    <span class="description-text">PHONE NUMBER</span>
                   </div>
                   <!-- /.description-block -->
                 </div>
@@ -64,13 +64,11 @@
               <form action="{% url 'dashboard:addMember'%}" method="post">
                 <div class="input-group input-group-sm pull-right" style="width: 320px;">
                     {% csrf_token %}
-                    <select class="form-control select2" name="team_names" data-placeholder="Select a State"
+                    <select class="form-control select2" name="team_names" data-placeholder="Select a Project"
                             style="width: 100%;">
-                      <option value="user_id_1">Wahibi Imane</option>
-                      <option value="user_id_2">Agourram Abdellah</option>
-                      <option value="user_id_3">Koufane Fahd</option>
-                      <option value="user_id_4">Bhosale Sagar</option>
-                      <option value="user_id_5">Zaaboul Ibtissam</option>
+                      {% for project in projects %}
+                      <option value="project.project_ID">{{project.project_title}}</option>
+                      {% endfor %}
                     </select>
                     <span class="input-group-btn">
                       <button type="submit" class="btn btn-info btn-flat">Add</button>
@@ -112,7 +110,8 @@
                 <th>Total</th>
               </tr>
               <tr>
-                <td>Agourram Abdellah</td>
+                {{% for resource in resources %}}
+                <td>{{resource.Project.project_title}}</td>
                 <td>xxx</td>
                 <td>xxx</td>
                 <td>xxx</td>
@@ -132,10 +131,10 @@
                 <td>xxx</td>
                 <td>xxx</td>
                 <td>xxxxx</td>
+                {% endfor %}
                 <td>
                   <form action="{% url 'dashboard:deleteMember' %}" method="post">
                     {% csrf_token %}
-                    <input type="hidden" class="form-control" name="member_id" value="32">
                     <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
                   </form>
                 </td>
