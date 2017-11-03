@@ -1,29 +1,44 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.http import HttpResponse, HttpResponseRedirect
-from datetime import datetime
+from datetime import timedelta, date
 
 from .models import Project, Resources
 from team.models import Employee
 
+def daterange(start_date, end_date):
+    for n in range(int ((end_date - start_date).days)):
+        yield start_date + timedelta(n)
+
 def index(request):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/profiles/login')
     projects = Project.objects.all()
     return TemplateResponse(request, 'index.html', {'projects': projects})
 
 def view(request, project_id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/profiles/login')
     project = Project.objects.get(project_ID=project_id)
     resources = Resources.objects.filter(Project=project)
     potential_members = Employee.objects.all()
 
+    date_range = list(daterange(project.start_date, project.end_date))
+
+    first_device.history
+
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
-    return TemplateResponse(request, 'details.html', {'project': project, 'resources': resources, 'potential_members': potential_members})
+    return TemplateResponse(request, 'details.html', {'project': project, 'resources': resources, 'potential_members': potential_members, 'date_range': date_range})
+
+def saveMemberHours(request, project_id):
+    if request.method == 'POST':
+        return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def deleteMember(request, project_id):
     if request.method == 'POST':
         member_id = request.POST['member_id']
-        print(member_id)
         Resources.objects.get(Employee=Employee.objects.get(employee_ID=member_id), Project=Project.objects.get(project_ID=project_id)).delete()
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 

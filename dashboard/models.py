@@ -56,6 +56,12 @@ class Resources(models.Model):
     class Meta:
         unique_together = ('Employee', 'Project',)
 
+class Calendar():
+	Employee = models.ForeignKey('team.Employee')
+	Project = models.ForeignKey(Project)
+	date = models.DateTimeField()
+	hours = models.IntegerField(default=0)
+
 class Delivrables(models.Model):
 	delivrable_ID = models.AutoField(primary_key=True)
 	delivrable_title = models.CharField(max_length=200)

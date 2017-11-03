@@ -89,49 +89,28 @@
             <table class="table table-hover">
               <tr>
                 <th>Name</th>
-                <th>Jul-17</th>
-                <th>Aug-17</th>
-                <th>Sep-17</th>
-                <th>Oct-17</th>
-                <th>Nov-17</th>
-                <th>Dec-17</th>
-                <th>Jan-18</th>
-                <th>Feb-18</th>
-                <th>Mar-18</th>
-                <th>Apr-18</th>
-                <th>May-18</th>
-                <th>Jun-18</th>
-                <th>Jul-18</th>
-                <th>Aug-18</th>
-                <th>Sep-18</th>
-                <th>Oct-18</th>
-                <th>Nov-18</th>
-                <th>Dec-18</th>
+                {% for single_date in date_range %}
+                  <th>{{single_date}}</th>
+                {% endfor %}
                 <th>Total</th>
               </tr>
 
               {% for resource in resources %}
                 <tr>
                   <td>{{resource.Employee.employee_lastName}} {{resource.Employee.employee_firstName}}</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxx</td>
-                  <td>xxxxx</td>
+                  <form action="{% url 'dashboard:saveMemberHours' project.project_ID %}" method="post">
+                    {% csrf_token %}
+                    {% for single_date in date_range %}
+                      <td>
+                          <input type="text" class="form-control" name="{{single_date}}" value="{{single_date}}" style="width: 56px;">
+                      </td>
+                    {% endfor %}
+                    <td>xxxxx</td>
+                    <td>
+                        <input type="hidden" class="form-control" name="member_id" value="{{resource.Employee.employee_ID}}">
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-save"></i></button>
+                    </td>
+                  </form>
                   <td>
                     <form action="{% url 'dashboard:deleteMember' project.project_ID %}" method="post">
                       {% csrf_token %}

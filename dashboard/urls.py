@@ -10,4 +10,5 @@ urlpatterns =  [
     url(r'^view/(?P<project_id>\d+)/$', views.view, name='view'),
     url(r'^deleteMember/(?P<project_id>\d+)/$', views.deleteMember, name='deleteMember'),
     url(r'^addMember/(?P<project_id>\d+)/$', views.addMember, name='addMember'),
+    url(r'^saveMemberHours/(?P<project_id>\d+)/$', views.saveMemberHours, name='saveMemberHours'),
 ]
