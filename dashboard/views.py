@@ -1,14 +1,15 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.http import HttpResponse, HttpResponseRedirect
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
+from collections import OrderedDict
 
-from .models import Project, Resources
+from .models import Project, Resources, ProjectCalendar
 from team.models import Employee
 
-def daterange(start_date, end_date):
-    for n in range(int ((end_date - start_date).days)):
-        yield start_date + timedelta(n)
+def daterange(dates):
+    #start, end = [datetime.strptime(_, "%m/%d/%Y") for _ in dates]
+    return OrderedDict(((dates[0] + timedelta(_)).strftime(r"%b-%y"), None) for _ in range((dates[1] - dates[0]).days)).keys()
 
 def index(request):
     if not request.user.is_authenticated():
@@ -21,17 +22,38 @@ def view(request, project_id):
         return HttpResponseRedirect('/profiles/login')
     project = Project.objects.get(project_ID=project_id)
     resources = Resources.objects.filter(Project=project)
+
+    resources_view = []
+    for resource in resources:
+        sub = {'name' : resource.Employee.employee_lastName + ' ' + resource.Employee.employee_firstName}
+        sub.update({'employee_ID' : resource.Employee.employee_ID})
+        hours = ProjectCalendar.objects.filter(Project=project, Employee=resource.Employee)
+        for hour in hours:
+            sub.update({hour.date : hour.hours})
+        resources_view.append(sub)
+
+    print(resources_view)
     potential_members = Employee.objects.all()
 
-    date_range = list(daterange(project.start_date, project.end_date))
+    dates = [project.start_date, project.end_date]
+    date_range = list(daterange(dates))
 
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
-    return TemplateResponse(request, 'details.html', {'project': project, 'resources': resources, 'potential_members': potential_members, 'date_range': date_range})
+    return TemplateResponse(request, 'details.html', {'project': project, 'resources_view': resources_view, 'potential_members': potential_members, 'date_range': date_range})
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
+        date = request.POST['date']
+        hours = request.POST['hours']
+        employee_ID = request.POST['employee_ID']
+        project = Project.objects.get(project_ID=project_id)
+        employee = Employee.objects.filter(employee_ID=employee_ID)
+        pc = ProjectCalendar.objects.get(Project=project, Employee=employee, date=date)
+        if(pc.hours != hours):
+            pc.hours = hours  # change field
+            pc.save() # this will update only
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def deleteMember(request, project_id):
@@ -43,8 +65,20 @@ def deleteMember(request, project_id):
 def addMember(request, project_id):
     if request.method == 'POST':
         potential_member = request.POST['potential_member']
-        r = Resources(Employee=Employee.objects.get(employee_ID=potential_member), Project=Project.objects.get(project_ID=project_id))
+
+        project = Project.objects.get(project_ID=project_id)
+        employee = Employee.objects.get(employee_ID=potential_member)
+
+        dates = [project.start_date, project.end_date]
+
+        r = Resources(Employee=employee, Project=project)
         r.save()
+        date_range = list(daterange(dates))
+
+        for single_date in date_range:
+            c = ProjectCalendar(Employee=employee, Project=project, date=single_date)
+            c.save()
+
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def create(request):

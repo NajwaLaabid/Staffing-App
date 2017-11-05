@@ -56,10 +56,10 @@ class Resources(models.Model):
     class Meta:
         unique_together = ('Employee', 'Project',)
 
-class Calendar():
+class ProjectCalendar(models.Model):
 	Employee = models.ForeignKey('team.Employee')
 	Project = models.ForeignKey(Project)
-	date = models.DateTimeField()
+	date = models.CharField(max_length=200)
 	hours = models.IntegerField(default=0)
 
 class Delivrables(models.Model):
