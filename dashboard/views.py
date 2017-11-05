@@ -25,8 +25,6 @@ def view(request, project_id):
 
     date_range = list(daterange(project.start_date, project.end_date))
 
-    first_device.history
-
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
