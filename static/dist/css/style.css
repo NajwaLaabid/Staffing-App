@@ -26,3 +26,20 @@
 .widget-user-2 .widget-user-username, .widget-user-2 .widget-user-desc{
   margin-left: 0;
 }
+
+.todo-list li {
+  border-radius: 2px;
+  padding: 10px;
+  background: #f4f4f4;
+  margin-bottom: 2px;
+  border-left: 2px solid #e6e7e8;
+  color: #444;
+}
+
+.todo-list li.done {
+    color: #999;
+}
+
+.todo-list li.done span{
+  text-decoration: line-through;
+}

@@ -126,43 +126,129 @@
           <div class="box box-primary">
             <div class="box-header">
               <i class="ion ion-clipboard"></i>
-
-              <h3 class="box-title">Delivrables</h3>
-
-              <!-- <div class="box-tools pull-right">
-                <ul class="pagination pagination-sm inline">
-                  <li><a href="#">&laquo;</a></li>
-                  <li><a href="#">1</a></li>
-                  <li><a href="#">2</a></li>
-                  <li><a href="#">3</a></li>
-                  <li><a href="#">&raquo;</a></li>
-                </ul>
-              </div> -->
+              <h3 class="box-title">Deliverables</h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
               <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
               <ul class="todo-list">
-                <li>
-                  <!-- checkbox -->
-                  <input type="checkbox" value="">
-                  <!-- todo text -->
-                  <span class="text">Design a nice theme</span>
-                  <!-- Emphasis label -->
-                  <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
-                  <!-- General tools such as edit or delete-->
-                  <div class="tools">
-                    <i class="fa fa-edit"></i>
-                    <i class="fa fa-trash-o"></i>
-                  </div>
-                </li>
+                {% for deliverable in deliverables %}
+                  <form action="{% url 'dashboard:updateDelivrable' project.project_ID %}" method="post">
+                    {% csrf_token %}
+                    <li class="{% if deliverable.is_done == True %} done {% endif %}">
+                      <!-- checkbox -->
+                      <input type="hidden" class="form-control" name="deliverable_ID" value="{{deliverable.deliverable_ID}}">
+                      <input type="checkbox" name="is_done" {% if deliverable.is_done == True %} checked {% endif %}/>
+                      <!-- todo text -->
+                      <span class="text">{{deliverable.deliverable_title}}</span>
+                    </li>
+                  </form>
+                {% endfor %}
               </ul>
             </div>
             <!-- /.box-body -->
 
 
             <div class="box-footer clearfix no-border">
-              <button type="button" class="btn btn-default pull-right"><i class="fa fa-plus"></i> Add item</button>
+              <form action="{% url 'dashboard:addDeliverable' project.project_ID %}" method="post">
+                {% csrf_token %}
+                <div class="box-footer clearfix no-border input-group input-group-sm" style="wid">
+                  <select class="form-control select2" name="deliverable_title" data-placeholder="Select a Deliverable" style="width: 100%;">
+                    <optgroup label="DRAWINGS">
+                      <option value="DRAWINGS_P & ID’s.">P &amp; ID’s</option>
+                      <option value="DRAWINGS_CABLE BLOCK DIAGRAM FOR PACKAGE UNIT">CABLE BLOCK DIAGRAM FOR PACKAGE UNIT</option>
+                      <option value="DRAWINGS_LOGIC DIAGRAMS">LOGIC DIAGRAMS</option>
+                      <option value="DRAWINGS_POWER SUPPLY LINE DIAGRAM">POWER SUPPLY LINE DIAGRAM</option>
+                      <option value="DRAWINGS_INSTRUMENT CABLE TRAY LAYOUT">INSTRUMENT CABLE TRAY LAYOUT</option>
+                      <option value="DRAWINGS_GRAPHICS AND REPORTS OF CONTROL SYSTEM">GRAPHICS AND REPORTS OF CONTROL SYSTEM</option>
+                      <option value="DRAWINGS_CONTROL SYSTEM ARCHITECTURE">CONTROL SYSTEM ARCHITECTURE</option>
+                      <option value="DRAWINGS_AIR MANIFOLD LOCATION PLAN">AIR MANIFOLD LOCATION PLAN</option>
+                      <option value="DRAWINGS_GENERAL ARRANGEMENTS">GENERAL ARRANGEMENTS</option>
+                      <option value="DRAWINGS_EXPLODED VIEW DRAWINGS">EXPLODED VIEW DRAWINGS</option>
+                      <option value="DRAWINGS_CROSS SECTIONAL DRAWINGS (INC PARTS LIST)">CROSS SECTIONAL DRAWINGS (INC PARTS LIST)</option>
+                      <option value="DRAWINGS_INTERNAL WIRING DIAGRAMS /CONNECTION DIAGRAMS">INTERNAL WIRING DIAGRAMS /CONNECTION DIAGRAMS</option>
+                      <option value="DRAWINGS_INSTRUMENT TERMINATION & HOOK-UP DETAILS">INSTRUMENT TERMINATION & HOOK-UP DETAILS</option>
+                      <option value="DRAWINGS_INSTRUMENTATION WIRING SCHEMATICS">INSTRUMENTATION WIRING SCHEMATICS</option>
+                      <option value="DRAWINGS_INSTRUMENT VENDOR DRAWINGS">INSTRUMENT VENDOR DRAWINGS</option>
+                      <option value="DRAWINGS_INSTRUMENT LOCATION DRAWINGS">INSTRUMENT LOCATION DRAWINGS</option>
+                      <option value="DRAWINGS_EARTHING DETAILS">EARTHING DETAILS</option>
+                      <option value="DRAWINGS_INSTRUMENT LOOP DRAWINGS">INSTRUMENT LOOP DRAWINGS</option>
+                      <option value="DRAWINGS_PANEL LAY-OUTS (INTERNAL LAY-OUT,TERMINATION DRAWING AND WIRING DETAILS)">PANEL LAY-OUTS (INTERNAL LAY-OUT,TERMINATION DRAWING AND WIRING DETAILS)</option>
+                      <option value="DRAWINGS_JUNCTION BOX DIAGRAMS">JUNCTION BOX DIAGRAMS</option>
+                      <option value="DRAWINGS_NAMEPLATE DRAWINGS">NAMEPLATE DRAWINGS</option>
+                      <option value="DRAWINGS_AS BUILT DRAWINGS">AS BUILT DRAWINGS</option>
+                    </optgroup>
+
+                    <optgroup label="SPECIFICATIONS">
+                      <option value="SPECIFICATIONS_INSTRUMENT DATA SHEETS">INSTRUMENT DATA SHEETS</option>
+                      <option value="SPECIFICATIONS_CATALOGUE DATA SHEETS">CATALOGUE DATA SHEETS</option>
+                      <option value="SPECIFICATIONS_INTERLOCK AND SAFETY SYSTEM FUNCTION DESCRIPTIONS">INTERLOCK AND SAFETY SYSTEM FUNCTION DESCRIPTIONS</option>
+                      <option value="SPECIFICATIONS_CONTROL NARRATIVE REPORT">CONTROL NARRATIVE REPORT</option>
+                    </optgroup>
+
+                    <optgroup label="STUDIES/ CALCULATIONS">
+                      <option value="STUDIES/ CALCULATIONS_VALVES CALCULATIONS">VALVES CALCULATIONS</option>
+                      <option value="STUDIES/ CALCULATIONS_INSTRUMENTS CALCULATIONS">INSTRUMENTS CALCULATIONS</option>
+                      <option value="STUDIES/ CALCULATIONS_POWER CONSUMPTION & HEAT DISSIPATION CALCULATION">POWER CONSUMPTION & HEAT DISSIPATION CALCULATION</option>
+                      <option value="STUDIES/ CALCULATIONS_AVAILABILITY & RELIABILITY CALCULATIONS">AVAILABILITY & RELIABILITY CALCULATIONS</option>
+                    </optgroup>
+
+                    <optgroup label="SCHEDULES">
+                      <option value="SCHEDULES_MTO “Material Take-off”">MTO “Material Take-off”</option>
+                      <option value="SCHEDULES_INSTRUMENT INDEX">INSTRUMENT INDEX</option>
+                      <option value="SCHEDULES_LIST OF REQUIRED CALIBRATION AND TEST EQUIPMENT">LIST OF REQUIRED CALIBRATION AND TEST EQUIPMENT</option>
+                      <option value="SCHEDULES_I/O LIST">I/O LIST</option>
+                      <option value="SCHEDULES_INSTRUMENTATION CABLE SCHEDULE">INSTRUMENTATION CABLE SCHEDULE</option>
+                      <option value="SCHEDULES_I&C CABLE LIST">I&C CABLE LIST</option>
+                      <option value="SCHEDULES_CAUSE AND EFFECT DIAGRAMS">CAUSE AND EFFECT DIAGRAMS</option>
+                      <option value="SCHEDULES_FIELD JUNCTION BOX SCHEDULE">FIELD JUNCTION BOX SCHEDULE</option>
+                      <option value="SCHEDULES_HARDWIRED INTERFACE SIGNAL LIST WITH CONTROL SYSTEM /VENDOR'S PLC SYSTEM">HARDWIRED INTERFACE SIGNAL LIST WITH CONTROL SYSTEM /VENDOR'S PLC SYSTEM</option>
+                      <option value="SCHEDULES_ALARM AND TRIP SCHEDULE">ALARM AND TRIP SCHEDULE</option>
+                      <option value="SCHEDULES_CONTROL SYSTEM CABINETS LIST">CONTROL SYSTEM CABINETS LIST</option>
+                      <option value="SCHEDULES_AIR MANIFOLD SCHEDULE">AIR MANIFOLD SCHEDULE</option>
+                      <option value="SCHEDULES_I&C POWER SUPPLY LIST">I&C POWER SUPPLY LIST</option>
+                    </optgroup>
+
+                    <optgroup label="MANUALS / PROCEDURES">
+                      <option value="MANUALS / PROCEDURES_INSTALLATION, OPERATION AND MAINTENANCE MANUAL">INSTALLATION, OPERATION AND MAINTENANCE MANUAL</option>
+                      <option value="MANUALS / PROCEDURES_FAT PROCEDURES AND REPORT">FAT PROCEDURES AND REPORT</option>
+                      <option value="MANUALS / PROCEDURES_SAT PROCEDURES AND REPORT">SAT PROCEDURES AND REPORT</option>
+                      <option value="MANUALS / PROCEDURES_LOOP TEST REPORT">LOOP TEST REPORT</option>
+                      <option value="MANUALS / PROCEDURES_QUALITY PLAN">QUALITY PLAN</option>
+                      <option value="MANUALS / PROCEDURES_QUALITY ASSURANCE MANUAL">QUALITY ASSURANCE MANUAL</option>
+                      <option value="MANUALS / PROCEDURES_TECHNICAL CONTRACTOR & SUB-CONTRACTOR DOCUMENTATION (English & French)">TECHNICAL CONTRACTOR & SUB-CONTRACTOR DOCUMENTATION (English & French)</option>
+                      <option value="MANUALS / PROCEDURES_INSPECTION AND TEST PROCEDURES">INSPECTION AND TEST PROCEDURES</option>
+                      <option value="MANUALS / PROCEDURES_STORAGE REQUIREMENTS">STORAGE REQUIREMENTS</option>
+                    </optgroup>
+
+                    <optgroup label="CERTIFICATION">
+                      <option value="CERTIFICATIONS_HYDROSTATIC/ PNEUMATIC CERTIFICATE">HYDROSTATIC/ PNEUMATIC CERTIFICATE</option>
+                      <option value="CERTIFICATIONS_CALIBRATION CERTIFICATES">CALIBRATION CERTIFICATES</option>
+                      <option value="CERTIFICATIONS_MATERIAL TEST CERTIFICATE">MATERIAL TEST CERTIFICATE</option>
+                      <option value="CERTIFICATIONS_PERFORMANCE TESTING CERTIFICATE">PERFORMANCE TESTING CERTIFICATE</option>
+                      <option value="CERTIFICATIONS_CODE COMPLIANCE CERTIFICATE">CODE COMPLIANCE CERTIFICATE</option>
+                      <option value="CERTIFICATIONS_LETTERS OF CONFORMITY">LETTERS OF CONFORMITY</option>
+                      <option value="CERTIFICATIONS_CERTIFIED DIMENSIONAL DRAWINGS">CERTIFIED DIMENSIONAL DRAWINGS</option>
+                    </optgroup>
+
+                    <optgroup label="SPARES">
+                      <option value="SPARES_RECOMMENDED COMMISSIONING SPARE PARTS & CONSUMABLES LIST">RECOMMENDED COMMISSIONING SPARE PARTS & CONSUMABLES LIST</option>
+                      <option value="SPARES_RECOMMENDED SPARE PARTS & CONSUMABLES FOR 2 YEARS CONTINUOUS OPERATION">RECOMMENDED SPARE PARTS & CONSUMABLES FOR 2 YEARS CONTINUOUS OPERATION</option>
+                      <option value="SPARES_SPECIAL TOOLS LIST">SPECIAL TOOLS LIST</option>
+                      <option value="SPARES_RECOMMENDED CAPITAL / INSURANCE SPARES">RECOMMENDED CAPITAL / INSURANCE SPARES</option>
+                    </optgroup>
+
+                    <optgroup label="WEIGHT">
+                      <option value="WEIGHT_WEIGHT INFORMATION SHEET and MANUFACTURING LOCATION">WEIGHT INFORMATION SHEET and MANUFACTURING LOCATION</option>
+                      <option value="WEIGHT_CONTROL SYSTEM CABINETS WEIGHTS AND DIMENTIONS">CONTROL SYSTEM CABINETS WEIGHTS AND DIMENTIONS</option>
+                    </optgroup>
+
+                  </select>
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default">Add Deliverable</button>
+                  </span>
+                </div>
+              </form>
             </div>
           </div>
           <!-- /.box -->
@@ -226,7 +312,7 @@
                 <div class="box-footer clearfix no-border input-group input-group-sm" style="wid">
                   <input type="text" name="assumption_text" class="form-control" id="assumption_text" placeholder="Your assumption ...">
                   <span class="input-group-btn">
-                    <button type="submit" class="btn btn-default"><i class="fa fa-plus"></i> Add item</button>
+                    <button type="submit" class="btn btn-default"> Add Assumption</button>
                   </span>
                 </div>
               </form>
@@ -243,9 +329,11 @@
       $('.select2').select2();
       $('.todo-list').todoList({
          onCheck  : function () {
+           this.parent().parent().submit()
            window.console.log($(this), 'The element has been checked');
          },
          onUnCheck: function () {
+           this.parent().parent().submit()
            window.console.log($(this), 'The element has been unchecked');
          }
        });
