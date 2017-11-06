@@ -28,7 +28,10 @@
                 <td>{{project.project_phase}}</td>
                 <td>xxx</td>
                 <td>xxx</td>
-                <td><a href="{% url 'dashboard:view' project.project_ID %}" class="btn btn-default btn-flat">View</a></td>
+                <td>
+                  <a href="{% url 'dashboard:view' project.project_ID %}" class="btn btn-default btn-flat">View</a>
+                  <a href="{% url 'dashboard:edit' project.project_ID %}" class="btn btn-warning btn-flat">Edit</a>
+                </td>
               </tr>
             {% endfor %}
           </tbody>

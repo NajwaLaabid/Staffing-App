@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <section class="content-header">
+      <h1>
+        Edit Project
+        <!-- <small>Preview page</small> -->
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'dashboard:index' %}"><i class="fa fa-dashboard"></i> Projects</a></li>
+        <li class="active">create</li>
+      </ol>
+  </section>
+  <section class="content col-md-6 col-centered">
+    <div class="box box-primary">
+      <!-- /.box-header -->
+      <!-- form start -->
+      <form action="{% url 'dashboard:edit' project.project_ID%}" method="post" role="form">
+        {% csrf_token %}
+        <div class="box-body">
+          <div class="form-group">
+            <label for="project_title">Project Title</label>
+            <input type="text" name="project_title" class="form-control" id="project_title" value="{{project.project_title}}" placeholder="Project Title">
+          </div>
+          <div class="form-group">
+            <label for="project_code">Project Code</label>
+            <input type="text" name="project_code" class="form-control" id="project_code" value="{{project.project_code}}" placeholder="Project Code">
+          </div>
+          <div class="form-group">
+            <label>Project Status</label>
+            <select class="form-control select2" name="project_status" id="project_status" value="{{project.project_status}}" data-placeholder="Select a Project Status"
+                    style="width: 100%;">
+                    <option value="On going">On going</option>
+                    <option value="Hold">Hold</option>
+                    <option value="Cancelled">Cancelled</option>
+                    <option value="Closed">Closed</option>
+                    <option value="Estimate proposal">Estimate proposal</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Project Phase</label>
+            <select class="form-control select2" name="project_phase" id="project_phase" value="{{project.project_phase}}" data-placeholder="Select a Project Phase"
+                    style="width: 100%;">
+                    <option value="Feasibility – Phase I">Feasibility – Phase I</option>
+                    <option value="Conceptual – Phase II">Conceptual – Phase II</option>
+                    <option value="Basic – Phase III">Basic – Phase III</option>
+                    <option value="Detail – Phase IV">Detail – Phase IV</option>
+                    <option value="Construction – Phase V">Construction – Phase V</option>
+                    <option value="Commissioning – Phase VI">Commissioning – Phase VI</option>
+                    <option value="Closeout – Phase VII">Closeout – Phase VII</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>JESA Role</label>
+            <select class="form-control select2" name="jesa_role" id="jesa_role" value="{{project.jesa_role}}" data-placeholder="Select a JESA Role"
+                    style="width: 100%;">
+              <option value="EPC">EPC</option>
+              <option value="PMC">PMC</option>
+              <option value="EPCM">EPCM</option>
+              <option value="EPS">EPS</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="estimate_hours">Estimated Hours</label>
+            <input type="number" class="form-control" id="estimate_hours" value="{{project.estimated_hours}}" name="estimate_hours" placeholder="Estimated Hours">
+          </div>
+          <div class="form-group">
+            <label>Start Date:</label>
+
+            <div class="input-group date">
+              <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+              </div>
+              <input type="text" class="form-control pull-right" value="{{project.start_date | date:"m/d/Y"}}" name="start_date" id="start_date">
+            </div>
+            <!-- /.input group -->
+          </div>
+          <div class="form-group">
+            <label>End Date:</label>
+
+            <div class="input-group date">
+              <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+              </div>
+              <input type="text" class="form-control pull-right" value="{{project.end_date |date:"m/d/Y"}}" name="end_date" id="end_date">
+            </div>
+            <!-- /.input group -->
+          </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary pull-right">Submit</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    $(function () {
+      //Initialize Select2 Elements
+      $('.select2').select2()
+
+      $('#jesa_role').val('{{project.jesa_role}}').trigger('change');
+      $('#project_phase').val('Basic – Phase III').trigger('change');
+      $('#project_status').val('{{project.project_status}}').trigger('change');
+
+      //Date picker
+      $('#start_date').datepicker({
+        autoclose: true
+      })
+
+      $('#end_date').datepicker({
+        autoclose: true
+      })
+    })
+  </script>
+{% endblock %}
