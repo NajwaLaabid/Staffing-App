@@ -16,7 +16,6 @@ class Employee(models.Model):
         (OVERCHARGED, 'Overcharged'),
         (NORMAL_CHARGE, 'Normal Charge'),
     )
-
     employee_status = models.CharField(max_length=200, null=True, choices=STATUSES, default=STATUSES[0][0])
     
     ENGINEER = 'EGR'

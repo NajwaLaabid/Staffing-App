@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from datetime import timedelta, date, datetime
 from collections import OrderedDict
 
-from .models import Project, Resources, ProjectCalendar, Assumption
+from .models import Project, Resources, ProjectCalendar, Assumption, Deliverables
 from team.models import Employee
 
 def daterange(dates):
@@ -17,12 +17,44 @@ def index(request):
     projects = Project.objects.all()
     return TemplateResponse(request, 'index.html', {'projects': projects})
 
+def edit(request, project_id):
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/profiles/login')
+
+    project = Project.objects.get(project_ID=project_id)
+
+    if request.method == 'POST':
+        project_title = request.POST['project_title']
+        project_code = request.POST['project_code']
+        end_date = datetime.strptime(request.POST['end_date'], '%m/%d/%Y')
+        start_date = datetime.strptime(request.POST['start_date'], '%m/%d/%Y')
+        estimated_hours = request.POST['estimate_hours']
+        project_phase = request.POST['project_phase']
+        jesa_role = request.POST['jesa_role']
+        project_status = request.POST['project_status']
+
+        if(project.project_title != project_title): project.project_title = project_title  # change field
+        if(project.project_code != project_code): project.project_code = project_code  # change field
+        if(project.end_date != end_date): project.end_date = end_date  # change field
+        if(project.start_date != start_date): project.start_date = start_date  # change field
+        if(project.estimated_hours != estimated_hours): project.estimated_hours = estimated_hours  # change field
+        if(project.project_phase != project_phase): project.project_phase = project_phase  # change field
+        if(project.jesa_role != jesa_role): project.jesa_role = jesa_role  # change field
+        if(project.project_status != project_status): project.project_status = project_status  # change field
+        project.save() # this will update only
+
+        return TemplateResponse(request, 'edit.html', {'project': project})
+
+    print(project.start_date)
+    return TemplateResponse(request, 'edit.html', {'project': project})
+
 def view(request, project_id):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/profiles/login')
     project = Project.objects.get(project_ID=project_id)
     resources = Resources.objects.filter(Project=project)
     assumptions = Assumption.objects.filter(Project=project)
+    deliverables = Deliverables.objects.filter(Project=project)
 
     resources_view = []
     for resource in resources:
@@ -41,7 +73,7 @@ def view(request, project_id):
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
-    return TemplateResponse(request, 'details.html', {'project': project, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
+    return TemplateResponse(request, 'details.html', {'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
@@ -88,6 +120,32 @@ def addAssumption(request, project_id):
 
         ass = Assumption(Project=project, assumption_text=assumption_text)
         ass.save()
+
+        return HttpResponseRedirect('/dashboard/view/'+ project_id)
+
+def addDeliverable(request, project_id):
+    if request.method == 'POST':
+        deliverable_title = request.POST['deliverable_title']
+        deliverable_title_arr = deliverable_title.split("_")
+        project = Project.objects.get(project_ID=project_id)
+
+        delv = Deliverables(Project=project, deliverable_title=deliverable_title_arr[1], deliverable_main_category=deliverable_title_arr[0])
+        delv.save()
+
+        return HttpResponseRedirect('/dashboard/view/'+ project_id)
+
+def updateDelivrable(request, project_id):
+    if request.method == 'POST':
+        deliverable_ID = request.POST['deliverable_ID']
+        is_done = False
+        if("is_done" in request.POST): is_done = True
+        print(is_done)
+        project = Project.objects.get(project_ID=project_id)
+
+        delv = Deliverables.objects.get(deliverable_ID=deliverable_ID)
+        if(delv.is_done != is_done):
+            delv.is_done = is_done  # change field
+            delv.save() # this will update only
 
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 

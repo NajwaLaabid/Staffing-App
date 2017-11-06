@@ -62,10 +62,12 @@ class ProjectCalendar(models.Model):
 	date = models.CharField(max_length=200)
 	hours = models.IntegerField(default=0)
 
-class Delivrables(models.Model):
-	delivrable_ID = models.AutoField(primary_key=True)
-	delivrable_title = models.CharField(max_length=200)
-	delivrable_main_category = models.CharField(max_length=200)
+class Deliverables(models.Model):
+	Project = models.ForeignKey(Project, default=None)
+	deliverable_ID = models.AutoField(primary_key=True)
+	deliverable_title = models.CharField(max_length=200)
+	deliverable_main_category = models.CharField(max_length=200)
+	is_done = models.BooleanField(default=False)
 
 class Assumption(models.Model):
 	Project = models.ForeignKey(Project)
