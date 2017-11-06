@@ -33,6 +33,7 @@
           </div>
           <div class="box-footer no-padding">
             <ul class="nav nav-stacked">
+              <li><a href="#">Role<span class="pull-right badge bg-muted">{{employee.employee_role}}</span></a></li>
               <li><a href="#">Status <span class="pull-right badge bg-yellow">{{employee.employee_status}}</span></a></li>
               <li><a href="#">Total Hours<span class="pull-right badge bg-muted">{{employee.employee_totalHours}}</span></a></li>
             </ul>
@@ -44,7 +45,9 @@
                 <button type="submit" class="btn btn-flat btn-danger">Delete</button>
               </div>
             </form>
-
+            <div class="pull-right">
+              <a href="{% url 'team:updateEmployee' employee.employee_ID %}" class="btn btn-default btn-flat">Update</a>
+            </div>
             <div class="pull-right">
               <a href="{% url 'team:viewEmployee' employee.employee_ID %}" class="btn btn-default btn-flat">View</a>
             </div>
