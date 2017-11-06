@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <section class="content-header">
+      <h1>
+        Update Employee
+        <!-- <small>Preview page</small> -->
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'team:index' %}"><i class="fa fa-team"></i> Team</a></li>
+        <li class="active">Update Employee</li>
+      </ol>
+  </section>
+  <section class="content col-md-6 col-centered">
+    <div class="box box-primary">
+      <!-- /.box-header -->
+      <!-- form start -->
+      <form action="{% url 'team:updateEmployee' employee.employee_ID %}" method="post" role="form">
+        {% csrf_token %}
+        <div class="box-body">
+          <div class="form-group">
+            <label for="employee_code">Code</label>
+            <input type="text" name="employee_code" class="form-control" id="employee_code" placeholder="Employee Code" value="{{employee.employee_code}}">
+          </div>
+          <div class="form-group">
+            <label>First Name</label>
+            <input type="text" name="employee_firstName" class="form-control" id="employee_firstName" placeholder="Employee First Name" value="{{employee.employee_firstName}}">
+          </div>
+          <div class="form-group">
+            <label>Last Name</label>
+            <input type="text" name="employee_lastName" class="form-control" id="employee_lastName" placeholder="Employee Last Name" value="{{employee.employee_lastName}}">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="text" name="employee_email" class="form-control" id="employee_email" placeholder="Employee Email" value="{{employee.employee_email}}">
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="text" name="employee_phoneNumber" class="form-control" id="employee_phoneNumber" placeholder="Employee Phone Number" value="{{employee.employee_phoneNumber}}">
+          </div>
+          <div class="form-group">
+            <label>Role</label>
+            <select class="form-control select2" name="employee_role" id="employee_role" style="width: 100%;">
+              <option value="EGR">Engineer</option>
+              <option value="DSG">Designer</option>
+            </select>
+          </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary pull-right">Save</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    $(document).ready(function () {
+      //Initialize Select2 Elements
+      $('.select2').select2();
+      $('#employee_role').val('{{employee.employee_role}}').trigger('change');
+      $('.slider').slider();
+    });
+  </script>
+{% endblock %}

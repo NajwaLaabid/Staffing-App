@@ -47,7 +47,8 @@ def addEmployee(request):
         , employee_lastName = request.POST['employee_lastName']
         , employee_email = request.POST['employee_email']
         , employee_phoneNumber = request.POST['employee_phoneNumber']
-        , employee_status = request.POST['employee_status']
+        , employee_role = request.POST['employee_role']
+        , employee_status = 'UC' #initially all employees undercharge
         , employee_totalHours = 0)
 
         employee.save()
@@ -58,3 +59,21 @@ def deleteEmployee(request, employee_ID):
     Employee.objects.get(pk=employee_ID).delete()
 
     return HttpResponseRedirect('/team/')
+
+
+def updateEmployee(request, employee_ID):
+    if request.method == 'POST':
+        # ADD TO DB
+        employee = Employee.objects.get(employee_ID=employee_ID)
+        employee.employee_code = request.POST['employee_code']
+        employee.employee_firstName = request.POST['employee_firstName']
+        employee.employee_lastName = request.POST['employee_lastName']
+        employee.employee_email = request.POST['employee_email']
+        employee.employee_phoneNumber = request.POST['employee_phoneNumber']
+        employee.employee_role = request.POST['employee_role']
+        employee.save()
+
+        return render(request, 'updateEmployee.html', {'employee' : employee})
+
+    employee = Employee.objects.get(employee_ID=employee_ID)
+    return TemplateResponse(request, 'updateEmployee.html', {'employee' : employee},)

@@ -18,4 +18,13 @@ class Employee(models.Model):
     )
 
     employee_status = models.CharField(max_length=200, null=True, choices=STATUSES, default=STATUSES[0][0])
+    
+    ENGINEER = 'EGR'
+    DESIGNER = 'DSG'
+    ROLES = (
+        (ENGINEER, 'EGR'),
+        (DESIGNER, 'DSG'),
+    )
+
+    employee_role = models.CharField(max_length=200, null=True, choices=ROLES, default=ROLES[0][0])
     employee_totalHours = models.IntegerField(default=0)
