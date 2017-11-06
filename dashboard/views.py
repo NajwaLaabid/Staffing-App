@@ -43,6 +43,16 @@ def edit(request, project_id):
         if(project.project_status != project_status): project.project_status = project_status  # change field
         project.save() # this will update only
 
+        dates = [project.start_date, project.end_date]
+        date_range = list(daterange(dates))
+
+        resources = Resources.objects.filter(Project=project)
+        for resource in resources:
+            for single_date in date_range:
+                if not ProjectCalendar.objects.filter(Employee=resource.Employee, Project=project, date=single_date).exists():
+                    c = ProjectCalendar(Employee=resource.Employee, Project=project, date=single_date)
+                    c.save()
+
         return TemplateResponse(request, 'edit.html', {'project': project})
 
     print(project.start_date)
@@ -91,7 +101,10 @@ def saveMemberHours(request, project_id):
 def deleteMember(request, project_id):
     if request.method == 'POST':
         member_id = request.POST['member_id']
-        Resources.objects.get(Employee=Employee.objects.get(employee_ID=member_id), Project=Project.objects.get(project_ID=project_id)).delete()
+        print(member_id)
+        project = Project.objects.get(project_ID=project_id)
+        employee = Employee.objects.get(employee_ID=member_id)
+        Resources.objects.get(Employee=employee, Project=project).delete()
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def addMember(request, project_id):
