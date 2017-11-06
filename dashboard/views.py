@@ -41,7 +41,7 @@ def view(request, project_id):
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
-    return TemplateResponse(request, 'details.html', {'project': project, 'resources_view': resources_view, 'potential_members': potential_members, 'date_range': date_range})
+    return TemplateResponse(request, 'details.html', {'project': project, 'resources' : resources, 'resources_view': resources_view, 'potential_members': potential_members, 'date_range': date_range})
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
