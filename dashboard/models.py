@@ -66,3 +66,7 @@ class Delivrables(models.Model):
 	delivrable_ID = models.AutoField(primary_key=True)
 	delivrable_title = models.CharField(max_length=200)
 	delivrable_main_category = models.CharField(max_length=200)
+
+class Assumption(models.Model):
+	Project = models.ForeignKey(Project)
+	assumption_text = models.CharField(max_length=200)

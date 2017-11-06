@@ -208,21 +208,28 @@
             <div class="box-body">
               <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
               <ul class="todo-list">
-                <li>
-                  <!-- todo text -->
-                  <span class="text">Design a nice theme</span>
-                  <!-- Emphasis label -->
-                  <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small>
-                  <!-- General tools such as edit or delete-->
-                </li>
+                {% for assumption in assumptions %}
+                  <li>
+                    <!-- todo text -->
+                    <span class="text">{{assumption.assumption_text}}</span>
+                    <!-- Emphasis label -->
+                    <!-- <small class="label label-danger"><i class="fa fa-clock-o"></i> 2 mins</small> -->
+                    <!-- General tools such as edit or delete-->
+                  </li>
+                {% endfor %}
               </ul>
             </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix no-border input-group input-group-sm">
-              <input type="text" name="assumption_text" class="form-control" id="assumption_text" placeholder="Your assumption ...">
-              <span class="input-group-btn">
-                <button type="button" class="btn btn-default"><i class="fa fa-plus"></i> Add item</button>
-              </span>
+              <form action="{% url 'dashboard:addAssumption' project.project_ID %}" method="post">
+                {% csrf_token %}
+                <div class="box-footer clearfix no-border input-group input-group-sm" style="wid">
+                  <input type="text" name="assumption_text" class="form-control" id="assumption_text" placeholder="Your assumption ...">
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default"><i class="fa fa-plus"></i> Add item</button>
+                  </span>
+                </div>
+              </form>
             </div>
           </div>
           <!-- /.box -->

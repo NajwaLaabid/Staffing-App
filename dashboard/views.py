@@ -4,7 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from datetime import timedelta, date, datetime
 from collections import OrderedDict
 
-from .models import Project, Resources, ProjectCalendar
+from .models import Project, Resources, ProjectCalendar, Assumption
 from team.models import Employee
 
 def daterange(dates):
@@ -22,6 +22,7 @@ def view(request, project_id):
         return HttpResponseRedirect('/profiles/login')
     project = Project.objects.get(project_ID=project_id)
     resources = Resources.objects.filter(Project=project)
+    assumptions = Assumption.objects.filter(Project=project)
 
     resources_view = []
     for resource in resources:
@@ -32,7 +33,6 @@ def view(request, project_id):
             sub.update({hour.date : hour.hours})
         resources_view.append(sub)
 
-    print(resources_view)
     potential_members = Employee.objects.all()
 
     dates = [project.start_date, project.end_date]
@@ -41,7 +41,7 @@ def view(request, project_id):
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
-    return TemplateResponse(request, 'details.html', {'project': project, 'resources' : resources, 'resources_view': resources_view, 'potential_members': potential_members, 'date_range': date_range})
+    return TemplateResponse(request, 'details.html', {'project': project, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
@@ -78,6 +78,16 @@ def addMember(request, project_id):
         for single_date in date_range:
             c = ProjectCalendar(Employee=employee, Project=project, date=single_date)
             c.save()
+
+        return HttpResponseRedirect('/dashboard/view/'+ project_id)
+
+def addAssumption(request, project_id):
+    if request.method == 'POST':
+        assumption_text = request.POST['assumption_text']
+        project = Project.objects.get(project_ID=project_id)
+
+        ass = Assumption(Project=project, assumption_text=assumption_text)
+        ass.save()
 
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
