@@ -43,3 +43,7 @@
 .todo-list li.done span{
   text-decoration: line-through;
 }
+
+.todo-list li .label{
+    font-size: 14px;
+}
