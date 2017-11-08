@@ -48,6 +48,16 @@ def edit(request, project_id):
         project.remaining_budget = int(initial_budget) - (int(init) - project.remaining_budget)
         project.save() # this will update only
 
+        dates = [project.start_date, project.end_date]
+        date_range = list(daterange(dates))
+
+        resources = Resources.objects.filter(Project=project)
+        for resource in resources:
+            for single_date in date_range:
+                if not ProjectCalendar.objects.filter(Employee=resource.Employee, Project=project, date=single_date).exists():
+                    c = ProjectCalendar(Employee=resource.Employee, Project=project, date=single_date)
+                    c.save()
+
         return TemplateResponse(request, 'edit.html', {'project': project})
 
     print(project.start_date)
@@ -72,6 +82,7 @@ def view(request, project_id):
     for resource in resources:
         sub = {'name' : resource.Employee.employee_lastName + ' ' + resource.Employee.employee_firstName}
         sub.update({'employee_ID' : resource.Employee.employee_ID})
+        sub.update({'total' : resource.actual_hours})
         hours = ProjectCalendar.objects.filter(Project=project, Employee=resource.Employee)
         for hour in hours:
             sub.update({hour.date : hour.hours})
@@ -90,32 +101,43 @@ def view(request, project_id):
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
         date = request.POST['date']
-        hours = request.POST['hours']
+        hours = int(request.POST['hours'])
         employee_ID = request.POST['employee_ID']
         project = Project.objects.get(project_ID=project_id)
         employee = Employee.objects.filter(employee_ID=employee_ID)
         pc = ProjectCalendar.objects.get(Project=project, Employee=employee, date=date)
+        r = Resources.objects.get(Employee=employee, Project=project)
         if(pc.hours != hours):
+            diffHours = hours - pc.hours
+            r.actual_hours += diffHours
             pc.hours = hours  # change field
             pc.save() # this will update only
+            r.save()
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def deleteMember(request, project_id):
     if request.method == 'POST':
         member_id = request.POST['member_id']
-        Resources.objects.get(Employee=Employee.objects.get(employee_ID=member_id), Project=Project.objects.get(project_ID=project_id)).delete()
+        print(member_id)
+        project = Project.objects.get(project_ID=project_id)
+        employee = Employee.objects.get(employee_ID=member_id)
+        Resources.objects.get(Employee=employee, Project=project).delete()
+        ProjectCalendar.objects.filter(Project=project, Employee=employee).delete()
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def addMember(request, project_id):
     if request.method == 'POST':
         potential_member = request.POST['potential_member']
+        Implication_Percentage = int(request.POST['Implication_Percentage'])
 
         project = Project.objects.get(project_ID=project_id)
         employee = Employee.objects.get(employee_ID=potential_member)
 
+        member_estimated_hours = project.estimated_hours * Implication_Percentage / 100
+
         dates = [project.start_date, project.end_date]
 
-        r = Resources(Employee=employee, Project=project)
+        r = Resources(Employee=employee, Project=project, Implication_Percentage=Implication_Percentage, estimated_hours=member_estimated_hours)
         r.save()
         date_range = list(daterange(dates))
 

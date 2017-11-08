@@ -65,6 +65,8 @@ class ProjectCalendar(models.Model):
 	Project = models.ForeignKey(Project)
 	date = models.CharField(max_length=200)
 	hours = models.IntegerField(default=0)
+	class Meta:
+		unique_together = ('Employee', 'Project', 'date')
 
 class Deliverables(models.Model):
 	Project = models.ForeignKey(Project, default=None)

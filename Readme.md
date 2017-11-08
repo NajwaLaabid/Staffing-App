@@ -10,6 +10,9 @@ Start an app
 In case Github does not wanna proceed with the add & commit
 `rm ./.git/index.lock`
 
+To cancel a pull update on your local workplace
+`git reset .\db.sqlite3`
+
 migrate db after creating the Models
 `python manage.py makemigrations <nameofapplication>`
 `python manage.py migrate`
