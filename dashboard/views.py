@@ -29,6 +29,7 @@ def edit(request, project_id):
         end_date = datetime.strptime(request.POST['end_date'], '%m/%d/%Y')
         start_date = datetime.strptime(request.POST['start_date'], '%m/%d/%Y')
         estimated_hours = request.POST['estimate_hours']
+        initial_budget = request.POST['initial_budget']
         project_phase = request.POST['project_phase']
         jesa_role = request.POST['jesa_role']
         project_status = request.POST['project_status']
@@ -41,6 +42,10 @@ def edit(request, project_id):
         if(project.project_phase != project_phase): project.project_phase = project_phase  # change field
         if(project.jesa_role != jesa_role): project.jesa_role = jesa_role  # change field
         if(project.project_status != project_status): project.project_status = project_status  # change field
+        
+        init = project.initial_budget
+        project.initial_budget = initial_budget
+        project.remaining_budget = int(initial_budget) - (int(init) - project.remaining_budget)
         project.save() # this will update only
 
         dates = [project.start_date, project.end_date]
@@ -57,6 +62,13 @@ def edit(request, project_id):
 
     print(project.start_date)
     return TemplateResponse(request, 'edit.html', {'project': project})
+
+def updateBudget(request, project_id):
+    project = Project.objects.get(project_ID=project_id)
+    project.remaining_budget = project.remaining_budget - int(request.POST['spending'])
+
+    project.save()
+    return TemplateResponse(request, 'details.html', {'project': project})
 
 def view(request, project_id):
     if not request.user.is_authenticated():
@@ -180,12 +192,14 @@ def create(request):
         end_date = datetime.strptime(request.POST['end_date'], '%m/%d/%Y')
         start_date = datetime.strptime(request.POST['start_date'], '%m/%d/%Y')
         estimate_hours = request.POST['estimate_hours']
+        initial_budget = request.POST['initial_budget']
+        remaining_budget = request.POST['initial_budget']
         project_phase = request.POST['project_phase']
         jesa_role = request.POST['jesa_role']
 
         team_names = request.POST.getlist('team_names')
 
-        project = Project(project_code=project_code, project_title=project_title, estimated_hours=estimate_hours, start_date=start_date, end_date=end_date, project_phase=project_phase, jesa_role=jesa_role)
+        project = Project(project_code=project_code, project_title=project_title, estimated_hours=estimate_hours, initial_budget=initial_budget, remaining_budget=remaining_budget, start_date=start_date, end_date=end_date, project_phase=project_phase, jesa_role=jesa_role)
         project.save()
 
         for name in team_names:

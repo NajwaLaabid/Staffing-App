@@ -13,6 +13,7 @@ urlpatterns =  [
     url(r'^addMember/(?P<project_id>\d+)/$', views.addMember, name='addMember'),
     url(r'^saveMemberHours/(?P<project_id>\d+)/$', views.saveMemberHours, name='saveMemberHours'),
     url(r'^addAssumption/(?P<project_id>\d+)/$', views.addAssumption, name='addAssumption'),
+    url(r'^updateBudget/(?P<project_id>\d+)/$', views.updateBudget, name='updateBudget'),
     url(r'^addDeliverable/(?P<project_id>\d+)/$', views.addDeliverable, name='addDeliverable'),
     url(r'^updateDelivrable/(?P<project_id>\d+)/$', views.updateDelivrable, name='updateDelivrable'),
 ]

@@ -289,7 +289,7 @@
           </div>
           <!-- /.box -->
       </div>
-      <div class="col-md-4 col-xs-12">
+      <div class="col-md-3 col-xs-12">
         <!-- TO DO List -->
           <div class="box box-primary">
             <div class="box-header">
@@ -317,7 +317,7 @@
           </div>
           <!-- /.box -->
       </div>
-      <div class="col-md-4 col-xs-12">
+      <div class="col-md-3 col-xs-12">
         <!-- TO DO List -->
           <div class="box box-primary">
             <div class="box-header">
@@ -349,6 +349,40 @@
                   <input type="text" name="assumption_text" class="form-control" id="assumption_text" placeholder="Your assumption ...">
                   <span class="input-group-btn">
                     <button type="submit" class="btn btn-default"> Add Assumption</button>
+                  </span>
+                </div>
+              </form>
+            </div>
+          </div>
+          <!-- /.box -->
+      </div>
+      <div class="col-md-3 col-xs-12">
+        <!-- TO DO List -->
+          <div class="box box-primary">
+            <div class="box-header">
+              <i class="ion ion-clipboard"></i>
+
+              <h3 class="box-title">Remaining Budget</h3>
+
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
+              <ul class="todo-list">
+                  <li>
+                    <!-- todo text -->
+                    <span class="text">{{project.remaining_budget}}</span>
+                  </li>
+              </ul>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer clearfix no-border input-group input-group-sm">
+              <form action="{% url 'dashboard:updateBudget' project.project_ID %}" method="post">
+                {% csrf_token %}
+                <div class="box-footer clearfix no-border input-group input-group-sm" style="wid">
+                  <input type="number" name="spending" class="form-control" id="spending" placeholder="Your spendings">
+                  <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default"> Subtract Spendings</button>
                   </span>
                 </div>
               </form>
