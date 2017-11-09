@@ -42,7 +42,7 @@ def edit(request, project_id):
         if(project.project_phase != project_phase): project.project_phase = project_phase  # change field
         if(project.jesa_role != jesa_role): project.jesa_role = jesa_role  # change field
         if(project.project_status != project_status): project.project_status = project_status  # change field
-        
+
         init = project.initial_budget
         project.initial_budget = initial_budget
         project.remaining_budget = int(initial_budget) - (int(init) - project.remaining_budget)
@@ -58,7 +58,7 @@ def edit(request, project_id):
                     c = ProjectCalendar(Employee=resource.Employee, Project=project, date=single_date)
                     c.save()
 
-        return TemplateResponse(request, 'edit.html', {'project': project})
+        return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
     print(project.start_date)
     return TemplateResponse(request, 'edit.html', {'project': project})
@@ -110,9 +110,11 @@ def saveMemberHours(request, project_id):
         if(pc.hours != hours):
             diffHours = hours - pc.hours
             r.actual_hours += diffHours
+            project.actual_hours += diffHours
             pc.hours = hours  # change field
             pc.save() # this will update only
             r.save()
+            project.save()
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def deleteMember(request, project_id):
