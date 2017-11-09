@@ -56,8 +56,9 @@
 
   <div class="row" style="padding: 0 16px">
       <div class="col-xs-12">
+        {% for pj in projects_with_dates %}
         <div class="box">
-          <div class="box-header">
+          <!--<div class="box-header">
             <h3 class="box-title">Team</h3>
 
             <div class="box-tools">
@@ -75,71 +76,23 @@
                     </span>
                 </div>
               </form>
-              <!-- <div class="input-group input-group-sm pull-right" style="width: 150px;">
-                <input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
-
-                <div class="input-group-btn">
-                  <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                </div>
-              </div> -->
             </div>
-          </div>
+          </div>-->
           <!-- /.box-header -->
           <div class="box-body table-responsive no-padding">
             <table class="table table-hover">
               <tr>
-                <th>Name</th>
-                <th>Jul-17</th>
-                <th>Aug-17</th>
-                <th>Sep-17</th>
-                <th>Oct-17</th>
-                <th>Nov-17</th>
-                <th>Dec-17</th>
-                <th>Jan-18</th>
-                <th>Feb-18</th>
-                <th>Mar-18</th>
-                <th>Apr-18</th>
-                <th>May-18</th>
-                <th>Jun-18</th>
-                <th>Jul-18</th>
-                <th>Aug-18</th>
-                <th>Sep-18</th>
-                <th>Oct-18</th>
-                <th>Nov-18</th>
-                <th>Dec-18</th>
-                <th>Total</th>
+                <th>Project Title</th>
+                {% for single_date in pj.1 %}
+                <th>{{single_date}}</th>
+                {% endfor %}
               </tr>
-              {% for resource in resources %}
               <tr>
-                <td>{{resource.Project.project_title}}</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxx</td>
-                <td>xxxxx</td>
-                <td>
-                  <form action="{% url 'team:deleteProject' employee.employee_ID %}" method="post">
-                    {% csrf_token %}
-                    <input id="project_ID" name="project_ID" type="hidden" value="{{resource.Project.project_ID}}">
-                    <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
-                  </form>
-                </td>
+                <td>{{pj.0.project_title}}</td>
+                {% for hours_per_month in pj.2 %}
+                <td>{{hours_per_month}}</td>
+                {% endfor %}
               </tr>
-              {% endfor %}
               <!-- <tr>
                 <td>175</td>
                 <td>Mike Doe</td>
@@ -151,6 +104,8 @@
           </div>
           <!-- /.box-body -->
         </div>
+        <br>
+        {% endfor %}
         <!-- /.box -->
       </div>
     </div>
