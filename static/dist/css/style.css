@@ -47,3 +47,7 @@
 .todo-list li .label{
     font-size: 14px;
 }
+
+.progress-bar-yellow-perso {
+  background-color: #FFCA28;
+}

@@ -51,6 +51,8 @@ def edit(request, project_id):
         dates = [project.start_date, project.end_date]
         date_range = list(daterange(dates))
 
+        #max_hours_perMonth = {'Jan' : }
+
         resources = Resources.objects.filter(Project=project)
         for resource in resources:
             for single_date in date_range:
@@ -197,14 +199,8 @@ def create(request):
         project_phase = request.POST['project_phase']
         jesa_role = request.POST['jesa_role']
 
-        team_names = request.POST.getlist('team_names')
-
         project = Project(project_code=project_code, project_title=project_title, estimated_hours=estimate_hours, initial_budget=initial_budget, remaining_budget=remaining_budget, start_date=start_date, end_date=end_date, project_phase=project_phase, jesa_role=jesa_role)
         project.save()
-
-        for name in team_names:
-            r = Resources(Employee=Employee.objects.get(employee_ID=name), Project=project)
-            r.save()
 
         return HttpResponseRedirect('/dashboard')
 

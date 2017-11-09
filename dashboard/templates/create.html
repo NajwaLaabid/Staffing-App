@@ -84,15 +84,6 @@
             </div>
             <!-- /.input group -->
           </div>
-          <div class="form-group">
-            <label>Team</label>
-            <select class="form-control select2" multiple="multiple" name="team_names" data-placeholder="Select an employee"
-                    style="width: 100%;">
-              {% for employee in employees %}
-                <option value="{{employee.employee_ID}}">{{employee.employee_lastName}} {{employee.employee_firstName}}</option>
-              {% endfor %}
-            </select>
-          </div>
         </div>
         <!-- /.box-body -->
         <div class="box-footer">

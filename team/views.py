@@ -8,10 +8,38 @@ from collections import OrderedDict
 
 def index(request):
     employees = Employee.objects.all()
-    #query resources/project to get hours this month
-    #today = datetime.date.now()
-   # hours_this_month = ProjectCalendar.objects.filter(date__gte=)
-    return TemplateResponse(request, 'teamIndex.html', {'employees': employees,})
+    total_hours_month = 0
+    max_hours_month = 0
+    employees_info = []
+
+    for employee in employees:
+        resources = Resources.objects.filter(Employee=employee)
+        for resource in resources:#get hours for current month for all projects
+            project_calendar = ProjectCalendar.objects.filter(Employee=employee, Project=resource.Project)
+            for month in project_calendar: #get hours of current month
+                if datetime.now().strftime('%b') == month.date.split('-')[0]:
+                    total_hours_month += month.hours
+                    max_hours_month = month.max_hours
+            
+        h_ratio = (total_hours_month / max_hours_month) * 100
+      
+        if total_hours_month < 50.0:
+            css_class = 'progress-bar progress-bar-red progress-bar-striped'
+            employee.employee_status = 'UC'
+            employee.save()
+        elif 50.0 <= total_hours_month <= 200:
+            css_class = 'progress-bar progress-bar-green progress-bar-striped'
+            employee.employee_status = 'NC'
+            employee.save()
+        else:
+            css_class = 'progress-bar progress-bar-yellow-perso  progress-bar-striped'
+            employee.employee_status = 'OC'
+            employee.save() 
+        
+        employee_i = {'employee' : employee, 'h_ratio' : h_ratio, 'hours_month' : total_hours_month, 'max_hours' : max_hours_month, 'total_hours_month' : total_hours_month, 'css_class' : css_class}
+        employees_info.append(employee_i)
+
+    return TemplateResponse(request, 'teamIndex.html', {'employees_info': employees_info})
 
 def addProject(request, employee_ID):
    if request.method == 'POST':
@@ -51,7 +79,8 @@ def viewEmployee(request, employee_ID):
         for d in date_range:
             for month in project_calendar:
                 if d == month.date:
-                    hours_per_month.append(month.hours)
+                    h_month = {'hours_month' : month.hours, 'max_hours' : month.max_hours}
+                    hours_per_month.append(h_month)
 
         project_tuple = (resource.Project, date_range, hours_per_month)
         projects_with_dates.append(project_tuple)
