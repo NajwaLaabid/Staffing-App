@@ -8,9 +8,11 @@ from collections import OrderedDict
 
 def index(request):
     employees = Employee.objects.all()
+    total_hours = 0
     total_hours_month = 0
     max_hours_month = 0
     employees_info = []
+    h_ratio = 0
 
     for employee in employees:
         resources = Resources.objects.filter(Employee=employee)
@@ -20,21 +22,24 @@ def index(request):
                 if datetime.now().strftime('%b') == month.date.split('-')[0]:
                     total_hours_month += month.hours
                     max_hours_month = month.max_hours
+                total_hours += month.hours
             
-        h_ratio = (total_hours_month / max_hours_month) * 100
+        employee.employee_totalHours = total_hours
+
+        if max_hours_month != 0:
+            h_ratio = (total_hours_month / max_hours_month) * 100
       
-        if total_hours_month < 50.0:
+        if total_hours_month < 200:
             css_class = 'progress-bar progress-bar-red progress-bar-striped'
             employee.employee_status = 'UC'
-            employee.save()
-        elif 50.0 <= total_hours_month <= 200:
+        elif total_hours_month == 200:
             css_class = 'progress-bar progress-bar-green progress-bar-striped'
             employee.employee_status = 'NC'
-            employee.save()
         else:
             css_class = 'progress-bar progress-bar-yellow-perso  progress-bar-striped'
             employee.employee_status = 'OC'
-            employee.save() 
+        
+        employee.save() 
         
         employee_i = {'employee' : employee, 'h_ratio' : h_ratio, 'hours_month' : total_hours_month, 'max_hours' : max_hours_month, 'total_hours_month' : total_hours_month, 'css_class' : css_class}
         employees_info.append(employee_i)
