@@ -4,56 +4,86 @@
 
 {% block content %}
   <section class="content" style="padding:0">
-    <div class="col-md-12" style="padding:0">
-      <!-- Widget: user widget style 1 -->
-      <div class="box box-widget widget-user">
-        <!-- Add the bg color to the header using any of the bg-* classes -->
-        <div class="widget-user-header bg-aqua-active">
-          <h3 class="widget-user-username">{{project.project_title}}<a href="{% url 'dashboard:edit' project.project_ID %}" type="submit" class="btn btn-primary pull-right"><i class="fa fa-edit"></i></a></h3>
-          <h5 class="widget-user-desc">{{project.project_code}}</h5>
-        </div>
-        <div>
-        </div>
-        <div class="box-footer" style="padding: 0; border-top:0">
-          <div class="row">
-            <div class="col-sm-3 border-right {% if project.project_status == 'Cancelled' or project.project_status == 'Closed' or project.project_status == 'Hold' %} bg-red {% elif project.project_status == 'On going' %} bg-green {% endif %}">
-              <div class="description-block">
-                <h5 class="description-header">{{project.project_status}}</h5>
-                <span class="description-text">STATUS</span>
-              </div>
-              <!-- /.description-block -->
-            </div>
-            <!-- /.col -->
-            <div class="col-sm-3 border-right">
-              <div class="description-block">
-                <h5 class="description-header">{{project.project_phase}}</h5>
-                <span class="description-text">PHASE</span>
-              </div>
-              <!-- /.description-block -->
-            </div>
-            <!-- /.col -->
-            <div class="col-sm-3 border-right">
-              <div class="description-block">
-                <h5 class="description-header">{{resources|length}}</h5>
-                <span class="description-text">TEAM</span>
-              </div>
-              <!-- /.description-block -->
-            </div>
-            <!-- /.col -->
-            <div class="col-sm-3">
-              <div class="description-block">
-                <h5 class="description-header">{{project.jesa_role}}</h5>
-                <span class="description-text">JESA ROLE</span>
-              </div>
-              <!-- /.description-block -->
-            </div>
-            <!-- /.col -->
-          </div>
-          <!-- /.row -->
-        </div>
+
+  <div class="col-md-12" style="padding:0">
+    <!-- Widget: user widget style 1 -->
+    <div class="box box-widget widget-user">
+      <!-- Add the bg color to the header using any of the bg-* classes -->
+      <div class="widget-user-header bg-aqua-active">
+        <h3 class="widget-user-username">{{project.project_title}}<button class="btn btn-success pull-right" id="btnExport" style="margin-right:16px;"><i class="fa fa-file-text"></i></button><a href="{% url 'dashboard:edit' project.project_ID %}" type="submit" class="btn btn-primary pull-right" style="margin-right:16px;"><i class="fa fa-edit"></i></a></h3>
+        <h5 class="widget-user-desc">{{project.project_code}}</h5>
       </div>
-      <!-- /.widget-user -->
+      <div class="box-footer" style="padding: 0; border-top:0">
+        <div class="row">
+          <div class="col-sm-3 border-right {% if project.project_status == 'Cancelled' or project.project_status == 'Closed' or project.project_status == 'Hold' %} bg-red {% elif project.project_status == 'On going' %} bg-green {% endif %}">
+            <div class="description-block">
+              <h5 class="description-header">{{project.project_status}}</h5>
+              <span class="description-text">STATUS</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-3 border-right">
+            <div class="description-block">
+              <h5 class="description-header">{{project.project_phase}}</h5>
+              <span class="description-text">PHASE</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-3 border-right">
+            <div class="description-block">
+              <h5 class="description-header">{{resources|length}}</h5>
+              <span class="description-text">TEAM</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+          <div class="col-sm-3">
+            <div class="description-block">
+              <h5 class="description-header">{{project.jesa_role}}</h5>
+              <span class="description-text">JESA ROLE</span>
+            </div>
+            <!-- /.description-block -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
     </div>
+    <!-- /.widget-user -->
+  </div>
+
+  <div class="row" style="padding: 0 16px">
+    <div class="col-md-12" style="padding:0">
+        <div class="col-md-6">
+          <!-- DONUT CHART -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Hours</h3>
+            </div>
+            <div class="box-body">
+              <canvas id="hoursChart" style="height:250px"></canvas>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+        <div class="col-md-6">
+          <!-- DONUT CHART -->
+          <div class="box box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Budget</h3>
+            </div>
+            <div class="box-body">
+              <canvas id="budgetChart" style="height:250px"></canvas>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
+        </div>
+    </div>
+  </div>
 
   <div class="row" style="padding: 0 16px">
     <!-- TO DO List -->
@@ -157,7 +187,7 @@
 
   <div class="row" style="padding: 0 16px">
 
-      <div class="col-md-4 col-xs-12">
+      <div class="col-md-3 col-xs-12">
         <!-- TO DO List -->
           <div class="box box-primary">
             <div class="box-header">
@@ -393,6 +423,116 @@
     </div>
   </section>
 
+  <div id="dvData" class="hidden">
+    <table>
+        <tr>
+          <td>{{project.project_code}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>{{project.project_title}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>{{project.project_status}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>{{project.project_phase}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>{{project.jesa_role}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <th>Name</th>
+          {% for single_date in date_range %}
+            <th>{{single_date}}</th>
+          {% endfor %}
+          <th>Total</th>
+        </tr>
+
+        {% for resource in resources_view %}
+          <tr>
+            <td>{{resource.name}}</td>
+            {% for single_date in date_range %}
+              <td>
+                {{resource|get_item:single_date}}
+              </td>
+            {% endfor %}
+            <td>{{resource.total}}</td>
+          </tr>
+        {% endfor %}
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td>Ressources</td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          {% for resource in resources %}
+            <td>{{resource.Employee.employee_lastName}} {{resource.Employee.employee_firstName}}</td>
+            <td>{{resource.Employee.employee_role}}</td>
+            <td>{{resource.estimated_hours}}</td>
+          {% endfor %}
+        </tr>
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Deliverables</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          {% for deliverable in deliverables %}
+            <td>{{deliverable.deliverable_title}}</td>
+          {% endfor %}
+        </tr>
+    </table>
+  </div>
+
   <script>
     var selectedForm;
     $(function () {
@@ -407,11 +547,103 @@
            window.console.log($(this), 'The element has been unchecked');
          }
        });
-    });
 
-    // $(window).click(function(e) {
-    //     if(selectedForm !== undefined) selectedForm.submit();
-    // });
+      //-------------
+      //- PIE CHART -
+      //-------------
+      // Get context with jQuery - using jQuery's .get() method.
+      var pieChartCanvas = $('#hoursChart').get(0).getContext('2d')
+      var pieChart       = new Chart(pieChartCanvas)
+      var PieData        = [
+        {
+          value    : {{project.actual_hours}},
+          color    : '#f56954',
+          highlight: '#f56954',
+          label    : 'Actual Hours'
+        },
+        {
+          value    : {{project.estimated_hours|compute_difference:project.actual_hours}},
+          color    : '#00a65a',
+          highlight: '#00a65a',
+          label    : 'Estimated Hours'
+        }
+      ]
+      var pieOptions     = {
+        //Boolean - Whether we should show a stroke on each segment
+        segmentShowStroke    : true,
+        //String - The colour of each segment stroke
+        segmentStrokeColor   : '#fff',
+        //Number - The width of each segment stroke
+        segmentStrokeWidth   : 2,
+        //Number - The percentage of the chart that we cut out of the middle
+        percentageInnerCutout: 50, // This is 0 for Pie charts
+        //Number - Amount of animation steps
+        animationSteps       : 100,
+        //String - Animation easing effect
+        animationEasing      : 'easeOutBounce',
+        //Boolean - Whether we animate the rotation of the Doughnut
+        animateRotate        : true,
+        //Boolean - Whether we animate scaling the Doughnut from the centre
+        animateScale         : false,
+        //Boolean - whether to make the chart responsive to window resizing
+        responsive           : true,
+        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+        maintainAspectRatio  : true,
+        //String - A legend template
+        legendTemplate       : ''
+      }
+      //Create pie or douhnut chart
+      // You can switch between pie and douhnut using the method below.
+      pieChart.Doughnut(PieData, pieOptions)
+
+      //-------------
+      //- PIE CHART -
+      //-------------
+      // Get context with jQuery - using jQuery's .get() method.
+      var pieChartCanvas = $('#budgetChart').get(0).getContext('2d')
+      var pieChart       = new Chart(pieChartCanvas)
+      var PieData        = [
+        {
+          value    : {{project.initial_budget|compute_difference:project.remaining_budget}},
+          color    : '#f56954',
+          highlight: '#f56954',
+          label    : 'Invested Budget'
+        },
+        {
+          value    : {{project.remaining_budget}},
+          color    : '#00a65a',
+          highlight: '#00a65a',
+          label    : 'Remaining Budget'
+        }
+      ]
+      var pieOptions     = {
+        //Boolean - Whether we should show a stroke on each segment
+        segmentShowStroke    : true,
+        //String - The colour of each segment stroke
+        segmentStrokeColor   : '#fff',
+        //Number - The width of each segment stroke
+        segmentStrokeWidth   : 2,
+        //Number - The percentage of the chart that we cut out of the middle
+        percentageInnerCutout: 50, // This is 0 for Pie charts
+        //Number - Amount of animation steps
+        animationSteps       : 100,
+        //String - Animation easing effect
+        animationEasing      : 'easeOutBounce',
+        //Boolean - Whether we animate the rotation of the Doughnut
+        animateRotate        : true,
+        //Boolean - Whether we animate scaling the Doughnut from the centre
+        animateScale         : false,
+        //Boolean - whether to make the chart responsive to window resizing
+        responsive           : true,
+        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+        maintainAspectRatio  : true,
+        //String - A legend template
+        legendTemplate       : ''
+      }
+      //Create pie or douhnut chart
+      // You can switch between pie and douhnut using the method below.
+      pieChart.Doughnut(PieData, pieOptions)
+    });
 
     function editField(field_id){
       document.getElementById(field_id + "-lbl").classList.add("hidden");
@@ -419,5 +651,10 @@
       if(selectedForm !== undefined) selectedForm.submit();
       selectedForm = document.getElementById(field_id + "-form")
     }
+
+    $("#btnExport").click(function (e) {
+        window.open('data:application/vnd.ms-excel,' + $('#dvData').html());
+        e.preventDefault();
+    });
   </script>
 {% endblock %}

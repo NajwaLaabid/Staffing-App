@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'profiles.apps.ProfilesConfig',
     'dashboard.apps.DashboardConfig',
     'dashboard.templatetags.calendar_filter',
+    'dashboard.templatetags.graph_filter',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
