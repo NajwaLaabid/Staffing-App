@@ -9,9 +9,13 @@ def signup(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
+            user_email = form.cleaned_data.get('email')
+            user_name = form.cleaned_data.get('username')
+            user_password = form.cleaned_data.get('password1')
+
             form.save()
-            # user = authenticate(username=user_name, password=user_password, email=user_email)
-            # dj_login(request, user)
+            user = authenticate(username=user_name, password=user_password, email=user_email)
+            dj_login(request, user)
             return HttpResponseRedirect('/dashboard')
     else:
         form = SignUpForm()
