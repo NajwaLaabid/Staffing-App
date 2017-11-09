@@ -1,12 +1,16 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from .models import Employee
-from dashboard.models import Project
-from dashboard.models import Resources
+from dashboard.models import Project, Resources, ProjectCalendar
 from django.http import HttpResponse, HttpResponseRedirect
+from datetime import timedelta, date, datetime
+from collections import OrderedDict
 
 def index(request):
     employees = Employee.objects.all()
+    #query resources/project to get hours this month
+    #today = datetime.date.now()
+   # hours_this_month = ProjectCalendar.objects.filter(date__gte=)
     return TemplateResponse(request, 'teamIndex.html', {'employees': employees,})
 
 def addProject(request, employee_ID):
@@ -24,14 +28,35 @@ def deleteProject(request, employee_ID):
         Resources.objects.get(Employee=Employee.objects.get(employee_ID=employee_ID), Project=Project.objects.get(project_ID=project_ID)).delete()
         return HttpResponseRedirect('/team/viewEmployee/'+ employee_ID)
 
+def daterange(dates):
+    #start, end = [datetime.strptime(_, "%m/%d/%Y") for _ in dates]
+    return OrderedDict(((dates[0] + timedelta(_)).strftime(r"%b-%y"), None) for _ in range((dates[1] - dates[0]).days)).keys()
+
 def viewEmployee(request, employee_ID):
     employee = Employee.objects.get(pk=employee_ID)
     potential_projects = Project.objects.all()
     resources = Resources.objects.filter(Employee=employee)
+    projects_with_dates = []
+
     for resource in resources:
         potential_projects = potential_projects.exclude(project_ID=resource.Project.project_ID)
-    
-    return TemplateResponse(request, 'teamDetails.html', {'employee' : employee, 'potential_projects' : potential_projects, 'resources' : resources},)
+        #get dates interval of projects of employee
+        dates = [resource.Project.start_date, resource.Project.end_date]
+        date_range = list(daterange(dates))
+        
+        #project_calendar contains all the months span of the project, with hours for every month
+        project_calendar = ProjectCalendar.objects.filter(Employee=employee, Project=resource.Project.project_ID)
+        hours_per_month = []
+        #get hours for every month, and put in json object with date
+        for d in date_range:
+            for month in project_calendar:
+                if d == month.date:
+                    hours_per_month.append(month.hours)
+
+        project_tuple = (resource.Project, date_range, hours_per_month)
+        projects_with_dates.append(project_tuple)
+
+    return TemplateResponse(request, 'teamDetails.html', {'employee' : employee, 'potential_projects' : potential_projects, 'resources' : resources, 'projects_with_dates' : projects_with_dates},)
 
 def getEmployeeStatus(request):
     statuses = Employee.objects.all()
