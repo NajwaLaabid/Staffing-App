@@ -19,28 +19,6 @@ def signup(request):
             return HttpResponseRedirect('/dashboard')
     else:
         form = SignUpForm()
-    # return render(request, 'signup.html', {'form': form})
-    # if request.user.is_authenticated():
-    #     return HttpResponseRedirect('/dashboard')
-    # if request.method == 'POST':
-    #     form = SignUpForm(request.POST)
-    #     if form.is_valid():
-    #         user_email = form.cleaned_data.get('user_email')
-    #         user_name = form.cleaned_data.get('user_name')
-    #         user_password = form.cleaned_data.get('user_password')
-    #         form.save()
-    #         user = authenticate(username=user_name, password=user_password, email=user_email)
-    #         dj_login(request, user)
-    #         return HttpResponseRedirect('/profiles/login')
-        # username = request.POST['username']
-        # password = request.POST['password1']
-        # email = request.POST['email']
-        #
-        # user = authenticate(username=username, password=password, email=email)
-        # user.set_password(password)
-        # user.save()
-        #
-        # dj_login(request, user)\
     return render(request, 'signup.html', {'form': form})
 
 def login(request):

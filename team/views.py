@@ -23,12 +23,12 @@ def index(request):
                     total_hours_month += month.hours
                     max_hours_month = month.max_hours
                 total_hours += month.hours
-            
+
         employee.employee_totalHours = total_hours
 
         if max_hours_month != 0:
             h_ratio = (total_hours_month / max_hours_month) * 100
-      
+
         if total_hours_month < 200:
             css_class = 'progress-bar progress-bar-red progress-bar-striped'
             employee.employee_status = 'UC'
@@ -38,9 +38,9 @@ def index(request):
         else:
             css_class = 'progress-bar progress-bar-yellow-perso  progress-bar-striped'
             employee.employee_status = 'OC'
-        
-        employee.save() 
-        
+
+        employee.save()
+
         employee_i = {'employee' : employee, 'h_ratio' : h_ratio, 'hours_month' : total_hours_month, 'max_hours' : max_hours_month, 'total_hours_month' : total_hours_month, 'css_class' : css_class}
         employees_info.append(employee_i)
 
@@ -79,7 +79,7 @@ def viewEmployee(request, employee_ID):
         #get dates interval of projects of employee
         dates = [resource.Project.start_date, resource.Project.end_date]
         date_range = list(daterange(dates))
-        
+
         #project_calendar contains all the months span of the project, with hours for every month
         project_calendar = ProjectCalendar.objects.filter(Employee=employee, Project=resource.Project.project_ID)
         hours_per_month = []
@@ -114,8 +114,14 @@ def addEmployee(request):
         , employee_totalHours = 0)
 
         employee.save()
+<<<<<<< HEAD
         return HttpResponseRedirect('/team')
     return render(request, 'addEmployee.html', {})
+=======
+        return HttpResponseRedirect('/team/')
+
+    return TemplateResponse(request, 'addEmployee.html', {})
+>>>>>>> e4424e87352abf73a1aced7eede72e262776a3dc
 
 def deleteEmployee(request, employee_ID):
     Employee.objects.get(pk=employee_ID).delete()

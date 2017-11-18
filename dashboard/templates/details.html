@@ -123,6 +123,7 @@
 
             {% for resource in resources_view %}
               <tr>
+<<<<<<< HEAD
                 <td>{{resource.name}}</td>
                   {% for single_date in date_range %}
                     <td>
@@ -145,6 +146,31 @@
                     <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
                   </form>
                 </td>
+=======
+                <th>Max Hours</th>
+
+                {% for max_hour in max_hours %}
+                <th>
+                  <form action="{% url 'dashboard:saveMaxHours' project.project_ID %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" class="form-control" name="date" value="{{max_hour.date}}" style="width: 56px;">
+                    <select class="form-control select2 calendar-max" name="max_hours" id="max_hours_{{max_hour.date}}-{{max_hour.hours}}" data-placeholder="max hours" value="{{max_hour.hours}}" style="width: 100%;">
+                        <option value="160">160</option>
+                        <option value="200">200</option>
+                    </select>
+                  </form>
+                  </th>
+                {% endfor %}
+
+              </tr>
+
+              <tr>
+                <th>Name</th>
+                {% for single_date in date_range %}
+                  <th>{{single_date}}</th>
+                {% endfor %}
+                <th>Total</th>
+>>>>>>> e4424e87352abf73a1aced7eede72e262776a3dc
               </tr>
             {% endfor %}
           </table>
@@ -155,6 +181,7 @@
     </div>
   </div>
 
+<<<<<<< HEAD
    <!-- charts -->
   <div class="row" style="padding: 0 16px">
     <div class="col-md-12" style="padding:0">
@@ -181,6 +208,35 @@
                   </div>
                 </form>
             </div>
+=======
+              {% for resource in resources_view %}
+                <tr>
+                  <td>{{resource.name}}</td>
+                  {% for single_date in date_range %}
+                    <td>
+                      <form class="hidden" id="{{resource.name}}-{{single_date}}-form" action="{% url 'dashboard:saveMemberHours' project.project_ID %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" class="form-control" name="employee_ID" value="{{resource.employee_ID}}" style="width: 56px;">
+                        <input type="hidden" class="form-control" name="date" value="{{single_date}}" style="width: 56px;">
+                        <input type="text" class="form-control" name="hours" value="{{resource|get_item:single_date}}" style="width: 56px;">
+                      </form>
+                      <div id="{{resource.name}}-{{single_date}}-lbl" onclick="editField('{{resource.name}}-{{single_date}}')">
+                        {{resource|get_item:single_date}}
+                      </div>
+                    </td>
+                  {% endfor %}
+                  <td>{{resource.total}}</td>
+                  <td>
+                    <form action="{% url 'dashboard:deleteMember' project.project_ID %}" method="post">
+                      {% csrf_token %}
+                      <input type="hidden" class="form-control" name="member_id" value="{{resource.employee_ID}}">
+                      <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
+                    </form>
+                  </td>
+                </tr>
+              {% endfor %}
+            </table>
+>>>>>>> e4424e87352abf73a1aced7eede72e262776a3dc
           </div>
           <!-- /.box -->
         </div>
@@ -414,6 +470,17 @@
     var selectedForm;
     $(function () {
       $('.select2').select2();
+
+      {% for max_hour in max_hours %}
+        $('#max_hours_{{max_hour.date}}-{{max_hour.hours}}').on("select2:select", function(e) {
+           this.parentElement.submit()
+        });
+      {% endfor %}
+
+      {% for max_hour in max_hours %}
+        $('#max_hours_{{max_hour.date}}-{{max_hour.hours}}').val('{{max_hour.hours}}').trigger('change');
+      {% endfor %}
+
       $('.todo-list').todoList({
          onCheck  : function () {
            this.parent().parent().submit()

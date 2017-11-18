@@ -18,4 +18,5 @@ urlpatterns =  [
     url(r'^addDeliverable/(?P<project_id>\d+)/$', views.addDeliverable, name='addDeliverable'),
      url(r'^deleteDeliverable/(?P<project_ID>\d+)/(?P<deliverable_pj_ID>\d+)/$', views.deleteDeliverable, name='deleteDeliverable'),
     url(r'^updateDelivrable/(?P<project_id>\d+)/$', views.updateDelivrable, name='updateDelivrable'),
+    url(r'^saveMaxHours/(?P<project_id>\d+)/$', views.saveMaxHours, name='saveMaxHours'),
 ]

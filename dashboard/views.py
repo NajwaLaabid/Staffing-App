@@ -66,12 +66,27 @@ def edit(request, project_id):
     print(project.start_date)
     return TemplateResponse(request, 'edit.html', {'project': project})
 
-def updateBudget(request, project_id):
-    project = Project.objects.get(project_ID=project_id)
-    project.remaining_budget = project.remaining_budget - int(request.POST['spending'])
+def saveMaxHours(request, project_id):
+    if request.method == 'POST':
+        max_hours = request.POST['max_hours']
+        print(max_hours)
+        date = request.POST['date']
+        project = Project.objects.get(project_ID=project_id)
+        calendars = ProjectCalendar.objects.filter(Project=project, date=date)
 
-    project.save()
-    return TemplateResponse(request, 'details.html', {'project': project})
+        for calendar in calendars:
+            calendar.max_hours = max_hours  # change field
+            calendar.save() # this will update only
+
+    return HttpResponseRedirect('/dashboard/view/'+ project_id)
+
+def updateBudget(request, project_id):
+    if request.method == 'POST':
+        project = Project.objects.get(project_ID=project_id)
+        project.remaining_budget = project.remaining_budget - int(request.POST['spending'])
+
+        project.save()
+        return TemplateResponse(request, 'details.html', {'project': project})
 
 def view(request, project_id):
     if not request.user.is_authenticated():
@@ -97,6 +112,8 @@ def view(request, project_id):
         deliverables_per_group.append(groups)
 
     resources_view = []
+    max_hours = []
+    isFull = False
     for resource in resources:
         sub = {'name' : resource.Employee.employee_lastName + ' ' + resource.Employee.employee_firstName}
         sub.update({'employee_ID' : resource.Employee.employee_ID})
@@ -104,6 +121,9 @@ def view(request, project_id):
         hours = ProjectCalendar.objects.filter(Project=project, Employee=resource.Employee)
         for hour in hours:
             sub.update({hour.date : hour.hours})
+            if not isFull:
+                max_hours.append({'date' : hour.date, 'hours' : hour.max_hours})
+        isFull = True
         resources_view.append(sub)
 
     potential_members = Employee.objects.all()
@@ -114,7 +134,11 @@ def view(request, project_id):
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
+<<<<<<< HEAD
     return TemplateResponse(request, 'details.html', {'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
+=======
+    return TemplateResponse(request, 'details.html', {'project': project, 'max_hours' : max_hours, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
+>>>>>>> e4424e87352abf73a1aced7eede72e262776a3dc
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
