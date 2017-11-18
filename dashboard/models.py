@@ -69,13 +69,22 @@ class ProjectCalendar(models.Model):
 	class Meta:
 		unique_together = ('Employee', 'Project', 'date')
 
-class Deliverables(models.Model):
-	Project = models.ForeignKey(Project, default=None)
+class PossibleDeliverables(models.Model):
 	deliverable_ID = models.AutoField(primary_key=True)
 	deliverable_title = models.CharField(max_length=200)
-	deliverable_main_category = models.CharField(max_length=200)
+	deliverable_main_category = models.CharField(max_length=200, default=None)
+
+class Deliverables(models.Model):
+	deliverable_project_ID = models.AutoField(primary_key=True)
+	Project = models.ForeignKey(Project, default=None)
+	deliverable = models.ForeignKey(PossibleDeliverables, default=None)
 	is_done = models.BooleanField(default=False)
+	class Meta:
+		unique_together = ('Project', 'deliverable')
 
 class Assumption(models.Model):
+	assumption_ID = models.AutoField(primary_key=True)
 	Project = models.ForeignKey(Project)
 	assumption_text = models.CharField(max_length=200)
+	class Meta:
+		unique_together = ('Project', 'assumption_text')

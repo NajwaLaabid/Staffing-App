@@ -46,6 +46,9 @@ def index(request):
 
     return TemplateResponse(request, 'teamIndex.html', {'employees_info': employees_info})
 
+def viewDepartments(request):
+    return TemplateResponse(request, 'departments.html')
+
 def addProject(request, employee_ID):
    if request.method == 'POST':
         potential_project = request.POST['potential_project']
@@ -111,7 +114,7 @@ def addEmployee(request):
         , employee_totalHours = 0)
 
         employee.save()
-
+        return HttpResponseRedirect('/team')
     return render(request, 'addEmployee.html', {})
 
 def deleteEmployee(request, employee_ID):
@@ -132,7 +135,7 @@ def updateEmployee(request, employee_ID):
         employee.employee_role = request.POST['employee_role']
         employee.save()
 
-        return render(request, 'updateEmployee.html', {'employee' : employee})
+        return HttpResponseRedirect('/team')
 
     employee = Employee.objects.get(employee_ID=employee_ID)
     return TemplateResponse(request, 'updateEmployee.html', {'employee' : employee},)

@@ -1,0 +1,467 @@
+[
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "P &amp; ID’s",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CABLE BLOCK DIAGRAM FOR PACKAGE UNIT",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "LOGIC DIAGRAMS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "POWER SUPPLY LINE DIAGRAM",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTRUMENT CABLE TRAY LAYOUT",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "GRAPHICS AND REPORTS OF CONTROL SYSTEM",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CONTROL SYSTEM ARCHITECTURE",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "AIR MANIFOLD LOCATION PLAN",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "GENERAL ARRANGEMENTS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "EXPLODED VIEW DRAWINGS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CROSS SECTIONAL DRAWINGS (INC PARTS LIST)",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INTERNAL WIRING DIAGRAMS /CONNECTION DIAGRAMS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTRUMENT TERMINATION & HOOK-UP DETAILS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTRUMENTATION WIRING SCHEMATICS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTRUMENT VENDOR DRAWINGS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTRUMENT LOCATION DRAWINGS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "EARTHING DETAILS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTRUMENT LOOP DRAWINGS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "PANEL LAY-OUTS (INTERNAL LAY-OUT,TERMINATION DRAWING AND WIRING DETAILS)",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "JUNCTION BOX DIAGRAMS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "NAMEPLATE DRAWINGS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "AS BUILT DRAWINGS",
+      "deliverable_main_category" : "DRAWINGS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTRUMENT DATA SHEETS",
+      "deliverable_main_category" : "SPECIFICATIONS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CATALOGUE DATA SHEETS",
+      "deliverable_main_category" : "SPECIFICATIONS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INTERLOCK AND SAFETY SYSTEM FUNCTION DESCRIPTIONS",
+      "deliverable_main_category" : "SPECIFICATIONS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CONTROL NARRATIVE REPORT",
+      "deliverable_main_category" : "SPECIFICATIONS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "VALVES CALCULATIONS",
+      "deliverable_main_category" : "STUDIES/CALCULATIONS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTRUMENTS CALCULATIONS",
+      "deliverable_main_category" : "STUDIES/CALCULATIONS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "POWER CONSUMPTION & HEAT DISSIPATION CALCULATION",
+      "deliverable_main_category" : "STUDIES/CALCULATIONS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "AVAILABILITY & RELIABILITY CALCULATIONS",
+      "deliverable_main_category" : "STUDIES/CALCULATIONS"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "MTO “Material Take-off”",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+  {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTRUMENT INDEX",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "LIST OF REQUIRED CALIBRATION AND TEST EQUIPMENT",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "I/O LIST",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTRUMENTATION CABLE SCHEDULE",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "I&C CABLE LIST",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CAUSE AND EFFECT DIAGRAMS",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "FIELD JUNCTION BOX SCHEDULE",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "HARDWIRED INTERFACE SIGNAL LIST WITH CONTROL SYSTEM /VENDOR'S PLC SYSTEM",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "ALARM AND TRIP SCHEDULE",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CONTROL SYSTEM CABINETS LIST",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "AIR MANIFOLD SCHEDULE",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "I&C POWER SUPPLY LIST",
+      "deliverable_main_category" : "SCHEDULES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSTALLATION, OPERATION AND MAINTENANCE MANUAL",
+      "deliverable_main_category" : "MANUALS/PROCEDURES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "FAT PROCEDURES AND REPORT",
+      "deliverable_main_category" : "MANUALS/PROCEDURES"
+    }
+  }, {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "SAT PROCEDURES AND REPORT",
+      "deliverable_main_category" : "MANUALS/PROCEDURES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "LOOP TEST REPORT",
+      "deliverable_main_category" : "MANUALS/PROCEDURES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "QUALITY PLAN",
+      "deliverable_main_category" : "MANUALS/PROCEDURES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "QUALITY ASSURANCE MANUAL",
+      "deliverable_main_category" : "MANUALS/PROCEDURES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "TECHNICAL CONTRACTOR & SUB-CONTRACTOR DOCUMENTATION (English & French)",
+      "deliverable_main_category" : "MANUALS/PROCEDURES"
+    }
+  },
+    {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "INSPECTION AND TEST PROCEDURES",
+      "deliverable_main_category" : "MANUALS/PROCEDURES"
+    }
+  },
+    {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "STORAGE REQUIREMENTS",
+      "deliverable_main_category" : "MANUALS/PROCEDURES"
+    }
+  },
+    {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "TECHNICAL CONTRACTOR & SUB-CONTRACTOR DOCUMENTATION (English & French)",
+      "deliverable_main_category" : "MANUALS/PROCEDURES"
+    }
+  },
+    {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "HYDROSTATIC/ PNEUMATIC CERTIFICATE",
+      "deliverable_main_category" : "CERTIFICATION"
+    }
+  },
+    {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CALIBRATION CERTIFICATES",
+      "deliverable_main_category" : "CERTIFICATION"
+    }
+  },
+    {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "MATERIAL TEST CERTIFICATE",
+      "deliverable_main_category" : "CERTIFICATION"
+    }
+  },
+
+    {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "PERFORMANCE TESTING CERTIFICATE",
+      "deliverable_main_category" : "CERTIFICATION"
+    }
+  },
+    {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CODE COMPLIANCE CERTIFICATE",
+      "deliverable_main_category" : "CERTIFICATION"
+    }
+  },
+    {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "LETTERS OF CONFORMITY",
+      "deliverable_main_category" : "CERTIFICATION"
+    }
+  },
+    {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CERTIFIED DIMENSIONAL DRAWINGS",
+      "deliverable_main_category" : "CERTIFICATION"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "RECOMMENDED COMMISSIONING SPARE PARTS & CONSUMABLES LIST",
+      "deliverable_main_category" : "SPARES"
+    }
+  },
+
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "RECOMMENDED SPARE PARTS & CONSUMABLES FOR 2 YEARS CONTINUOUS OPERATION",
+      "deliverable_main_category" : "SPARES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "SPECIAL TOOLS LIST",
+      "deliverable_main_category" : "SPARES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "RECOMMENDED CAPITAL/INSURANCE SPARES",
+      "deliverable_main_category" : "SPARES"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "WEIGHT INFORMATION SHEET and MANUFACTURING LOCATION",
+      "deliverable_main_category" : "WEIGHT"
+    }
+  },
+   {
+    "model": "dashboard.possibleDeliverables",
+    "fields": {
+      "deliverable_title": "CONTROL SYSTEM CABINETS WEIGHTS AND DIMENTIONS",
+      "deliverable_main_category" : "WEIGHT"
+    }
+  }
+]
+
+

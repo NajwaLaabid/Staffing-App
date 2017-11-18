@@ -54,7 +54,7 @@ def login(request):
         if user is not None:
             if user.is_active:
                 dj_login(request, user)
-                return HttpResponseRedirect('/dashboard')
+                return HttpResponseRedirect('/team/viewDepartments')
     else:
         form = LoginForm()
     return render(request, 'login.html', {'form': form})

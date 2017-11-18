@@ -4,6 +4,9 @@ Run the server with the following command line
 Deploy staticfiles
 `python manage.py collectstatic`
 
+create super user to access django admin
+`python manage.py runserver`
+
 Start an app
 `python manage.py startapp APP_NAME`
 
@@ -16,3 +19,14 @@ To cancel a pull update on your local workplace
 migrate db after creating the Models
 `python manage.py makemigrations <nameofapplication>`
 `python manage.py migrate`
+
+automatically populate a model in django
+- Create folder fixtures
+- Add data in a file inside fixtures. Give it a unique name.
+- Run following command:
+`python manage.py loaddata <fixturename>`
+
+
+Link to template
+https://adminlte.io/themes/AdminLTE/pages/UI/general.html
+

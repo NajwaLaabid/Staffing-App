@@ -3,8 +3,9 @@ from django.template.response import TemplateResponse
 from django.http import HttpResponse, HttpResponseRedirect
 from datetime import timedelta, date, datetime
 from collections import OrderedDict
+from django.db.models import Count
 
-from .models import Project, Resources, ProjectCalendar, Assumption, Deliverables
+from .models import Project, Resources, ProjectCalendar, Assumption, Deliverables, PossibleDeliverables
 from team.models import Employee
 
 def daterange(dates):
@@ -60,7 +61,7 @@ def edit(request, project_id):
                     c = ProjectCalendar(Employee=resource.Employee, Project=project, date=single_date)
                     c.save()
 
-        return HttpResponseRedirect('/dashboard/view/'+ project_id)
+        return HttpResponseRedirect('/dashboard')
 
     print(project.start_date)
     return TemplateResponse(request, 'edit.html', {'project': project})
@@ -78,7 +79,22 @@ def view(request, project_id):
     project = Project.objects.get(project_ID=project_id)
     resources = Resources.objects.filter(Project=project)
     assumptions = Assumption.objects.filter(Project=project)
-    deliverables = Deliverables.objects.filter(Project=project)
+    deliverables = Deliverables.objects.filter(Project=project) 
+    potential_deliverables = PossibleDeliverables.objects.all()
+    deliverables_groups = PossibleDeliverables.objects.values('deliverable_main_category').annotate(dcount=Count('deliverable_main_category'))
+    deliverables_per_group = []
+    for d in deliverables:
+        potential_deliverables = potential_deliverables.exclude(deliverable_title=d.deliverable.deliverable_title)
+
+    #for every group gather the delivs belong to it
+    for dg in deliverables_groups:
+        groups = {'group': dg['deliverable_main_category']}
+        deliv_for_group = []
+        for pt_d in potential_deliverables:
+            if pt_d.deliverable_main_category == dg['deliverable_main_category']:
+                deliv_for_group.append(pt_d)
+        groups.update({'deliverables' : deliv_for_group})
+        deliverables_per_group.append(groups)
 
     resources_view = []
     for resource in resources:
@@ -98,7 +114,7 @@ def view(request, project_id):
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
-    return TemplateResponse(request, 'details.html', {'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
+    return TemplateResponse(request, 'details.html', {'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
@@ -161,31 +177,47 @@ def addAssumption(request, project_id):
 
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
+def deleteAssumption(request, project_ID):
+    if request.method == 'POST':
+        assumption_text = request.POST['assumption_text']
+        project = Project.objects.get(project_ID=project_ID)
+        Assumption.objects.filter(Project=project, assumption_text=assumption_text).delete()
+
+        return HttpResponseRedirect('/dashboard/view/'+ project_ID)
+
 def addDeliverable(request, project_id):
     if request.method == 'POST':
-        deliverable_title = request.POST['deliverable_title']
-        deliverable_title_arr = deliverable_title.split("_")
+        deliverable = request.POST['deliverable_title']
+        deliverable_title_arr = deliverable.split("_")
+        
         project = Project.objects.get(project_ID=project_id)
-
-        delv = Deliverables(Project=project, deliverable_title=deliverable_title_arr[1], deliverable_main_category=deliverable_title_arr[0])
-        delv.save()
+        delv = PossibleDeliverables.objects.filter(deliverable_title=deliverable_title_arr[1], deliverable_main_category=deliverable_title_arr[0])
+        
+        delv_project = Deliverables(Project=project, deliverable=delv[0])
+        delv_project.save()
 
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def updateDelivrable(request, project_id):
     if request.method == 'POST':
-        deliverable_ID = request.POST['deliverable_ID']
+        deliverable_ID = request.POST['deliverable_project_ID']
         is_done = False
         if("is_done" in request.POST): is_done = True
         print(is_done)
         project = Project.objects.get(project_ID=project_id)
 
-        delv = Deliverables.objects.get(deliverable_ID=deliverable_ID)
+        delv = Deliverables.objects.get(deliverable_project_ID=deliverable_ID)
         if(delv.is_done != is_done):
             delv.is_done = is_done  # change field
             delv.save() # this will update only
 
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
+
+def deleteDeliverable(request, project_ID, deliverable_pj_ID):
+    Deliverables.objects.filter(deliverable_project_ID=deliverable_pj_ID).delete()
+
+    return HttpResponseRedirect('/dashboard/view/'+ project_ID)
+
 
 def create(request):
     if not request.user.is_authenticated():
