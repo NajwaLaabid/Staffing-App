@@ -134,11 +134,7 @@ def view(request, project_id):
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
-<<<<<<< HEAD
     return TemplateResponse(request, 'details.html', {'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
-=======
-    return TemplateResponse(request, 'details.html', {'project': project, 'max_hours' : max_hours, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
->>>>>>> e4424e87352abf73a1aced7eede72e262776a3dc
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
@@ -252,8 +248,8 @@ def create(request):
         end_date = datetime.strptime(request.POST['end_date'], '%m/%d/%Y')
         start_date = datetime.strptime(request.POST['start_date'], '%m/%d/%Y')
         estimate_hours = request.POST['estimate_hours']
-        initial_budget = request.POST['initial_budget']
-        remaining_budget = request.POST['initial_budget']
+        initial_budget = request.POST['estimate_hours']
+        remaining_budget = request.POST['estimate_hours']
         project_phase = request.POST['project_phase']
         jesa_role = request.POST['jesa_role']
 

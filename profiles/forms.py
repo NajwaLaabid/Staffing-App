@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-
+from django.contrib.auth import login as dj_login, authenticate, logout as dj_logout
 
 class SignUpForm(UserCreationForm):
     email = forms.EmailField(help_text='envelope', widget=forms.TextInput(
@@ -71,3 +71,13 @@ class LoginForm(AuthenticationForm):
     class Meta:
         model = User
         fields = ('username', 'password')
+    
+    def login(self, request):
+        username = request['username']
+        password = request['password']
+        '''
+        username = "najwa10"
+        password = "123"'''
+        user = authenticate(username=username, password=password)
+        
+        return user

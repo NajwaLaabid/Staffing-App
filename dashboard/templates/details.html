@@ -113,6 +113,19 @@
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
           <table class="table table-hover">
+            <th>Max Hours </th>
+            <tr>
+            {% for max_hour in max_hours %}
+                <form action="{% url 'dashboard:saveMaxHours' project.project_ID %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" class="form-control" name="date" value="{{max_hour.date}}" style="width: 56px;">
+                  <select class="form-control select2 calendar-max" name="max_hours" id="max_hours_{{max_hour.date}}-{{max_hour.hours}}" data-placeholder="max hours" value="{{max_hour.hours}}" style="width: 100%;">
+                      <option value="160">160</option>
+                      <option value="200">200</option>
+                  </select>
+                </form>
+              {% endfor %}
+            </tr>
             <tr>
               <th>Name</th>
               {% for single_date in date_range %}
@@ -123,7 +136,6 @@
 
             {% for resource in resources_view %}
               <tr>
-<<<<<<< HEAD
                 <td>{{resource.name}}</td>
                   {% for single_date in date_range %}
                     <td>
@@ -146,32 +158,8 @@
                     <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
                   </form>
                 </td>
-=======
-                <th>Max Hours</th>
-
-                {% for max_hour in max_hours %}
-                <th>
-                  <form action="{% url 'dashboard:saveMaxHours' project.project_ID %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" class="form-control" name="date" value="{{max_hour.date}}" style="width: 56px;">
-                    <select class="form-control select2 calendar-max" name="max_hours" id="max_hours_{{max_hour.date}}-{{max_hour.hours}}" data-placeholder="max hours" value="{{max_hour.hours}}" style="width: 100%;">
-                        <option value="160">160</option>
-                        <option value="200">200</option>
-                    </select>
-                  </form>
-                  </th>
-                {% endfor %}
-
               </tr>
 
-              <tr>
-                <th>Name</th>
-                {% for single_date in date_range %}
-                  <th>{{single_date}}</th>
-                {% endfor %}
-                <th>Total</th>
->>>>>>> e4424e87352abf73a1aced7eede72e262776a3dc
-              </tr>
             {% endfor %}
           </table>
         </div>
@@ -180,8 +168,6 @@
       <!-- /.box -->
     </div>
   </div>
-
-<<<<<<< HEAD
    <!-- charts -->
   <div class="row" style="padding: 0 16px">
     <div class="col-md-12" style="padding:0">
@@ -189,15 +175,16 @@
         <div class="col-md-6">
           <div class="box box-primary">
             <div class="box-header with-border">
-              <h3 class="box-title">Budget</h3>
+              <h3 class="box-title">Hours</h3>
             </div>
             <div class="box-body">
               <canvas id="budgetChart" style="height:250px"></canvas>
               <br><br>
-              <span class="text">Remaining Budget: <b>{{project.remaining_budget}}</b></span>
+              <span class="text">Estimated Hours: <b>{{project.initial_budget}}</b></span>
+              <span style="float:right" class="text">Consumed Hours: <b>{{project.actual_hours}}</b></span>
             </div>
             <!-- /.box-body -->
-            <div class="box-footer clearfix no-border input-group input-group-sm">
+            <!--<div class="box-footer clearfix no-border input-group input-group-sm">
                 <form action="{% url 'dashboard:updateBudget' project.project_ID %}" method="post">
                   {% csrf_token %}
                   <div class="box-footer clearfix no-border input-group input-group-sm" style="wid">
@@ -207,36 +194,7 @@
                     </span>
                   </div>
                 </form>
-            </div>
-=======
-              {% for resource in resources_view %}
-                <tr>
-                  <td>{{resource.name}}</td>
-                  {% for single_date in date_range %}
-                    <td>
-                      <form class="hidden" id="{{resource.name}}-{{single_date}}-form" action="{% url 'dashboard:saveMemberHours' project.project_ID %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" class="form-control" name="employee_ID" value="{{resource.employee_ID}}" style="width: 56px;">
-                        <input type="hidden" class="form-control" name="date" value="{{single_date}}" style="width: 56px;">
-                        <input type="text" class="form-control" name="hours" value="{{resource|get_item:single_date}}" style="width: 56px;">
-                      </form>
-                      <div id="{{resource.name}}-{{single_date}}-lbl" onclick="editField('{{resource.name}}-{{single_date}}')">
-                        {{resource|get_item:single_date}}
-                      </div>
-                    </td>
-                  {% endfor %}
-                  <td>{{resource.total}}</td>
-                  <td>
-                    <form action="{% url 'dashboard:deleteMember' project.project_ID %}" method="post">
-                      {% csrf_token %}
-                      <input type="hidden" class="form-control" name="member_id" value="{{resource.employee_ID}}">
-                      <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
-                    </form>
-                  </td>
-                </tr>
-              {% endfor %}
-            </table>
->>>>>>> e4424e87352abf73a1aced7eede72e262776a3dc
+            </div>-->
           </div>
           <!-- /.box -->
         </div>
@@ -289,7 +247,6 @@
             </div>
             <!-- /.box-body -->
 
-
             <div class="box-footer clearfix no-border">
               <form action="{% url 'dashboard:addDeliverable' project.project_ID %}" method="post">
                 {% csrf_token %}
@@ -308,7 +265,7 @@
                   </span>
                 </div>
               </form>
-              <a style="float:left" href="#">Click here to modify list of deliverables</a>
+              <!--<a style="float:left" href="#">Click here to modify list of deliverables</a>-->
             </div>
           </div>
           <!-- /.box -->
@@ -548,13 +505,13 @@
       var pieChart       = new Chart(pieChartCanvas)
       var PieData        = [
         {
-          value    : {{project.initial_budget|compute_difference:project.remaining_budget}},
+          value    : {{project.initial_budget|compute_difference:project.actual_hours}},
           color    : '#f56954',
           highlight: '#f56954',
           label    : 'Invested Budget'
         },
         {
-          value    : {{project.remaining_budget}},
+          value    : {{project.initial_budget}},
           color    : '#00a65a',
           highlight: '#00a65a',
           label    : 'Remaining Budget'
