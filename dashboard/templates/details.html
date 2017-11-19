@@ -245,9 +245,12 @@
                       <input type="checkbox" name="is_done" {% if deliv.is_done == True %} checked {% endif %}/>
                       <!-- todo text -->
                       <span class="text">{{deliv.deliverable.deliverable_title}}</span>
-                      {% if deliv.is_done != True %}
-                        <a style="float:right" type="submit" class="btn btn-danger" href="{% url 'dashboard:deleteDeliverable' project.project_ID deliv.deliverable_project_ID %}"><i class="fa fa-close"></i></a>
-                      {% endif %}
+                      <div class="tools">
+                        <i class="fa fa-edit"></i>
+                        {% if deliv.is_done != True %}
+                          <a type="submit" href="{% url 'dashboard:deleteDeliverable' project.project_ID deliv.deliverable_project_ID %}"><i class="fa fa-trash-o"></i></a>
+                        {% endif %}
+                      </div>
                     </li>
                   </form>
                 </li>
