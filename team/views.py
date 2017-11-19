@@ -114,14 +114,9 @@ def addEmployee(request):
         , employee_totalHours = 0)
 
         employee.save()
-<<<<<<< HEAD
-        return HttpResponseRedirect('/team')
-    return render(request, 'addEmployee.html', {})
-=======
         return HttpResponseRedirect('/team/')
 
     return TemplateResponse(request, 'addEmployee.html', {})
->>>>>>> e4424e87352abf73a1aced7eede72e262776a3dc
 
 def deleteEmployee(request, employee_ID):
     Employee.objects.get(pk=employee_ID).delete()

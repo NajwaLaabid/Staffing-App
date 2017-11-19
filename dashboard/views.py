@@ -94,7 +94,7 @@ def view(request, project_id):
     project = Project.objects.get(project_ID=project_id)
     resources = Resources.objects.filter(Project=project)
     assumptions = Assumption.objects.filter(Project=project)
-    deliverables = Deliverables.objects.filter(Project=project) 
+    deliverables = Deliverables.objects.filter(Project=project)
     potential_deliverables = PossibleDeliverables.objects.all()
     deliverables_groups = PossibleDeliverables.objects.values('deliverable_main_category').annotate(dcount=Count('deliverable_main_category'))
     deliverables_per_group = []
@@ -134,11 +134,7 @@ def view(request, project_id):
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
-<<<<<<< HEAD
-    return TemplateResponse(request, 'details.html', {'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
-=======
     return TemplateResponse(request, 'details.html', {'project': project, 'max_hours' : max_hours, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
->>>>>>> e4424e87352abf73a1aced7eede72e262776a3dc
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
@@ -213,10 +209,10 @@ def addDeliverable(request, project_id):
     if request.method == 'POST':
         deliverable = request.POST['deliverable_title']
         deliverable_title_arr = deliverable.split("_")
-        
+
         project = Project.objects.get(project_ID=project_id)
         delv = PossibleDeliverables.objects.filter(deliverable_title=deliverable_title_arr[1], deliverable_main_category=deliverable_title_arr[0])
-        
+
         delv_project = Deliverables(Project=project, deliverable=delv[0])
         delv_project.save()
 
