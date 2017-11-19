@@ -113,6 +113,7 @@
         <!-- /.box-header -->
         <div class="box-body table-responsive no-padding">
           <table class="table table-hover">
+<<<<<<< HEAD
             <th>Max Hours </th>
             <tr>
             {% for max_hour in max_hours %}
@@ -126,6 +127,22 @@
                 </form>
               {% endfor %}
             </tr>
+=======
+            <th>Max Hours</th>
+
+            {% for max_hour in max_hours %}
+            <th>
+              <form action="{% url 'dashboard:saveMaxHours' project.project_ID %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" class="form-control" name="date" value="{{max_hour.date}}" style="width: 56px;">
+                <select class="form-control select2 calendar-max" name="max_hours" id="max_hours_{{max_hour.date}}-{{max_hour.hours}}" data-placeholder="max hours" value="{{max_hour.hours}}" style="width: 100%;">
+                    <option value="160">160</option>
+                    <option value="200">200</option>
+                </select>
+              </form>
+              </th>
+            {% endfor %}
+>>>>>>> a51b54b7f2a21aec84c5dd2636de1392ece427df
             <tr>
               <th>Name</th>
               {% for single_date in date_range %}
@@ -158,8 +175,21 @@
                     <button type="submit" class="btn btn-danger"><i class="fa fa-close"></i></button>
                   </form>
                 </td>
+<<<<<<< HEAD
               </tr>
 
+=======
+
+              </tr>
+
+              <tr>
+                <th>Name</th>
+                {% for single_date in date_range %}
+                  <th>{{single_date}}</th>
+                {% endfor %}
+                <th>Total</th>
+              </tr>
+>>>>>>> a51b54b7f2a21aec84c5dd2636de1392ece427df
             {% endfor %}
           </table>
         </div>
@@ -194,7 +224,12 @@
                     </span>
                   </div>
                 </form>
+<<<<<<< HEAD
             </div>-->
+=======
+            </div>
+            </table>
+>>>>>>> a51b54b7f2a21aec84c5dd2636de1392ece427df
           </div>
           <!-- /.box -->
         </div>
@@ -236,9 +271,12 @@
                       <input type="checkbox" name="is_done" {% if deliv.is_done == True %} checked {% endif %}/>
                       <!-- todo text -->
                       <span class="text">{{deliv.deliverable.deliverable_title}}</span>
-                      {% if deliv.is_done != True %}
-                        <a style="float:right" type="submit" class="btn btn-danger" href="{% url 'dashboard:deleteDeliverable' project.project_ID deliv.deliverable_project_ID %}"><i class="fa fa-close"></i></a>
-                      {% endif %}
+                      <div class="tools">
+                        <i class="fa fa-edit"></i>
+                        {% if deliv.is_done != True %}
+                          <a type="submit" href="{% url 'dashboard:deleteDeliverable' project.project_ID deliv.deliverable_project_ID %}"><i class="fa fa-trash-o"></i></a>
+                        {% endif %}
+                      </div>
                     </li>
                   </form>
                 </li>
@@ -453,49 +491,109 @@
       //- PIE CHART -
       //-------------
       // Get context with jQuery - using jQuery's .get() method.
-      var pieChartCanvas = $('#hoursChart').get(0).getContext('2d')
-      var pieChart       = new Chart(pieChartCanvas)
-      var PieData        = [
+      // var pieChartCanvas = $('#hoursChart').get(0).getContext('2d')
+      // var pieChart       = new Chart(pieChartCanvas)
+      // var PieData        = [
+      //   {
+      //     value    : {{project.actual_hours}},
+      //     color    : '#f56954',
+      //     highlight: '#f56954',
+      //     label    : 'Actual Hours'
+      //   },
+      //   {
+      //     value    : {{project.estimated_hours|compute_difference:project.actual_hours}},
+      //     color    : '#00a65a',
+      //     highlight: '#00a65a',
+      //     label    : 'Estimated Hours'
+      //   }
+      // ]
+      // var pieOptions     = {
+      //   //Boolean - Whether we should show a stroke on each segment
+      //   segmentShowStroke    : true,
+      //   //String - The colour of each segment stroke
+      //   segmentStrokeColor   : '#fff',
+      //   //Number - The width of each segment stroke
+      //   segmentStrokeWidth   : 2,
+      //   //Number - The percentage of the chart that we cut out of the middle
+      //   percentageInnerCutout: 50, // This is 0 for Pie charts
+      //   //Number - Amount of animation steps
+      //   animationSteps       : 100,
+      //   //String - Animation easing effect
+      //   animationEasing      : 'easeOutBounce',
+      //   //Boolean - Whether we animate the rotation of the Doughnut
+      //   animateRotate        : true,
+      //   //Boolean - Whether we animate scaling the Doughnut from the centre
+      //   animateScale         : false,
+      //   //Boolean - whether to make the chart responsive to window resizing
+      //   responsive           : true,
+      //   // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+      //   maintainAspectRatio  : true,
+      //   //String - A legend template
+      //   legendTemplate       : ''
+      // }
+      // //Create pie or douhnut chart
+      // // You can switch between pie and douhnut using the method below.
+      // pieChart.Doughnut(PieData, pieOptions)
+
+      data = [];
+
+      {% for single_date in date_range %}
+        singleDate =  0;
+        {% for resource in resources_view %}
+          singleDate+= {{resource|get_item:single_date}};
+        {% endfor %}
+        data.push(singleDate)
+      {% endfor %}
+
+      var areaChartData = {
+      labels  : {{date_range|safe}},
+      datasets: [
         {
-          value    : {{project.actual_hours}},
-          color    : '#f56954',
-          highlight: '#f56954',
-          label    : 'Actual Hours'
-        },
-        {
-          value    : {{project.estimated_hours|compute_difference:project.actual_hours}},
-          color    : '#00a65a',
-          highlight: '#00a65a',
-          label    : 'Estimated Hours'
+          label               : 'Digital Goods',
+          fillColor           : 'rgba(60,141,188,0.9)',
+          strokeColor         : 'rgba(60,141,188,0.8)',
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data                : data
         }
       ]
-      var pieOptions     = {
-        //Boolean - Whether we should show a stroke on each segment
-        segmentShowStroke    : true,
-        //String - The colour of each segment stroke
-        segmentStrokeColor   : '#fff',
-        //Number - The width of each segment stroke
-        segmentStrokeWidth   : 2,
-        //Number - The percentage of the chart that we cut out of the middle
-        percentageInnerCutout: 50, // This is 0 for Pie charts
-        //Number - Amount of animation steps
-        animationSteps       : 100,
-        //String - Animation easing effect
-        animationEasing      : 'easeOutBounce',
-        //Boolean - Whether we animate the rotation of the Doughnut
-        animateRotate        : true,
-        //Boolean - Whether we animate scaling the Doughnut from the centre
-        animateScale         : false,
-        //Boolean - whether to make the chart responsive to window resizing
-        responsive           : true,
-        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
-        maintainAspectRatio  : true,
-        //String - A legend template
-        legendTemplate       : ''
-      }
-      //Create pie or douhnut chart
-      // You can switch between pie and douhnut using the method below.
-      pieChart.Doughnut(PieData, pieOptions)
+    }
+
+        //-------------
+        //- BAR CHART -
+        //-------------
+        var barChartCanvas                   = $('#hoursChart').get(0).getContext('2d')
+        var barChart                         = new Chart(barChartCanvas)
+        var barChartData                     = areaChartData
+        var barChartOptions                  = {
+          //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+          scaleBeginAtZero        : true,
+          //Boolean - Whether grid lines are shown across the chart
+          scaleShowGridLines      : true,
+          //String - Colour of the grid lines
+          scaleGridLineColor      : 'rgba(0,0,0,.05)',
+          //Number - Width of the grid lines
+          scaleGridLineWidth      : 1,
+          //Boolean - Whether to show horizontal lines (except X axis)
+          scaleShowHorizontalLines: true,
+          //Boolean - Whether to show vertical lines (except Y axis)
+          scaleShowVerticalLines  : true,
+          //Boolean - If there is a stroke on each bar
+          barShowStroke           : true,
+          //Number - Pixel width of the bar stroke
+          barStrokeWidth          : 2,
+          //Number - Spacing between each of the X value sets
+          barValueSpacing         : 5,
+          //Number - Spacing between data sets within X values
+          barDatasetSpacing       : 1,
+          //Boolean - whether to make the chart responsive
+          responsive              : true,
+          maintainAspectRatio     : true
+        }
+        barChartOptions.datasetFill = false
+        barChart.Bar(barChartData, barChartOptions)
 
       //-------------
       //- PIE CHART -
