@@ -14,7 +14,6 @@ urlpatterns =  [
     url(r'^saveMemberHours/(?P<project_id>\d+)/$', views.saveMemberHours, name='saveMemberHours'),
     url(r'^addAssumption/(?P<project_id>\d+)/$', views.addAssumption, name='addAssumption'),
     url(r'^deleteAssumption/(?P<project_ID>\d+)/$', views.deleteAssumption, name='deleteAssumption'),
-    url(r'^updateBudget/(?P<project_id>\d+)/$', views.updateBudget, name='updateBudget'),
     url(r'^addDeliverable/(?P<project_id>\d+)/$', views.addDeliverable, name='addDeliverable'),
      url(r'^deleteDeliverable/(?P<project_ID>\d+)/(?P<deliverable_pj_ID>\d+)/$', views.deleteDeliverable, name='deleteDeliverable'),
     url(r'^updateDelivrable/(?P<project_id>\d+)/$', views.updateDelivrable, name='updateDelivrable'),

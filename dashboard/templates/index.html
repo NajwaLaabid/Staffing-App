@@ -15,8 +15,8 @@
               <th>Project Title</th>
               <th>Code project</th>
               <th>Project Phase</th>
-              <th>Budget initial &amp; Change notice</th>
-              <th>Remaining</th>
+              <th>Estimated Total Hours&amp; Change notice</th>
+              <th>Consumed Hours</th>
               <th>Action</th>
             </tr>
           </thead>
@@ -26,8 +26,8 @@
                 <td>{{project.project_title}}</td>
                 <td>{{project.project_code}}</td>
                 <td>{{project.project_phase}}</td>
-                <td>{{project.initial_budget}}</td>
-                <td>{{project.remaining_budget}}</td>
+                <td>{{project.estimated_hours}}</td>
+                <td>{{project.actual_hours}}</td>
                 <td>
                   <a href="{% url 'dashboard:view' project.project_ID %}" class="btn btn-default btn-flat">View</a>
                   <a href="{% url 'dashboard:edit' project.project_ID %}" class="btn btn-warning btn-flat">Edit</a>

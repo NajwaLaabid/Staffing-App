@@ -30,7 +30,6 @@ def edit(request, project_id):
         end_date = datetime.strptime(request.POST['end_date'], '%m/%d/%Y')
         start_date = datetime.strptime(request.POST['start_date'], '%m/%d/%Y')
         estimated_hours = request.POST['estimate_hours']
-        initial_budget = request.POST['initial_budget']
         project_phase = request.POST['project_phase']
         jesa_role = request.POST['jesa_role']
         project_status = request.POST['project_status']
@@ -44,9 +43,6 @@ def edit(request, project_id):
         if(project.jesa_role != jesa_role): project.jesa_role = jesa_role  # change field
         if(project.project_status != project_status): project.project_status = project_status  # change field
 
-        init = project.initial_budget
-        project.initial_budget = initial_budget
-        project.remaining_budget = int(initial_budget) - (int(init) - project.remaining_budget)
         project.save() # this will update only
 
         dates = [project.start_date, project.end_date]
@@ -80,19 +76,22 @@ def saveMaxHours(request, project_id):
 
     return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
-def updateBudget(request, project_id):
-    if request.method == 'POST':
-        project = Project.objects.get(project_ID=project_id)
-        project.remaining_budget = project.remaining_budget - int(request.POST['spending'])
-
-        project.save()
-        return TemplateResponse(request, 'details.html', {'project': project})
-
 def view(request, project_id):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/profiles/login')
     project = Project.objects.get(project_ID=project_id)
     resources = Resources.objects.filter(Project=project)
+    implication_left = 100
+    message = "Member"
+    disable = ""
+    text_color = ""
+    for r in resources:
+        implication_left = implication_left - r.Implication_Percentage
+
+    if implication_left <= 0:
+        disable = "disabled"
+        message = "The total implication of current employees is 100%. You should delete a resource before adding a new one."
+        text_color = "text-red"
     assumptions = Assumption.objects.filter(Project=project)
     deliverables = Deliverables.objects.filter(Project=project)
     potential_deliverables = PossibleDeliverables.objects.all()
@@ -134,11 +133,7 @@ def view(request, project_id):
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
-<<<<<<< HEAD
-    return TemplateResponse(request, 'details.html', {'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
-=======
-    return TemplateResponse(request, 'details.html', {'project': project, 'max_hours' : max_hours, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
->>>>>>> a51b54b7f2a21aec84c5dd2636de1392ece427df
+    return TemplateResponse(request, 'details.html', {'text_color':text_color,'message': message,'disable': disable,'implication_left': implication_left,'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
@@ -165,7 +160,10 @@ def deleteMember(request, project_id):
         print(member_id)
         project = Project.objects.get(project_ID=project_id)
         employee = Employee.objects.get(employee_ID=member_id)
-        Resources.objects.get(Employee=employee, Project=project).delete()
+        r = Resources.objects.get(Employee=employee, Project=project)
+        project.actual_hours = project.actual_hours - r.actual_hours
+        project.save()
+        r.delete()
         ProjectCalendar.objects.filter(Project=project, Employee=employee).delete()
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
@@ -173,7 +171,6 @@ def addMember(request, project_id):
     if request.method == 'POST':
         potential_member = request.POST['potential_member']
         Implication_Percentage = int(request.POST['Implication_Percentage'])
-
         project = Project.objects.get(project_ID=project_id)
         employee = Employee.objects.get(employee_ID=potential_member)
 
@@ -252,12 +249,10 @@ def create(request):
         end_date = datetime.strptime(request.POST['end_date'], '%m/%d/%Y')
         start_date = datetime.strptime(request.POST['start_date'], '%m/%d/%Y')
         estimate_hours = request.POST['estimate_hours']
-        initial_budget = request.POST['estimate_hours']
-        remaining_budget = request.POST['estimate_hours']
         project_phase = request.POST['project_phase']
         jesa_role = request.POST['jesa_role']
 
-        project = Project(project_code=project_code, project_title=project_title, estimated_hours=estimate_hours, initial_budget=initial_budget, remaining_budget=remaining_budget, start_date=start_date, end_date=end_date, project_phase=project_phase, jesa_role=jesa_role)
+        project = Project(project_code=project_code, project_title=project_title, estimated_hours=estimate_hours, start_date=start_date, end_date=end_date, project_phase=project_phase, jesa_role=jesa_role)
         project.save()
 
         return HttpResponseRedirect('/dashboard')
