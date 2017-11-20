@@ -113,19 +113,20 @@
           <!-- /.box-header -->
           <div class="box-body table-responsive no-padding">
             <table class="table table-hover">
-              <th>Max Hours </th>
-              <tr>
+              <th>Max Hours</th>
+
               {% for max_hour in max_hours %}
-                  <form action="{% url 'dashboard:saveMaxHours' project.project_ID %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" class="form-control" name="date" value="{{max_hour.date}}" style="width: 56px;">
-                    <select class="form-control select2 calendar-max" name="max_hours" id="max_hours_{{max_hour.date}}-{{max_hour.hours}}" data-placeholder="max hours" value="{{max_hour.hours}}" style="width: 100%;">
-                        <option value="160">160</option>
-                        <option value="200">200</option>
-                    </select>
-                  </form>
+              <th>
+                <form action="{% url 'dashboard:saveMaxHours' project.project_ID %}" method="post">
+                  {% csrf_token %}
+                  <input type="hidden" class="form-control" name="date" value="{{max_hour.date}}" style="width: 56px;">
+                  <select class="form-control select2 calendar-max" name="max_hours" id="max_hours_{{max_hour.date}}-{{max_hour.hours}}" data-placeholder="max hours" value="{{max_hour.hours}}" style="width: 100%;">
+                      <option value="160">160</option>
+                      <option value="200">200</option>
+                  </select>
+                </form>
+                </th>
               {% endfor %}
-              </tr>
               <tr>
                 <th>Name</th>
                 {% for single_date in date_range %}
@@ -245,7 +246,7 @@
                     {% endfor %}
                   </select>
                   <span class="input-group-btn">
-                    
+
                     <button type="submit" class="btn btn-default">Add Deliverable</button>
                   </span>
                 </div>
