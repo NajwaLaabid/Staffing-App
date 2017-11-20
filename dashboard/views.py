@@ -134,7 +134,7 @@ def view(request, project_id):
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
     print (max_hours)
-    return TemplateResponse(request, 'details.html', {'max_hours : max_hours, ' 'text_color':text_color,'message': message,'disable': disable,'implication_left': implication_left,'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
+    return TemplateResponse(request, 'details.html', {'max_hours' : max_hours, 'text_color':text_color,'message': message,'disable': disable,'implication_left': implication_left,'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
