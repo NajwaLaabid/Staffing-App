@@ -1,0 +1,16 @@
+[
+  {
+    "model": "team.EmployeePosition",
+    "fields": {
+    	"ID":1,
+      "title" : "Engineer"
+    }
+  },
+  {
+    "model": "team.EmployeePosition",
+    "fields": {
+    	"ID":1,
+      "title" : "Designer"
+    }
+  }
+]

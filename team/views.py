@@ -15,6 +15,9 @@ def index(request):
     h_ratio = 0
 
     for employee in employees:
+        total_hours = 0
+        total_hours_month = 0
+        #get all project of employee
         resources = Resources.objects.filter(Employee=employee)
         for resource in resources:#get hours for current month for all projects
             project_calendar = ProjectCalendar.objects.filter(Employee=employee, Project=resource.Project)
@@ -23,11 +26,13 @@ def index(request):
                     total_hours_month += month.hours
                     max_hours_month = month.max_hours
                 total_hours += month.hours
+            employee.employee_hours_month = total_hours_month 
 
         employee.employee_totalHours = total_hours
 
         if max_hours_month != 0:
             h_ratio = (total_hours_month / max_hours_month) * 100
+            employee.employee_month_ratio = h_ratio
 
         if total_hours_month < 200:
             css_class = 'progress-bar progress-bar-red progress-bar-striped'
@@ -41,7 +46,7 @@ def index(request):
 
         employee.save()
 
-        employee_i = {'employee' : employee, 'h_ratio' : h_ratio, 'hours_month' : total_hours_month, 'max_hours' : max_hours_month, 'total_hours_month' : total_hours_month, 'css_class' : css_class}
+        employee_i = {'employee' : employee, 'max_hours' : max_hours_month, 'total_hours_month' : total_hours_month, 'css_class' : css_class}
         employees_info.append(employee_i)
 
     return TemplateResponse(request, 'teamIndex.html', {'employees_info': employees_info})

@@ -27,8 +27,8 @@
             <h5 class="widget-user-desc">{{employee.employee.employee_code}}</h5>
           </div>
           <div class="progress active">
-            <div class="{{employee.css_class}}" role="progressbar" aria-valuenow="{{employee.h_ratio}}" aria-valuemin="0" aria-valuemax="100" style="width: {{employee.h_ratio}}%">
-             {{employee.total_hours_month}}
+            <div class="{{employee.css_class}}" role="progressbar" aria-valuenow="{{employee.employee.employee_month_ratio}}" aria-valuemin="0" aria-valuemax="100" style="width: {{employee.employee.employee_month_ratio}}%">
+             {{employee.employee.employee_hours_month}}
             </div>
           </div>
           <div class="box-footer no-padding">

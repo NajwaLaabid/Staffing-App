@@ -7,6 +7,8 @@ class Employee(models.Model):
     employee_firstName = models.CharField(max_length=200)
     employee_lastName = models.CharField(max_length=200)
     employee_email = models.EmailField(unique=True)
+    employee_hours_month = models.IntegerField(default=0)
+    employee_month_ratio = models.FloatField(default=0)
     employee_phoneNumber = models.CharField(max_length=200, unique=True)
     OVERCHARGED = 'OC'
     NORMAL_CHARGE = 'NC'
@@ -20,10 +22,5 @@ class Employee(models.Model):
     
     ENGINEER = 'EGR'
     DESIGNER = 'DSG'
-    ROLES = (
-        (ENGINEER, 'EGR'),
-        (DESIGNER, 'DSG'),
-    )
-
-    employee_role = models.CharField(max_length=200, null=True, choices=ROLES, default=ROLES[0][0])
+    employee_role = models.CharField(max_length=200, null=True, default="employee")
     employee_totalHours = models.IntegerField(default=0)
