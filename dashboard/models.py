@@ -14,6 +14,7 @@ class Project(models.Model):
     #     (ON_GOING, 'On going'),
     #     (HOLD, 'Hold'),
     #     (AT_RISK, 'At risk'),
+    
     # )
 	project_status = models.CharField(max_length=200, default='On going')
 
