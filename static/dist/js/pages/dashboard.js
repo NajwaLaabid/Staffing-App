@@ -200,7 +200,10 @@ $(function () {
   /* The todo list plugin */
   $('.todo-list').todoList({
     onCheck  : function () {
-      window.console.log($(this), 'The element has been checked');
+      //window.console.log($(this), 'The element has been checked');
+      $('.fa.fa-edit').on('click',function(){
+        alert('clicked on edit');
+      });
     },
     onUnCheck: function () {
       window.console.log($(this), 'The element has been unchecked');

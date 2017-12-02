@@ -100,7 +100,7 @@ def view(request, project_id):
     for d in deliverables:
         potential_deliverables = potential_deliverables.exclude(deliverable_title=d.deliverable.deliverable_title)
 
-    #for every group gather the delivs belong to it
+    #for every group gather the delivs belonging to it
     for dg in deliverables_groups:
         groups = {'group': dg['deliverable_main_category']}
         deliv_for_group = []
@@ -134,7 +134,7 @@ def view(request, project_id):
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
     print (max_hours)
-    return TemplateResponse(request, 'details.html', {'max_hours' : max_hours, 'text_color':text_color,'message': message,'disable': disable,'implication_left': implication_left,'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
+    return TemplateResponse(request, 'details.html', {'groups': deliverables_groups, 'max_hours' : max_hours, 'text_color':text_color,'message': message,'disable': disable,'implication_left': implication_left,'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
 
 def saveMemberHours(request, project_id):
     if request.method == 'POST':
@@ -199,13 +199,19 @@ def addAssumption(request, project_id):
 
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
-def deleteAssumption(request, project_ID):
-    if request.method == 'POST':
-        assumption_text = request.POST['assumption_text']
-        project = Project.objects.get(project_ID=project_ID)
-        Assumption.objects.filter(Project=project, assumption_text=assumption_text).delete()
+def deleteAssumption(request, project_ID, assumption_text):
+    project = Project.objects.get(project_ID=project_ID)
+    Assumption.objects.filter(Project=project, assumption_text=assumption_text).delete()
 
-        return HttpResponseRedirect('/dashboard/view/'+ project_ID)
+    return HttpResponseRedirect('/dashboard/view/'+ project_ID)
+
+def editAssumption(request, project_ID, assumption_text):
+    if request.method == 'POST':
+        new_assumption_text = request.POST['assumption_text']
+        project = Project.objects.get(project_ID=project_ID)
+        Assumption.objects.filter(Project=project, assumption_text=assumption_text).update(assumption_text=new_assumption_text)
+
+    return HttpResponseRedirect('/dashboard/view/'+ project_ID)
 
 def addDeliverable(request, project_id):
     if request.method == 'POST':
@@ -240,7 +246,30 @@ def deleteDeliverable(request, project_ID, deliverable_pj_ID):
 
     return HttpResponseRedirect('/dashboard/view/'+ project_ID)
 
+def deleteDeliverableGroup(request, project_ID, deliv_group):
+    PossibleDeliverables.objects.filter(deliverable_main_category=deliv_group).delete()
 
+    return HttpResponseRedirect('/dashboard/view/'+ project_ID)
+
+def editDeliverableGroup(request, project_ID, deliv_group):
+    if request.method == 'POST':
+        new_deliv_group = request.POST['deliv_group']
+        PossibleDeliverables.objects.filter(deliverable_main_category=deliv_group).update(deliverable_main_category=new_deliv_group)
+
+    return HttpResponseRedirect('/dashboard/view/'+ project_ID)
+
+def editPossibleDeliverable(request, project_ID, deliv_title):
+    if request.method == 'POST':
+        new_deliv_title = request.POST['deliv_title']
+        PossibleDeliverables.objects.filter(deliverable_title=deliv_title).update(deliverable_title=new_deliv_title)
+
+    return HttpResponseRedirect('/dashboard/view/'+ project_ID)
+
+def deletePossibleDeliverable(request, project_ID, deliv_title):
+    PossibleDeliverables.objects.filter(deliverable_title=deliv_title).delete()
+
+    return HttpResponseRedirect('/dashboard/view/'+ project_ID)
+    
 def create(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/profiles/login')
@@ -279,3 +308,13 @@ def close(request):
 
         # choose where to redirect the user after successul data addition
         # render(request, 'team_list.html', {})
+
+def createDeliverable(request, project_ID):
+    if request.method == 'POST':
+        deliverable_main_category = request.POST['deliverable_group']
+        deliverable = request.POST['deliverable']
+
+        PossibleDeliverable = PossibleDeliverables(deliverable_title=deliverable,deliverable_main_category=deliverable_main_category)
+        PossibleDeliverable.save()
+    
+    return HttpResponseRedirect('/dashboard/view/'+ project_ID)

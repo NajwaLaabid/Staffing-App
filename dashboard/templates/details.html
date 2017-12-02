@@ -218,7 +218,6 @@
                       <!-- todo text -->
                       <span class="text">{{deliv.deliverable.deliverable_title}}</span>
                       <div class="tools">
-                        <i class="fa fa-edit"></i>
                         {% if deliv.is_done != True %}
                           <a type="submit" href="{% url 'dashboard:deleteDeliverable' project.project_ID deliv.deliverable_project_ID %}"><i class="fa fa-trash-o"></i></a>
                         {% endif %}
@@ -239,7 +238,9 @@
                     {% for dpg in deliverables_per_group %}
                     <optgroup label="{{dpg.group}}">
                       {% for deliv in dpg.deliverables %}
-                        <option value="{{dpg.group}}_{{deliv.deliverable_title}}">{{deliv.deliverable_title}}</option>
+                        <option value="{{dpg.group}}_{{deliv.deliverable_title}}">
+                          {{deliv.deliverable_title}}
+                        </option>
                       {% endfor %}
                     <optgroup>
                     {% endfor %}
@@ -249,6 +250,75 @@
                   </span>
                 </div>
               </form>
+              <div class="panel box box-danger">
+                  <div class="box-header with-border">
+                    <h4 class="box-title">
+                      <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                        Add deliverable to the above list
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapseOne" class="panel-collapse collapse">
+                    <div class="box-body">
+                      <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
+                      <!-- najwa -->
+                      <ul class="todo-list ui-sortable" data-widget="todo-list">
+                        {% for dpg in deliverables_per_group %}
+                          <li>
+                            <!-- drag handle -->
+                            <span class="handle ui-sortable-handle">
+                              <a onclick="hideSubList('{{dpg.group}}-list')"><i class="fa fa-angle-down"></i></a>
+                            </span>
+                            <!-- todo text -->
+                            <form class="hidden" id="{{dpg.group}}-form" action="{% url 'dashboard:editDeliverableGroup' project.project_ID dpg.group %}" method="post">
+                              {% csrf_token %}
+                              <input type="text" class="form-control" name="deliv_group" value="{{dpg.group}}" style="width: 56px;">
+                            </form>
+                            <span id="{{dpg.group}}-lbl" class="text">{{dpg.group}}</span>
+                            <div class="tools">
+                             <a onclick="editField('{{dpg.group}}')"><i class="fa fa-edit"></i></a>
+                              <a type="submit" href="{% url 'dashboard:deleteDeliverableGroup' project.project_ID dpg.group %}"><i class="fa fa-trash-o"></i></a>
+                            </div>
+                            <ul id="{{dpg.group}}-list" name="{{dpg.group}}-list" class="todo-list ui-sortable hidden">
+                            {% for deliv in dpg.deliverables %}
+                              <li>
+                                <!-- drag handle -->
+                                <span class="handle ui-sortable-handle">
+                                  <i class="fa fa-gear"></i>
+                                </span>
+                                <!-- todo text -->
+                                <form class="hidden" id="{{deliv.deliverable_title}}-form" action="{% url 'dashboard:editPossibleDeliverable' project.project_ID deliv.deliverable_title %}" method="post">
+                              {% csrf_token %}
+                                  <input type="text" class="form-control" name="deliv_title" value="{{deliv.deliverable_title}}" style="width: 56px;">
+                                </form>
+                                <span id="{{deliv.deliverable_title}}-lbl" class="text">{{deliv.deliverable_title}}</span>
+                                <div class="tools">
+                                  <a onclick="editField('{{deliv.deliverable_title}}')"><i class="fa fa-edit"></i></a>
+                                  <a type="submit" href="{% url 'dashboard:deletePossibleDeliverable' project.project_ID deliv.deliverable_title %}"><i class="fa fa-trash-o"></i></a>
+                                </div>
+                              </li>
+                            {% endfor %}
+                            </ul>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    <div class="box-body">
+                      <form action="{% url 'dashboard:createDeliverable' project.project_ID %}" method="post">
+                        {% csrf_token %}
+                        <input name="deliverable_group" placeholder="Deliverable main category...">
+                        <input name="deliverable" placeholder="Deliverable...">
+                        <span>
+                          <button type="submit">Add</button>
+                        </span>
+                      </form>
+                    </div>
+                  </div>
+              </div>
+              <!--<form action="{% url 'dashboard:createDeliverable' project.project_ID %}" method="post">
+                <input name="newDeliv" ID="newDeliv" placeholder="Add new deliverable...">
+
+              </form>-->
               <!--<a style="float:left" href="#">Click here to modify list of deliverables</a>-->
             </div>
           </div>
@@ -269,12 +339,16 @@
               <ul class="todo-list">
                 {% for assumption in assumptions %}
                   <li>
-                    <form action="{% url 'dashboard:deleteAssumption' project.project_ID %}" method="post">
-                      {% csrf_token %}
-                      <span class="text">{{assumption.assumption_text}}</span>
-                      <input type="hidden" class="form-control" name="assumption_text" value="{{assumption.assumption_text}}">
-                      <button type="submit" class="btn btn-danger" style="float:right"><i class="fa fa-close"></i></button>
+                    {% csrf_token %}
+                    <form class="hidden" id="{{assumption.assumption_ID}}-form" action="{% url 'dashboard:editAssumption' project.project_ID assumption.assumption_text %}" method="post">
+                    {% csrf_token %}
+                      <input type="text" class="form-control" name="assumption_text" value="{{assumption.assumption_text}}" style="width: 56px;">
                     </form>
+                    <span id="{{assumption.assumption_ID}}-lbl" class="text">{{assumption.assumption_text}}</span>
+                    <div class="tools">
+                      <a onclick="editField('{{assumption.assumption_ID}}')"><i class="fa fa-edit"></i></a>
+                      <a type="submit" href="{% url 'dashboard:deleteAssumption' project.project_ID assumption.assumption_text %}"><i class="fa fa-trash-o"></i></a>
+                    </div>
                   </li>
                 {% endfor %}
               </ul>
@@ -595,6 +669,13 @@
       selectedForm = document.getElementById(field_id + "-form")
     }
 
+    function hideSubList(field_id){
+      //toggle was not working. change if get it to work
+      if(document.getElementById(field_id).classList.contains('hidden'))
+        document.getElementById(field_id).classList.remove("hidden");
+      else
+        document.getElementById(field_id).classList.add("hidden");
+    }
     $("#btnExport").click(function (e) {
         window.open('data:application/vnd.ms-excel,' + $('#dvData').html());
         e.preventDefault();
