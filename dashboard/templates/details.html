@@ -250,7 +250,7 @@
                   </span>
                 </div>
               </form>
-              <div class="panel box box-danger collapsed-box">
+              <div class="panel box box-danger">
                   <div class="box-header with-border">
                     <h4 class="box-title">
                       <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
@@ -258,7 +258,7 @@
                       </a>
                     </h4>
                   </div>
-                  <div id="collapseOne" class="panel-collapse collapse in">
+                  <div id="collapseOne" class="panel-collapse collapse">
                     <div class="box-body">
                       <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
                       <!-- najwa -->
@@ -267,8 +267,7 @@
                           <li>
                             <!-- drag handle -->
                             <span class="handle ui-sortable-handle">
-                              <i class="fa fa-ellipsis-v"></i>
-                              <i class="fa fa-ellipsis-v"></i>
+                              <a onclick="hideSubList('{{dpg.group}}-list')"><i class="fa fa-angle-down"></i></a>
                             </span>
                             <!-- todo text -->
                             <form class="hidden" id="{{dpg.group}}-form" action="{% url 'dashboard:editDeliverableGroup' project.project_ID dpg.group %}" method="post">
@@ -280,13 +279,12 @@
                              <a onclick="editField('{{dpg.group}}')"><i class="fa fa-edit"></i></a>
                               <a type="submit" href="{% url 'dashboard:deleteDeliverableGroup' project.project_ID dpg.group %}"><i class="fa fa-trash-o"></i></a>
                             </div>
-                            <ul class="todo-list ui-sortable">
+                            <ul id="{{dpg.group}}-list" name="{{dpg.group}}-list" class="todo-list ui-sortable hidden">
                             {% for deliv in dpg.deliverables %}
                               <li>
                                 <!-- drag handle -->
                                 <span class="handle ui-sortable-handle">
-                                  <i class="fa fa-ellipsis-v"></i>
-                                  <i class="fa fa-ellipsis-v"></i>
+                                  <i class="fa fa-gear"></i>
                                 </span>
                                 <!-- todo text -->
                                 <form class="hidden" id="{{deliv.deliverable_title}}-form" action="{% url 'dashboard:editPossibleDeliverable' project.project_ID deliv.deliverable_title %}" method="post">
@@ -671,6 +669,13 @@
       selectedForm = document.getElementById(field_id + "-form")
     }
 
+    function hideSubList(field_id){
+      //toggle was not working. change if get it to work
+      if(document.getElementById(field_id).classList.contains('hidden'))
+        document.getElementById(field_id).classList.remove("hidden");
+      else
+        document.getElementById(field_id).classList.add("hidden");
+    }
     $("#btnExport").click(function (e) {
         window.open('data:application/vnd.ms-excel,' + $('#dvData').html());
         e.preventDefault();
