@@ -51,3 +51,19 @@
 .progress-bar-yellow-perso {
   background-color: #FFCA28;
 }
+
+.lbl-graph{
+  height: 24px;
+  width: 56px;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+
+.lbl-graph.estimated{
+  background-color:#00a65a;
+}
+
+.lbl-graph.consumed{
+  background-color:#f56954;
+}

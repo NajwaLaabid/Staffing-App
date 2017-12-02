@@ -3,7 +3,7 @@
 {% block content %}
   <p class="login-box-msg">Register a new membership</p>
 
-  {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+  {% if error_message %}<p><strong style="color:red">{{ error_message }}</strong></p>{% endif %}
   <form action="{% url 'profiles:signup'%}" method="post">
     {% csrf_token %}
     {% for field in form %}

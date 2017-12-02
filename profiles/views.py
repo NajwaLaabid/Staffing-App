@@ -7,20 +7,26 @@ from django.forms.utils import ErrorList
 from .forms import SignUpForm, LoginForm
 
 def signup(request):
+    error_message = ""
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             user_email = form.cleaned_data.get('email')
             user_name = form.cleaned_data.get('username')
             user_password = form.cleaned_data.get('password1')
-
-            form.save()
-            user = authenticate(username=user_name, password=user_password, email=user_email)
-            dj_login(request, user)
-            return HttpResponseRedirect('/team/viewDepartments')
+            if not User.objects.filter(email=user_email).exists():
+                if not User.objects.filter(username=user_name).exists():
+                    form.save()
+                    user = authenticate(username=user_name, password=user_password, email=user_email)
+                    dj_login(request, user)
+                    return HttpResponseRedirect('/team/viewDepartments')
+                else:
+                    error_message = "username already exist"
+            else:
+                error_message = "email already exist"
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form})
+    return render(request, 'signup.html', {'form': form, 'error_message': error_message})
 
 def login(request):
     if request.method == 'POST':

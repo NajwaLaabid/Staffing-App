@@ -26,7 +26,9 @@ automatically populate a model in django
 - Run following command:
 `python manage.py loaddata <fixturename>`
 
+create superUser
+`python manage.py createsuperuser`
+
 
 Link to template
 https://adminlte.io/themes/AdminLTE/pages/UI/general.html
-
