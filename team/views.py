@@ -54,14 +54,16 @@ def index(request):
     return TemplateResponse(request, 'teamIndex.html', {'employees_info': employees_info})
 
 
-def resetPassword(request, employee_ID):
-   if request.method == 'POST':
+def generatePassword(request):
+    if request.method == 'POST':
+        current_user = request.user
         letters = string.ascii_lowercase
-        employee = Employee.objects.get(employee_ID=employee_ID)
-        employee.employee_resetpassword = ''.join(random.choice(letters) for i in range(8))
-        employee.save()
+        new_password = ''.join(random.choice(letters) for i in range(8))
+        current_user.set_password(new_password)
+        current_user.save()
 
-        return TemplateResponse(request, 'updateEmployee.html', {'employee' : employee},)
+        return TemplateResponse(request, 'generatePassword.html', {'new_password' : new_password},)
+    return TemplateResponse(request, 'generatePassword.html', {},)
 
 def viewDepartments(request):
     return TemplateResponse(request, 'departments.html')

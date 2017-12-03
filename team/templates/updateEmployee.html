@@ -55,23 +55,6 @@
     </div>
   </section>
 
-  <section class="content col-md-6 col-centered">
-    <div class="box box-primary">
-      <div class="box-body">
-        <form action="{% url 'team:resetPassword' employee.employee_ID %}" method="post" role="form">
-          {% csrf_token %}
-          <div class="form-group">
-            <label for="employee_resetpassword">Reset Password</label>
-            <input readonly type="text" name="employee_resetpassword" class="form-control" id="employee_resetpassword" placeholder="Reset Employee Password" value="{{employee.employee_resetpassword}}">
-          </div>
-          <div class="box-footer">
-              <button type="submit" class="btn btn-warning pull-right">Reset Password</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </section>
-
   <script>
     $(document).ready(function () {
       //Initialize Select2 Elements
