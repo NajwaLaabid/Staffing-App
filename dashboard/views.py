@@ -129,30 +129,39 @@ def view(request, project_id):
 
     dates = [project.start_date, project.end_date]
     date_range = list(daterange(dates))
+    date_coupled_list = []
+    nb_dates = len(date_range)
+    #get every date coupled with id because zip didn't work in template/inner loop
+    for i in range(nb_dates):
+        couple = {"n": i, "date" : date_range[i]}
+        date_coupled_list.append(couple)
+
+    nb_resources = len(resources_view)
 
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
     print (max_hours)
-    return TemplateResponse(request, 'details.html', {'groups': deliverables_groups, 'max_hours' : max_hours, 'text_color':text_color,'message': message,'disable': disable,'implication_left': implication_left,'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'resources' : resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
+    return TemplateResponse(request, 'details.html', {'date_range_coupled':date_coupled_list, 'nb_dates':nb_dates, 'groups': deliverables_groups, 'max_hours' : max_hours, 'text_color':text_color,'message': message,'disable': disable,'implication_left': implication_left,'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'nb_resources' : nb_resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
 
-def saveMemberHours(request, project_id):
+def saveMemberHours(request, project_id, nb_dates):
     if request.method == 'POST':
-        date = request.POST['date']
-        hours = int(request.POST['hours'])
-        employee_ID = request.POST['employee_ID']
-        project = Project.objects.get(project_ID=project_id)
-        employee = Employee.objects.filter(employee_ID=employee_ID)
-        pc = ProjectCalendar.objects.get(Project=project, Employee=employee, date=date)
-        r = Resources.objects.get(Employee=employee, Project=project)
-        if(pc.hours != hours):
-            diffHours = hours - pc.hours
-            r.actual_hours += diffHours
-            project.actual_hours += diffHours
-            pc.hours = hours  # change field
-            pc.save() # this will update only
-            r.save()
-            project.save()
+        for n in range(int(nb_dates)):
+            employee_ID = request.POST['employee_ID']
+            date = request.POST['date_' + employee_ID + '+' + str(n)]
+            hours = int(request.POST[employee_ID + '+' + str(n) + '-form'])
+            project = Project.objects.get(project_ID=project_id)
+            employee = Employee.objects.filter(employee_ID=employee_ID)
+            pc = ProjectCalendar.objects.get(Project=project, Employee=employee, date=date)
+            r = Resources.objects.get(Employee=employee, Project=project)
+            if(pc.hours != hours):
+                diffHours = hours - pc.hours
+                r.actual_hours += diffHours
+                project.actual_hours += diffHours
+                pc.hours = hours  # change field
+                pc.save() # this will update only
+                r.save()
+                project.save()
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def deleteMember(request, project_id):
@@ -178,7 +187,6 @@ def addMember(request, project_id):
         member_estimated_hours = project.estimated_hours * Implication_Percentage / 100
 
         dates = [project.start_date, project.end_date]
-
         r = Resources(Employee=employee, Project=project, Implication_Percentage=Implication_Percentage, estimated_hours=member_estimated_hours)
         r.save()
         date_range = list(daterange(dates))
