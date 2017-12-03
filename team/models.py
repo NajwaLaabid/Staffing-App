@@ -19,8 +19,10 @@ class Employee(models.Model):
         (NORMAL_CHARGE, 'Normal Charge'),
     )
     employee_status = models.CharField(max_length=200, null=True, choices=STATUSES, default=STATUSES[0][0])
-    
+
     ENGINEER = 'EGR'
     DESIGNER = 'DSG'
     employee_role = models.CharField(max_length=200, null=True, default="employee")
     employee_totalHours = models.IntegerField(default=0)
+
+    employee_resetpassword = models.CharField(max_length=200, default="")

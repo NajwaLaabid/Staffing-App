@@ -12,4 +12,5 @@ urlpatterns =  [
     url(r'^deleteProject/(?P<employee_ID>\d+)/$', views.deleteProject, name='deleteProject'),
     url(r'^viewEmployee/(?P<employee_ID>\d+)/$', views.viewEmployee, name='viewEmployee'),
     url(r'^updateEmployee/(?P<employee_ID>\d+)/$', views.updateEmployee, name='updateEmployee'),
+    url(r'^resetPassword/(?P<employee_ID>\d+)/$', views.resetPassword, name='resetPassword'),
 ]

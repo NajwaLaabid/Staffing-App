@@ -6,6 +6,8 @@ from django.http import HttpResponse, HttpResponseRedirect
 from datetime import timedelta, date, datetime
 from collections import OrderedDict
 
+import random, string
+
 def index(request):
     employees = Employee.objects.all()
     total_hours = 0
@@ -26,7 +28,7 @@ def index(request):
                     total_hours_month += month.hours
                     max_hours_month = month.max_hours
                 total_hours += month.hours
-            employee.employee_hours_month = total_hours_month 
+            employee.employee_hours_month = total_hours_month
 
         employee.employee_totalHours = total_hours
 
@@ -50,6 +52,16 @@ def index(request):
         employees_info.append(employee_i)
 
     return TemplateResponse(request, 'teamIndex.html', {'employees_info': employees_info})
+
+
+def resetPassword(request, employee_ID):
+   if request.method == 'POST':
+        letters = string.ascii_lowercase
+        employee = Employee.objects.get(employee_ID=employee_ID)
+        employee.employee_resetpassword = ''.join(random.choice(letters) for i in range(8))
+        employee.save()
+
+        return TemplateResponse(request, 'updateEmployee.html', {'employee' : employee},)
 
 def viewDepartments(request):
     return TemplateResponse(request, 'departments.html')
