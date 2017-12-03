@@ -49,6 +49,7 @@ class Project(models.Model):
 	end_date = models.DateTimeField()
 
 class Resources(models.Model):
+	#resource_id = models.AutoField(primary_key=True)
     Employee = models.ForeignKey('team.Employee')
     Project = models.ForeignKey(Project)
     Implication_Percentage = models.IntegerField(default=0)

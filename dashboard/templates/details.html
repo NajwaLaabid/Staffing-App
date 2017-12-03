@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% load calendar_filter %}
+{% load update_filter %}
 
 {% block content %}
   <section class="content" style="padding:0">
@@ -140,20 +141,22 @@
               {% for resource in resources_view %}
                 <tr>
                   <td>{{resource.name}}</td>
-                    {% for single_date in date_range %}
+                    <!-- najwa -->
+                    <form class="hidden" id="hours-form" name="hours_form" action="{% url 'dashboard:saveMemberHours' project.project_ID nb_dates %}" method="post">
+                    {% for single_date in date_range_coupled %}
                       <td>
-                        <form class="hidden" id="{{resource.name}}-{{single_date}}-form" action="{% url 'dashboard:saveMemberHours' project.project_ID %}" method="post">
-                          {% csrf_token %}
-                          <input type="hidden" class="form-control" name="employee_ID" value="{{resource.employee_ID}}" style="width: 56px;">
-                          <input type="hidden" class="form-control" name="date" value="{{single_date}}" style="width: 56px;">
-                          <input type="text" class="form-control" name="hours" value="{{resource|get_item:single_date}}" style="width: 56px;">
-                        </form>
-                        <div id="{{resource.name}}-{{single_date}}-lbl" onclick="editField('{{resource.name}}-{{single_date}}')">
-                          {{resource|get_item:single_date}}
+                        {% csrf_token %}
+                        <input type="hidden" class="form-control" name="employee_ID" value="{{resource.employee_ID}}" style="width: 56px;">
+                        <input type="hidden" class="form-control" name="date_{{resource.employee_ID}}+{{single_date.n}}" value="{{single_date.date}}" style="width: 56px;">
+                        <input type="text"  id="{{resource.employee_ID}}+{{single_date.n}}-form"  class="form-control hidden" name="{{resource.employee_ID}}+{{single_date.n}}-form" value="{{resource|get_item:single_date.date}}" style="width: 56px;">
+                        <div id="{{resource.employee_ID}}+{{single_date.n}}-lbl" onclick="editField('{{resource.employee_ID}}+{{single_date.n}}')">
+                          {{resource|get_item:single_date.date}}
                         </div>
                       </td>
                     {% endfor %}
-                    <td>{{resource.total}}</td>
+                      <td>{{resource.total}}</td>
+                      <td><button type="submit" id="{{resource.employee_ID}}-btn" name="{{resource.employee_ID}}-btn" class="btn btn-success hidden"><i class="fa fa-check"></i></button></td>
+                    </form>
                   <td>
                     <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#delete-employee"><i class="fa fa-close"></i></button>
                   </td>
@@ -268,7 +271,6 @@
                   <div id="collapseOne" class="panel-collapse collapse">
                     <div class="box-body">
                       <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
-                      <!-- najwa -->
                       <ul class="todo-list ui-sortable" data-widget="todo-list">
                         {% for dpg in deliverables_per_group %}
                           <li>
@@ -748,10 +750,15 @@
    });
 
     function editField(field_id){
+      var id_btn = 'empty';
+      id_btn= field_id.split('+')[0];
       document.getElementById(field_id + "-lbl").classList.add("hidden");
       document.getElementById(field_id + "-form").classList.remove("hidden");
-      if(selectedForm !== undefined) selectedForm.submit();
-      selectedForm = document.getElementById(field_id + "-form")
+      document.getElementById(id_btn + "-btn").classList.remove("hidden");
+      if(id_btn == 'empty'){
+        if(selectedForm !== undefined) selectedForm.submit();
+        selectedForm = document.getElementById(field_id + "-form");
+      }
     }
 
     function hideSubList(field_id){
