@@ -15,36 +15,26 @@
   <section class="content col-md-6 col-centered">
     <div class="box box-primary">
       <!-- /.box-header -->
+      {% if message %}<p><strong style="margin-left:5px;">Error: </strong><strong style="color:red">{{ message }}</strong></p>{% endif %}
       <!-- form start -->
       <form action="{% url 'team:updateEmployee' employee.employee_ID %}" method="post" role="form">
         {% csrf_token %}
         <div class="box-body">
+          {% for field in form %}
+            {% if field.label != "Role" %}
+            <div class="form-group has-feedback">
+              <label for="employee_code">{{ field.label }}</label>
+              {{ field }} 
+              <span class="glyphicon glyphicon-{{ field.help_text }} form-control-feedback"></span>
+              {% for error in field.errors %}
+              <p style="color: red">{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          {% endfor %}
           <div class="form-group">
-            <label for="employee_code">Code</label>
-            <input type="text" name="employee_code" class="form-control" id="employee_code" placeholder="Employee Code" value="{{employee.employee_code}}">
-          </div>
-          <div class="form-group">
-            <label>First Name</label>
-            <input type="text" name="employee_firstName" class="form-control" id="employee_firstName" placeholder="Employee First Name" value="{{employee.employee_firstName}}">
-          </div>
-          <div class="form-group">
-            <label>Last Name</label>
-            <input type="text" name="employee_lastName" class="form-control" id="employee_lastName" placeholder="Employee Last Name" value="{{employee.employee_lastName}}">
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="text" name="employee_email" class="form-control" id="employee_email" placeholder="Employee Email" value="{{employee.employee_email}}">
-          </div>
-          <div class="form-group">
-            <label>Phone Number</label>
-            <input type="text" name="employee_phoneNumber" class="form-control" id="employee_phoneNumber" placeholder="Employee Phone Number" value="{{employee.employee_phoneNumber}}">
-          </div>
-          <div class="form-group">
-            <label>Role</label>
-            <select class="form-control select2" name="employee_role" id="employee_role" style="width: 100%;">
-              <option value="EGR">Engineer</option>
-              <option value="DSG">Designer</option>
-            </select>
+            <label>{{form.fields.role.label}}</label>
+            {{form.role}}
           </div>
         </div>
         <!-- /.box-body -->

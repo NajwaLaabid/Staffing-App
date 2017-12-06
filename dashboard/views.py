@@ -4,9 +4,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from datetime import timedelta, date, datetime
 from collections import OrderedDict
 from django.db.models import Count
-
-from .models import Project, Resources, ProjectCalendar, Assumption, Deliverables, PossibleDeliverables
+from .models import Statuses, JesaRoles, Phases, Project, Resources, ProjectCalendar, Assumption, Deliverables, PossibleDeliverables
 from team.models import Employee
+from .forms import addProjectForm
+import calendar
 
 def daterange(dates):
     #start, end = [datetime.strptime(_, "%m/%d/%Y") for _ in dates]
@@ -23,44 +24,50 @@ def edit(request, project_id):
         return HttpResponseRedirect('/profiles/login')
 
     project = Project.objects.get(project_ID=project_id)
+    message = ""
 
     if request.method == 'POST':
-        project_title = request.POST['project_title']
-        project_code = request.POST['project_code']
-        end_date = datetime.strptime(request.POST['end_date'], '%m/%d/%Y')
-        start_date = datetime.strptime(request.POST['start_date'], '%m/%d/%Y')
-        estimated_hours = request.POST['estimate_hours']
-        project_phase = request.POST['project_phase']
-        jesa_role = request.POST['jesa_role']
-        project_status = request.POST['project_status']
+        form = addProjectForm(request.POST)
+        if form.is_valid():
+            if project.project_code != form.cleaned_data['code']:
+                project_other = Project.objects.filter(project_code=form.cleaned_data['code'])
+                if project_other:
+                    message = "New code already exists"
 
-        if(project.project_title != project_title): project.project_title = project_title  # change field
-        if(project.project_code != project_code): project.project_code = project_code  # change field
-        if(project.end_date != end_date): project.end_date = end_date  # change field
-        if(project.start_date != start_date): project.start_date = start_date  # change field
-        if(project.estimated_hours != estimated_hours): project.estimated_hours = estimated_hours  # change field
-        if(project.project_phase != project_phase): project.project_phase = project_phase  # change field
-        if(project.jesa_role != jesa_role): project.jesa_role = jesa_role  # change field
-        if(project.project_status != project_status): project.project_status = project_status  # change field
+            if form.cleaned_data['start_date'].isoformat() >= form.cleaned_data['end_date'].isoformat():
+                message = "End date should be greater or equal to start date"
 
-        project.save() # this will update only
+            if message == "":
+                project.project_title = form.cleaned_data['title']
+                project.project_code = form.cleaned_data['code']
+                project.end_date = form.cleaned_data['end_date']
+                project.start_date = form.cleaned_data['start_date']
+                project.estimated_hours = form.cleaned_data['estimated_hours']
+                project.project_phase = form.cleaned_data['phase']
+                project.jesa_role = form.cleaned_data['jesa_role']
+                project.project_status = form.cleaned_data['status']
+                
+                project.save() # this will update only
 
-        dates = [project.start_date, project.end_date]
-        date_range = list(daterange(dates))
+                dates = [project.start_date, project.end_date]
+                date_range = list(daterange(dates))
 
-        #max_hours_perMonth = {'Jan' : }
+                resources = Resources.objects.filter(Project=project)
+                for resource in resources:
+                    for single_date in date_range:
+                        if not ProjectCalendar.objects.filter(Employee=resource.Employee, Project=project, date=single_date).exists():
+                            c = ProjectCalendar(Employee=resource.Employee, Project=project, date=single_date)
+                            c.save()
 
-        resources = Resources.objects.filter(Project=project)
-        for resource in resources:
-            for single_date in date_range:
-                if not ProjectCalendar.objects.filter(Employee=resource.Employee, Project=project, date=single_date).exists():
-                    c = ProjectCalendar(Employee=resource.Employee, Project=project, date=single_date)
-                    c.save()
+                return HttpResponseRedirect('/dashboard')
 
-        return HttpResponseRedirect('/dashboard')
-
-    print(project.start_date)
-    return TemplateResponse(request, 'edit.html', {'project': project})
+    else:
+        status = Statuses.objects.get(text=project.project_status)
+        phase = Phases.objects.get(text=project.project_phase)
+        jesa_role = JesaRoles.objects.get(text=project.jesa_role)
+        form = addProjectForm({'code': project.project_code, 'title': project.project_title, 'status': status.pk, 'phase': phase.pk, 'jesa_role': jesa_role.pk, 'estimated_hours': project.estimated_hours, 'start_date': project.start_date, 'end_date': project.end_date})
+    
+    return TemplateResponse(request, 'edit.html', {'message': message, 'project': project, 'form': form})
 
 def saveMaxHours(request, project_id):
     if request.method == 'POST':
@@ -141,7 +148,6 @@ def view(request, project_id):
     for resource in resources:
         potential_members = potential_members.exclude(employee_ID=resource.Employee.employee_ID)
 
-    print (max_hours)
     return TemplateResponse(request, 'details.html', {'date_range_coupled':date_coupled_list, 'nb_dates':nb_dates, 'groups': deliverables_groups, 'max_hours' : max_hours, 'text_color':text_color,'message': message,'disable': disable,'implication_left': implication_left,'deliverables_per_group':deliverables_per_group, 'project': project, 'deliverables':deliverables, 'nb_resources' : nb_resources, 'resources_view': resources_view, 'assumptions': assumptions, 'potential_members': potential_members, 'date_range': date_range})
 
 def saveMemberHours(request, project_id, nb_dates):
@@ -166,8 +172,7 @@ def saveMemberHours(request, project_id, nb_dates):
 
 def deleteMember(request, project_id):
     if request.method == 'POST':
-        member_id = request.POST['member_id']
-        print(member_id)
+        member_id = request.POST['delete_elt_ID']
         project = Project.objects.get(project_ID=project_id)
         employee = Employee.objects.get(employee_ID=member_id)
         r = Resources.objects.get(Employee=employee, Project=project)
@@ -175,7 +180,8 @@ def deleteMember(request, project_id):
         project.save()
         r.delete()
         ProjectCalendar.objects.filter(Project=project, Employee=employee).delete()
-        return HttpResponseRedirect('/dashboard/view/'+ project_id)
+    
+    return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def addMember(request, project_id):
     if request.method == 'POST':
@@ -188,13 +194,32 @@ def addMember(request, project_id):
 
         dates = [project.start_date, project.end_date]
         r = Resources(Employee=employee, Project=project, Implication_Percentage=Implication_Percentage, estimated_hours=member_estimated_hours)
-        r.save()
         date_range = list(daterange(dates))
-
         for single_date in date_range:
-            c = ProjectCalendar(Employee=employee, Project=project, date=single_date)
+            #compute max_hours
+            #get month and year
+            month_str = single_date.split('-')[0]
+            month_nb = list(calendar.month_abbr).index(month_str)
+            year_str = single_date.split('-')[1]
+            year_str = '20' + year_str
+            year_nb = int(year_str)
+            #get first day of month and weekday
+            weekday_nb = calendar.monthrange(year_nb, month_nb)[0]
+            days_in_month = calendar.monthrange(year_nb, month_nb)[1]
+            #check if month has 3 mondays
+            #days of the week 0 indexed
+            if days_in_month == 31 and (weekday_nb == 0 or weekday_nb == 5 or weekday_nb == 6):
+                maxHours = 200
+            elif days_in_month == 30 and (weekday_nb == 0 or weekday_nb == 6):
+                maxHours = 200
+            elif days_in_month == 29 and (weekday_nb == 0):
+                maxHours = 200
+            else:
+                maxHours = 160
+            c = ProjectCalendar(Employee=employee, Project=project, date=single_date, max_hours=maxHours)
             c.save()
 
+        r.save()
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
 def addAssumption(request, project_id):
@@ -207,9 +232,11 @@ def addAssumption(request, project_id):
 
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
-def deleteAssumption(request, project_ID, assumption_text):
-    project = Project.objects.get(project_ID=project_ID)
-    Assumption.objects.filter(Project=project, assumption_text=assumption_text).delete()
+def deleteAssumption(request, project_ID):
+    if request.method == "POST":
+        assumption_ID = request.POST['delete_elt_ID']
+        project = Project.objects.get(project_ID=project_ID)
+        Assumption.objects.filter(Project=project, assumption_ID=assumption_ID).delete()
 
     return HttpResponseRedirect('/dashboard/view/'+ project_ID)
 
@@ -249,13 +276,17 @@ def updateDelivrable(request, project_id):
 
         return HttpResponseRedirect('/dashboard/view/'+ project_id)
 
-def deleteDeliverable(request, project_ID, deliverable_pj_ID):
-    Deliverables.objects.filter(deliverable_project_ID=deliverable_pj_ID).delete()
+def deleteDeliverable(request, project_ID):
+    if request.method == 'POST':
+        deliverable_pj_ID = request.POST['delete_elt_ID']
+        Deliverables.objects.filter(deliverable_project_ID=deliverable_pj_ID).delete()
 
     return HttpResponseRedirect('/dashboard/view/'+ project_ID)
 
-def deleteDeliverableGroup(request, project_ID, deliv_group):
-    PossibleDeliverables.objects.filter(deliverable_main_category=deliv_group).delete()
+def deleteDeliverableGroup(request, project_ID):
+    if request.method == "POST":
+        deliv_group = request.POST['delete_elt_ID']
+        PossibleDeliverables.objects.filter(deliverable_main_category=deliv_group).delete()
 
     return HttpResponseRedirect('/dashboard/view/'+ project_ID)
 
@@ -273,32 +304,44 @@ def editPossibleDeliverable(request, project_ID, deliv_title):
 
     return HttpResponseRedirect('/dashboard/view/'+ project_ID)
 
-def deletePossibleDeliverable(request, project_ID, deliv_title):
-    PossibleDeliverables.objects.filter(deliverable_title=deliv_title).delete()
+def deletePossibleDeliverable(request, project_ID):
+    if request.method == "POST":
+        deliv_ID = request.POST['delete_elt_ID']
+        PossibleDeliverables.objects.filter(deliverable_ID=deliv_ID).delete()
 
     return HttpResponseRedirect('/dashboard/view/'+ project_ID)
     
 def create(request):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/profiles/login')
+    message = ""
     if request.method == 'POST':
-        project_title = request.POST['project_title']
-        project_code = request.POST['project_code']
-        end_date = datetime.strptime(request.POST['end_date'], '%m/%d/%Y')
-        start_date = datetime.strptime(request.POST['start_date'], '%m/%d/%Y')
-        estimate_hours = request.POST['estimate_hours']
-        project_phase = request.POST['project_phase']
-        jesa_role = request.POST['jesa_role']
+        form = addProjectForm(request.POST)
+        if form.is_valid():
+            project_title = form.cleaned_data['title']
+            project_code = form.cleaned_data['code']
+            #check if unique project
+            projects = Project.objects.filter(project_code=project_code)
+            if projects:
+                message = "Project code already exists"
+            #check if start and end date correct
+            elif form.cleaned_data['start_date'].isoformat() >= form.cleaned_data['end_date'].isoformat():
+                message = "End date should be greater or equal to start date"
+            else:
+                end_date = form.cleaned_data['end_date']
+                start_date = form.cleaned_data['start_date']
+                estimate_hours = form.cleaned_data['estimated_hours']
+                project_phase = form.cleaned_data['phase']
+                jesa_role = form.cleaned_data['jesa_role']
+                status = form.cleaned_data['status']
+                project = Project(project_status=status, project_code=project_code, project_title=project_title, estimated_hours=estimate_hours, start_date=start_date, end_date=end_date, project_phase=project_phase, jesa_role=jesa_role)
+                project.save()
 
-        project = Project(project_code=project_code, project_title=project_title, estimated_hours=estimate_hours, start_date=start_date, end_date=end_date, project_phase=project_phase, jesa_role=jesa_role)
-        project.save()
-
-        return HttpResponseRedirect('/dashboard')
-
-        # choose where to redirect the user after successul data addition
-        #return HttpResponseRedirect('/dashboard')
+                return HttpResponseRedirect('/dashboard')
+    else:
+        form = addProjectForm()
     employees = Employee.objects.all()
-    return render(request, 'create.html', {'employees': employees})
+    return render(request, 'create.html', {'form': form, 'message': message, 'employees': employees})
 
 def close(request):
     if not request.user.is_authenticated():

@@ -2,15 +2,37 @@
   {
     "model": "team.EmployeePosition",
     "fields": {
-    	"ID":1,
-      "title" : "Engineer"
+      "text" : "Head of Department"
     }
   },
   {
     "model": "team.EmployeePosition",
     "fields": {
-    	"ID":1,
-      "title" : "Designer"
+      "text" : "Senior Lead Engineer"
+    }
+  },
+  {
+    "model": "team.EmployeePosition",
+    "fields": {
+      "text" : "Specialist"
+    }
+  },
+  {
+    "model": "team.EmployeePosition",
+    "fields": {
+      "text" : "Lead Engineer"
+    }
+  },
+  {
+    "model": "team.EmployeePosition",
+    "fields": {
+      "text" : "Engineer"
+    }
+  },
+  {
+    "model": "team.EmployeePosition",
+    "fields": {
+      "text" : "Designer"
     }
   }
 ]

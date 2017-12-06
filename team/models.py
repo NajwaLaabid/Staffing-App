@@ -1,6 +1,12 @@
 from django.db import models
 
 # Create your models here.
+class EmployeePosition(models.Model):
+    ID = models.AutoField(primary_key=True)
+    text = models.CharField(max_length=200, unique=True)
+    def __str__(self):
+        return u'{0}'.format(self.text)
+
 class Employee(models.Model):
     employee_ID = models.AutoField(primary_key=True)
     employee_code = models.CharField(max_length=200, unique=True)
@@ -19,8 +25,7 @@ class Employee(models.Model):
         (NORMAL_CHARGE, 'Normal Charge'),
     )
     employee_status = models.CharField(max_length=200, null=True, choices=STATUSES, default=STATUSES[0][0])
-    
-    ENGINEER = 'EGR'
-    DESIGNER = 'DSG'
-    employee_role = models.CharField(max_length=200, null=True, default="employee")
+    employee_role = models.ForeignKey('EmployeePosition', default='')
     employee_totalHours = models.IntegerField(default=0)
+
+

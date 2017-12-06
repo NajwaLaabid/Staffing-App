@@ -2,27 +2,73 @@
 {% load staticfiles %}
 
 {% block content %}
-  <section class="content-header">
-      <h1>
-        Employees
-        <!-- <small>Preview page</small> -->
-      </h1>
-      <!-- <ol class="breadcrumb">
-        <li><a href="/"><i class="fa fa-dashboard"></i> Home</a></li>
-        <li class="active">Projects</li>
-      </ol> -->
-  </section>
   <section class="content">
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Employees</h3>
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body">
+        <table id="project-table" class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Employee Name</th>
+              <th>Employee Code</th>
+              <th>Employee Role</th>
+              <th>Hours This Month</th>
+              <th>Status</th>
+              <th>Total Estimated Hours</th>
+              <th>Total Hours Left</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for employee in employees_info %}
+              <tr>
+                <td>{{employee.employee.employee_firstName}} {{employee.employee.employee_lastName}}</td>
+                <td>{{employee.employee.employee_code}}</td>
+                <td>{{employee.employee.employee_role}}</td>
+                <td>{{employee.employee.employee_hours_month}}</td>
+                <td class="{{employee.css_class}}">{{employee.employee.employee_status}}</td>
+                <td>{{employee.total_estimated_hours}}</td>
+                <td>{{employee.hours_left}}</td>
+                <td>
+                  {% csrf_token %}
+                  <div class="pull-right">
+                    <a href="{% url 'team:deleteEmployee' employee.employee.employee_ID %}" class="btn btn-flat btn-danger">Delete</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="{% url 'team:updateEmployee' employee.employee.employee_ID %}" class="btn btn-default btn-flat">Update</a>
+                  </div>
+                  <div class="pull-right">
+                    <a href="{% url 'team:viewEmployee' employee.employee.employee_ID %}" class="btn btn-default btn-flat">View</a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+  </section>
+
+  <script>
+      $(function () {
+        $('#project-table').DataTable()
+  </script>
+  <!--<section class="content">
     {% for employee in employees_info %}
       <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
-        <!-- Widget: user widget style 1 -->
+        <!-- Widget: user widget style 1 
         <div class="box box-widget widget-user-2">
-          <!-- Add the bg color to the header using any of the bg-* classes -->
+          <!-- Add the bg color to the header using any of the bg-* classes 
           <div class="widget-user-header bg-yellow">
             <!-- <div class="widget-user-image">
               <img class="img-circle" src="{% static "dist/img/photo2.png" %}" alt="Project Logo">
             </div> -->
-            <!-- /.widget-user-image -->
+            <!-- /.widget-user-image 
             <h3 class="widget-user-username">{{employee.employee.employee_firstName}} {{employee.employee.employee_lastName}}</h3>
             <h5 class="widget-user-desc">{{employee.employee.employee_code}}</h5>
           </div>
@@ -53,8 +99,8 @@
             </div>
           </div>
         </div>
-        <!-- /.widget-user -->
+        <!-- /.widget-user 
       </div>
     {% endfor %}
-  </section>
+  </section>-->
 {% endblock %}

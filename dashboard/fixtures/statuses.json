@@ -1,0 +1,32 @@
+[
+  {
+    "model": "dashboard.Statuses",
+    "fields": {
+      "text": "On going"
+    }
+  },
+  {
+    "model": "dashboard.Statuses",
+    "fields": {
+      "text": "Hold"
+    }
+  },
+  {
+    "model": "dashboard.Statuses",
+    "fields": {
+      "text": "Cancelled"
+    }
+  },
+  {
+    "model": "dashboard.Statuses",
+    "fields": {
+      "text": "Closed"
+    }
+  },
+  {
+    "model": "dashboard.Statuses",
+    "fields": {
+      "text": "Estimate Proposal"
+    }
+  }
+]

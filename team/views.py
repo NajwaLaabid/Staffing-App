@@ -5,6 +5,9 @@ from dashboard.models import Project, Resources, ProjectCalendar
 from django.http import HttpResponse, HttpResponseRedirect
 from datetime import timedelta, date, datetime
 from collections import OrderedDict
+import calendar
+from .forms import addEmployeeForm
+
 
 def index(request):
     employees = Employee.objects.all()
@@ -13,40 +16,41 @@ def index(request):
     max_hours_month = 0
     employees_info = []
     h_ratio = 0
+    hours_left = 0
 
     for employee in employees:
-        total_hours = 0
+        total_estimated_hours = 0
         total_hours_month = 0
-        #get all project of employee
+        #get all projects of employee
         resources = Resources.objects.filter(Employee=employee)
         for resource in resources:#get hours for current month for all projects
+            #get estimated hours
+            total_estimated_hours += resource.estimated_hours
+            hours_left += resource.estimated_hours - resource.actual_hours
             project_calendar = ProjectCalendar.objects.filter(Employee=employee, Project=resource.Project)
             for month in project_calendar: #get hours of current month
                 if datetime.now().strftime('%b') == month.date.split('-')[0]:
                     total_hours_month += month.hours
                     max_hours_month = month.max_hours
-                total_hours += month.hours
             employee.employee_hours_month = total_hours_month 
-
-        employee.employee_totalHours = total_hours
 
         if max_hours_month != 0:
             h_ratio = (total_hours_month / max_hours_month) * 100
             employee.employee_month_ratio = h_ratio
 
-        if total_hours_month < 200:
-            css_class = 'progress-bar progress-bar-red progress-bar-striped'
-            employee.employee_status = 'UC'
-        elif total_hours_month == 200:
-            css_class = 'progress-bar progress-bar-green progress-bar-striped'
-            employee.employee_status = 'NC'
+        if total_hours_month < max_hours_month :
+            css_class = 'bg-red'
+            employee.employee_status = 'Under-charged'
+        elif total_hours_month == max_hours_month:
+            css_class = 'bg-green'
+            employee.employee_status = 'Normal charge'
         else:
-            css_class = 'progress-bar progress-bar-yellow-perso  progress-bar-striped'
-            employee.employee_status = 'OC'
+            css_class = 'bg-yellow'
+            employee.employee_status = 'Over-charged'
 
         employee.save()
 
-        employee_i = {'employee' : employee, 'max_hours' : max_hours_month, 'total_hours_month' : total_hours_month, 'css_class' : css_class}
+        employee_i = {'total_estimated_hours': total_estimated_hours,'hours_left': hours_left, 'employee' : employee, 'max_hours' : max_hours_month, 'total_hours_month' : total_hours_month, 'css_class' : css_class}
         employees_info.append(employee_i)
 
     return TemplateResponse(request, 'teamIndex.html', {'employees_info': employees_info})
@@ -105,23 +109,37 @@ def getEmployeeStatus(request):
     return TemplateResponse(request, 'teamIndex.html', {'employees': employees,})
 
 def addEmployee(request):
-    #if not request.user.is_authenticated():
-     #   return HttpResponseRedirect('/profiles/login')
+    if not request.user.is_authenticated():
+        return HttpResponseRedirect('/profiles/login')
+    message = ""
     if request.method == 'POST':
-        # ADD TO DB
-        employee = Employee.objects.create(employee_code = request.POST['employee_code']
-        , employee_firstName = request.POST['employee_firstName']
-        , employee_lastName = request.POST['employee_lastName']
-        , employee_email = request.POST['employee_email']
-        , employee_phoneNumber = request.POST['employee_phoneNumber']
-        , employee_role = request.POST['employee_role']
-        , employee_status = 'UC' #initially all employees undercharge
-        , employee_totalHours = 0)
+        form = addEmployeeForm(request.POST)
+        if form.is_valid():
+            employees_code = Employee.objects.filter(employee_code= form.cleaned_data['code'])
+            employees_email = Employee.objects.filter(employee_email= form.cleaned_data['email'])
+            employees_phone = Employee.objects.filter(employee_email= form.cleaned_data['phone'])
+            if employees_code:
+                message = "Code already used by another employee"
+            elif employees_email:
+                message = "Email already used by another employee"
+            elif employees_phone:
+                message = "Phone number already used by another employee"
+            else:
+                employee = Employee.objects.create(employee_code = form.cleaned_data['code']
+                , employee_firstName = form.cleaned_data['fname']
+                , employee_lastName = form.cleaned_data['lname']
+                , employee_email = form.cleaned_data['email']
+                , employee_phoneNumber = form.cleaned_data['phone']
+                , employee_role = form.cleaned_data['role']
+                , employee_status = 'UC' #initially all employees undercharge
+                , employee_totalHours = 0) 
 
-        employee.save()
-
-        return HttpResponseRedirect('/team')
-    return TemplateResponse(request, 'addEmployee.html',{})
+                employee.save()
+        
+                return HttpResponseRedirect('/team')
+    else:
+        form = addEmployeeForm()
+    return TemplateResponse(request, 'addEmployee.html',{'message' : message, 'form': form})
 
 def deleteEmployee(request, employee_ID):
     Employee.objects.get(pk=employee_ID).delete()
@@ -130,18 +148,37 @@ def deleteEmployee(request, employee_ID):
 
 
 def updateEmployee(request, employee_ID):
-    if request.method == 'POST':
-        # ADD TO DB
-        employee = Employee.objects.get(employee_ID=employee_ID)
-        employee.employee_code = request.POST['employee_code']
-        employee.employee_firstName = request.POST['employee_firstName']
-        employee.employee_lastName = request.POST['employee_lastName']
-        employee.employee_email = request.POST['employee_email']
-        employee.employee_phoneNumber = request.POST['employee_phoneNumber']
-        employee.employee_role = request.POST['employee_role']
-        employee.save()
-
-        return HttpResponseRedirect('/team')
-
+    message = ""
     employee = Employee.objects.get(employee_ID=employee_ID)
-    return TemplateResponse(request, 'updateEmployee.html', {'employee' : employee},)
+    if request.method == 'POST':
+        form = addEmployeeForm(request.POST)
+        if form.is_valid():
+            #check if new code is not duplicate
+            if employee.employee_code != form.cleaned_data['code']:
+                employee_other = Employee.objects.filter(employee_code=form.cleaned_data['code'])
+                if employee_other:
+                    message = "New code already exists"
+
+            if employee.employee_email != form.cleaned_data['email']:
+                employee_other = Employee.objects.filter(employee_email=form.cleaned_data['email'])
+                if employee_other:
+                    message = "New email already exists"
+
+            if employee.employee_phoneNumber != form.cleaned_data['phone']:
+                employee_other = Employee.objects.filter(employee_phoneNumber=form.cleaned_data['phone'])
+                if employee_other:
+                    message = "New phone already exists"
+            if message == '':     
+                employee.employee_code = form.cleaned_data['code']
+                employee.employee_firstName = form.cleaned_data['fname']
+                employee.employee_lastName = form.cleaned_data['lname']
+                employee.employee_email = form.cleaned_data['email']
+                employee.employee_phoneNumber = form.cleaned_data['phone']
+                employee.employee_role = form.cleaned_data['role']
+                employee.save()
+
+                return HttpResponseRedirect('/team')
+    else:
+        form = addEmployeeForm({'code': employee.employee_code, 'fname': employee.employee_firstName, 'lname': employee.employee_lastName, 'email': employee.employee_email, 'phone': employee.employee_phoneNumber, 'role': employee.employee_role})
+    
+    return TemplateResponse(request, 'updateEmployee.html', {'employee': employee, 'message': message, 'form' : form})

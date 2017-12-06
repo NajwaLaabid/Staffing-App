@@ -11,10 +11,13 @@
       <div class="box box-widget widget-user">
         <!-- Add the bg color to the header using any of the bg-* classes -->
         <div class="widget-user-header bg-aqua-active">
-          <h3 class="widget-user-username">{{project.project_title}}<button class="btn btn-success pull-right" id="btnExport" style="margin-right:16px;"><i class="fa fa-file-text"></i></button>
-          {% if project.project_status != "Cancelled" %}
-              <a href="{% url 'dashboard:edit' project.project_ID %}" type="submit" class="btn btn-primary pull-right" style="margin-right:16px;"><i class="fa fa-edit"></i></a></h3>
-          {% endif %}
+          <h3 class="widget-user-username">
+            {{project.project_title}}
+            <button title="Download Report" class="btn btn-success pull-right" id="btnExport" style="margin-right:16px;"><i class="fa fa-file-text"></i></button>
+            {% if project.project_status != "Cancelled" %}
+              <a title="Click to edit project information" href="{% url 'dashboard:edit' project.project_ID %}" type="submit" class="btn btn-primary pull-right" style="margin-right:16px;"><i class="fa fa-edit"></i></a>
+            {% endif %}
+          </h3>
           <h5 class="widget-user-desc">{{project.project_code}}</h5>
         </div>
         <div class="box-footer" style="padding: 0; border-top:0">
@@ -102,7 +105,7 @@
             <!-- /.box-body -->
 
             <div class="box-footer">
-              <button type="submit" class="btn btn-info pull-right">Add New Member</button>
+              <button title="Add a new member" type="submit" class="btn btn-info pull-right">Add New Member</button>
             </div>
           </div>
         </form>
@@ -114,10 +117,10 @@
           <div class="box-header">
             <h3 class="box-title">Team</h3>
           </div>
-          <!-- /.box-header -->
+          <!-- /.box-header --> 
           <div class="box-body table-responsive no-padding">
             <table class="table table-hover">
-              <th>Max Hours </th>
+              <!--<th>Max Hours </th>
               {% for max_hour in max_hours %}
                 <th>
                   <form action="{% url 'dashboard:saveMaxHours' project.project_ID %}" method="post">
@@ -128,8 +131,8 @@
                         <option value="200">200</option>
                     </select>
                   </form>
-                  </th>
-                {% endfor %}
+                </th>
+              {% endfor %}-->
               <tr>
                 <th>Name</th>
                 {% for single_date in date_range %}
@@ -141,7 +144,6 @@
               {% for resource in resources_view %}
                 <tr>
                   <td>{{resource.name}}</td>
-                    <!-- najwa -->
                     <form class="hidden" id="hours-form" name="hours_form" action="{% url 'dashboard:saveMemberHours' project.project_ID nb_dates %}" method="post">
                     {% for single_date in date_range_coupled %}
                       <td>
@@ -155,10 +157,11 @@
                       </td>
                     {% endfor %}
                       <td>{{resource.total}}</td>
-                      <td><button type="submit" id="{{resource.employee_ID}}-btn" name="{{resource.employee_ID}}-btn" class="btn btn-success hidden"><i class="fa fa-check"></i></button></td>
+                      <td><button title="Submit" type="submit" id="{{resource.employee_ID}}-btn" name="{{resource.employee_ID}}-btn" class="btn btn-success hidden"><i class="fa fa-check"></i></button></td>
                     </form>
                   <td>
-                    <button type="submit" class="btn btn-danger" data-toggle="modal" data-target="#delete-employee"><i class="fa fa-close"></i></button>
+                    <!--last-->
+                    <button title="Delete Employee" type="submit" class="btn btn-danger" onclick="openModal('deleteMember', 'Employee',{{resource.employee_ID}}, '{{resource.name}}', '{{project.project_title}}');"><i class="fa fa-close"></i></button>
                   </td>
                 </tr>
               {% endfor %}
@@ -229,7 +232,8 @@
                       <span class="text">{{deliv.deliverable.deliverable_title}}</span>
                       <div class="tools">
                         {% if deliv.is_done != True %}
-                          <a type="submit" href="{% url 'dashboard:deleteDeliverable' project.project_ID deliv.deliverable_project_ID %}"><i class="fa fa-trash-o"></i></a>
+                          <!--najwa-->
+                          <a type="submit" onclick="openModal('deleteDeliverable', 'Deliverable',{{deliv.deliverable_project_ID}}, '{{deliv.deliverable.deliverable_title}}', '{{project.project_title}}');"><i class="fa fa-trash-o"></i></a>
                         {% endif %}
                       </div>
                     </li>
@@ -256,14 +260,14 @@
                     {% endfor %}
                   </select>
                   <span class="input-group-btn">
-                    <button type="submit" class="btn btn-default">Add Deliverable</button>
+                    <button title="Add deliverable" type="submit" class="btn btn-default">Add Deliverable</button>
                   </span>
                 </div>
               </form>
               <div class="panel box box-danger">
                   <div class="box-header with-border">
                     <h4 class="box-title">
-                      <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                      <a title="Show list of deliverables" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
                         Add deliverable to the above list
                       </a>
                     </h4>
@@ -275,8 +279,8 @@
                         {% for dpg in deliverables_per_group %}
                           <li>
                             <!-- drag handle -->
-                            <span class="handle ui-sortable-handle">
-                              <a onclick="hideSubList('{{dpg.group}}-list')"><i class="fa fa-angle-down"></i></a>
+                            <span style="cursor:pointer">
+                              <a title="Click to show deliverables in this group" onclick="hideSubList('{{dpg.group}}-list')"><i class="fa fa-angle-down"></i></a>
                             </span>
                             <!-- todo text -->
                             <form class="hidden" id="{{dpg.group}}-form" action="{% url 'dashboard:editDeliverableGroup' project.project_ID dpg.group %}" method="post">
@@ -285,8 +289,8 @@
                             </form>
                             <span id="{{dpg.group}}-lbl" class="text">{{dpg.group}}</span>
                             <div class="tools">
-                             <a onclick="editField('{{dpg.group}}')"><i class="fa fa-edit"></i></a>
-                              <a type="submit" href="{% url 'dashboard:deleteDeliverableGroup' project.project_ID dpg.group %}"><i class="fa fa-trash-o"></i></a>
+                             <a title="Click to edit deliverable group" onclick="editField('{{dpg.group}}')"><i class="fa fa-edit"></i></a>
+                              <a title="Click to delete deliverable group" type="submit" onclick="openModal('deleteDeliverableGroup','Deliverable Main Category', '{{dpg.group}}', '{{dpg.group}}', '{{project.project_title}}');"><i class="fa fa-trash-o"></i></a>
                             </div>
                             <ul id="{{dpg.group}}-list" name="{{dpg.group}}-list" class="todo-list ui-sortable hidden">
                             {% for deliv in dpg.deliverables %}
@@ -302,8 +306,8 @@
                                 </form>
                                 <span id="{{deliv.deliverable_title}}-lbl" class="text">{{deliv.deliverable_title}}</span>
                                 <div class="tools">
-                                  <a onclick="editField('{{deliv.deliverable_title}}')"><i class="fa fa-edit"></i></a>
-                                  <a type="submit" href="{% url 'dashboard:deletePossibleDeliverable' project.project_ID deliv.deliverable_title %}"><i class="fa fa-trash-o"></i></a>
+                                  <a title="Click to edit deliverable" onclick="editField('{{deliv.deliverable_title}}')"><i class="fa fa-edit"></i></a>
+                                  <a title="Click to delete deliverable from list" type="submit"  onclick="openModal('deletePossibleDeliverable','Possible Deliverable', {{deliv.deliverable_ID}}, '{{deliv.deliverable_title}}', 'project.project_title');"><i class="fa fa-trash-o"></i></a>
                                 </div>
                               </li>
                             {% endfor %}
@@ -318,7 +322,7 @@
                         <input name="deliverable_group" placeholder="Deliverable main category...">
                         <input name="deliverable" placeholder="Deliverable...">
                         <span>
-                          <button type="submit">Add</button>
+                          <button title="Add deliverable to the list above" type="submit">Add</button>
                         </span>
                       </form>
                     </div>
@@ -355,8 +359,9 @@
                     </form>
                     <span id="{{assumption.assumption_ID}}-lbl" class="text">{{assumption.assumption_text}}</span>
                     <div class="tools">
-                      <a onclick="editField('{{assumption.assumption_ID}}')"><i class="fa fa-edit"></i></a>
-                      <a type="submit" href="{% url 'dashboard:deleteAssumption' project.project_ID assumption.assumption_text %}"><i class="fa fa-trash-o"></i></a>
+                      <a title="Click to edit assumption" onclick="editField('{{assumption.assumption_ID}}')"><i class="fa fa-edit"></i></a>
+                      <!-- najwa -->
+                      <a title="Click to delete assumption" onclick="openModal('deleteAssumption','Assumption', {{assumption.assumption_ID}}, '{{assumption.assumption_text}}', 'project.project_title');"><i class="fa fa-trash-o"></i></a>
                     </div>
                   </li>
                 {% endfor %}
@@ -369,7 +374,7 @@
                 <div class="box-footer clearfix no-border input-group input-group-sm" style="wid">
                   <input type="text" name="assumption_text" class="form-control" id="assumption_text" placeholder="Your assumption ...">
                   <span class="input-group-btn">
-                    <button type="submit" class="btn btn-default"> Add Assumption</button>
+                    <button title="Add assumption" type="submit" class="btn btn-default"> Add Assumption</button>
                   </span>
                 </div>
               </form>
@@ -490,49 +495,26 @@
     </table>
   </div>
 
-  <div class="modal modal-danger fade" id="delete-employee">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Delete Employee</h4>
-          </div>
-          <div class="modal-body">
-            <p>deleting an employee would be permanent... are you sure?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-            <form action="{% url 'dashboard:deleteMember' project.project_ID %}" method="post">
-              {% csrf_token %}
-              <input type="hidden" class="form-control" name="member_id" value="{{resource.employee_ID}}">
-              <button type="submit" class="btn btn-outline">Remove Employee</button>
-            </form>
-          </div>
-        </div>
-        <!-- /.modal-content -->
-      </div>
-      <!-- /.modal-dialog -->
-    </div>
   <!-- /.modal -->
 
-  <div class="modal modal-danger fade" id="delete-delivrable">
+  <div class="modal modal-danger fade" id="delete-modal">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button title="Close modal" type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Delete Employee</h4>
+            <h4 id="delete_modal_title" name ="modal_title" class="modal-title"></h4>
           </div>
           <div class="modal-body">
-            <p>deleting an employee would be permanent... are you sure?</p>
+            <p id="delete_elt_text" name="delete_elt_text"></p>
+            <p>Deleting this element would be permanent. Proceed anyway?</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-            <form action="{% url 'dashboard:deleteMember' project.project_ID %}" method="post">
+            <button title="Close modal" type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+            <form id="delete-form-modal" name="delete-form-modal" action="" method="post">
               {% csrf_token %}
-              <input type="hidden" class="form-control" name="member_id" value="{{resource.employee_ID}}">
-              <button type="submit" class="btn btn-outline">Remove Employee</button>
+              <input type="hidden" id="delete_elt_ID" name="delete_elt_ID">
+              <button title="Delete Element" type="submit" class="btn btn-outline">Delete</button>
             </form>
           </div>
         </div>
@@ -540,33 +522,6 @@
       </div>
       <!-- /.modal-dialog -->
     </div>
-  <!-- /.modal -->
-
-  <div class="modal modal-danger fade" id="delete-assumption">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Delete Employee</h4>
-          </div>
-          <div class="modal-body">
-            <p>deleting an employee would be permanent... are you sure?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
-            <form action="{% url 'dashboard:deleteMember' project.project_ID %}" method="post">
-              {% csrf_token %}
-              <input type="hidden" class="form-control" name="member_id" value="{{resource.employee_ID}}">
-              <button type="submit" class="btn btn-outline">Remove Employee</button>
-            </form>
-          </div>
-        </div>
-        <!-- /.modal-content -->
-      </div>
-      <!-- /.modal-dialog -->
-    </div>
-  <!-- /.modal -->
 
   <script>
     var selectedForm;
@@ -695,7 +650,7 @@
           barDatasetSpacing       : 1,
           //Boolean - whether to make the chart responsive
           responsive              : true,
-          maintainAspectRatio     : true
+          maintainAspectRatio     : true,
         }
         barChartOptions.datasetFill = false
         barChart.Bar(barChartData, barChartOptions)
@@ -768,6 +723,37 @@
       else
         document.getElementById(field_id).classList.add("hidden");
     }
+
+    //najwa
+    function openModal(action, modal_title, element_ID, element_title, project_title){
+        document.getElementById("delete_modal_title").innerHTML = 'Delete ' + modal_title;
+        document.getElementById("delete_elt_ID").value = element_ID;
+
+        if (action == "deleteDeliverableGroup")
+          document.getElementById("delete_elt_text").innerHTML = 'You are about to delete ' + element_title + ' from project ' + project_title + ' Note that deleting this category would delete all the deliverables within it. ';
+        else
+          document.getElementById("delete_elt_text").innerHTML = 'You are about to delete ' + element_title + ' from project ' + project_title;
+
+        $('#delete-modal').modal('show');
+
+        if (action == "deleteDeliverable")
+          action_full = "{% url 'dashboard:deleteDeliverable' project.project_ID %}";
+
+        else if (action == "deleteAssumption")
+          action_full = "{% url 'dashboard:deleteAssumption' project.project_ID %}";
+
+        else if (action == "deletePossibleDeliverable")
+          action_full = "{% url 'dashboard:deletePossibleDeliverable' project.project_ID %}";
+
+        else if (action == "deleteDeliverableGroup")
+          action_full = "{% url 'dashboard:deleteDeliverableGroup' project.project_ID %}";
+
+        else if (action == "deleteMember")
+          action_full = "{% url 'dashboard:deleteMember' project.project_ID %}";
+
+        $('#delete-form-modal').attr('action', action_full);
+    }
+
     $("#btnExport").click(function (e) {
         window.open('data:application/vnd.ms-excel,' + $('#dvData').html());
         e.preventDefault();
