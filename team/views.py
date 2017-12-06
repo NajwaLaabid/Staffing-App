@@ -9,6 +9,8 @@ import calendar
 from .forms import addEmployeeForm
 
 
+import random, string
+
 def index(request):
     employees = Employee.objects.all()
     total_hours = 0
@@ -54,6 +56,18 @@ def index(request):
         employees_info.append(employee_i)
 
     return TemplateResponse(request, 'teamIndex.html', {'employees_info': employees_info})
+
+
+def generatePassword(request):
+    if request.method == 'POST':
+        current_user = request.user
+        letters = string.ascii_lowercase
+        new_password = ''.join(random.choice(letters) for i in range(8))
+        current_user.set_password(new_password)
+        current_user.save()
+
+        return TemplateResponse(request, 'generatePassword.html', {'new_password' : new_password},)
+    return TemplateResponse(request, 'generatePassword.html', {},)
 
 def viewDepartments(request):
     return TemplateResponse(request, 'departments.html')

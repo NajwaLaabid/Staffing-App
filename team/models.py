@@ -27,5 +27,5 @@ class Employee(models.Model):
     employee_status = models.CharField(max_length=200, null=True, choices=STATUSES, default=STATUSES[0][0])
     employee_role = models.ForeignKey('EmployeePosition', default='')
     employee_totalHours = models.IntegerField(default=0)
-
+    employee_resetpassword = models.CharField(max_length=200, default="")
 
