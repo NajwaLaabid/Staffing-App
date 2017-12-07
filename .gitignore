@@ -1,4 +1,3 @@
-db.sqlite3
 team/migrations
 team/views
 team/__pycache__
