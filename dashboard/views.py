@@ -65,7 +65,7 @@ def edit(request, project_id):
         status = Statuses.objects.get(text=project.project_status)
         phase = Phases.objects.get(text=project.project_phase)
         jesa_role = JesaRoles.objects.get(text=project.jesa_role)
-        form = addProjectForm({'code': project.project_code, 'title': project.project_title, 'status': status.pk, 'phase': phase.pk, 'jesa_role': jesa_role.pk, 'estimated_hours': project.estimated_hours, 'start_date': project.start_date, 'end_date': project.end_date})
+        form = addProjectForm({'code': project.project_code, 'title': project.project_title, 'status': status.pk, 'phase': phase.pk, 'jesa_role': jesa_role.pk, 'estimated_hours': project.estimated_hours, 'start_date': project.start_date.date, 'end_date': project.end_date.date})
     
     return TemplateResponse(request, 'edit.html', {'message': message, 'project': project, 'form': form})
 
