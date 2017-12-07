@@ -88,11 +88,13 @@
                             {% endfor %}
                           </select>
                         {% endif %}
+                        {% if user.username == "Employee" %}
                         <select disabled class="form-control select2" name="potential_member" data-placeholder="Select an employee" style="width: 100%;">
-                            {% for potential_member in potential_members %}
-                              <option value="{{potential_member.employee_ID}}">{{potential_member.employee_lastName}} {{potential_member.employee_firstName}}</option>
-                            {% endfor %}
-                          </select>
+                          {% for potential_member in potential_members %}
+                            <option value="{{potential_member.employee_ID}}">{{potential_member.employee_lastName}} {{potential_member.employee_firstName}}</option>
+                          {% endfor %}
+                        </select>
+                        {% endif %}
                     </div>
                     <!-- /input-group -->
                   </div>
@@ -105,12 +107,14 @@
                       </div>
                     </div>
                   {% endif %}
+                  {% if user.username == "Employee" %}
                   <div class="col-lg-12">
                       <div class="form-group" style="width: 100%;">
                           <label>Percentage of Implication</label>
                           <input disabled type="number" max="{{implication_left}}"  min="0"class="form-control" name="Implication_Percentage" step="5" style="width: 100%;">
                       </div>
-                    </div>
+                  </div>
+                  {% endif %}
                   <!-- /.col-lg-6 -->
                 </div>
               <!-- /.row -->
@@ -754,7 +758,7 @@
         document.getElementById("delete_elt_ID").value = element_ID;
 
         if (action == "deleteDeliverableGroup")
-          document.getElementById("delete_elt_text").innerHTML = 'You are about to delete ' + element_title + ' from project ' + project_title + ' Note that deleting this category would delete all the deliverables within it. ';
+          document.getElementById("delete_elt_text").innerHTML = 'You are about to delete <b>' + element_title + '</b> from project <b>' + project_title + '</b> Note that deleting this category would delete all the deliverables within it. ';
         else
           document.getElementById("delete_elt_text").innerHTML = 'You are about to delete ' + element_title + ' from project ' + project_title;
 
