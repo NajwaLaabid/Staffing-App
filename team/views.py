@@ -15,7 +15,7 @@ def index(request):
     employees = Employee.objects.all()
     total_hours = 0
     total_hours_month = 0
-    max_hours_month = 0
+    max_hours_month = 1
     employees_info = []
     h_ratio = 0
     hours_left = 0
@@ -155,8 +155,9 @@ def addEmployee(request):
         form = addEmployeeForm()
     return TemplateResponse(request, 'addEmployee.html',{'message' : message, 'form': form})
 
-def deleteEmployee(request, employee_ID):
-    Employee.objects.get(pk=employee_ID).delete()
+def deleteEmployee(request):
+    if request.method == 'POST':
+        Employee.objects.get(pk=request.POST['delete_elt_ID']).delete()
 
     return HttpResponseRedirect('/team/')
 

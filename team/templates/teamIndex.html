@@ -34,12 +34,14 @@
                 <td>{{employee.hours_left}}</td>
                 <td>
                   {% csrf_token %}
-                  <div class="pull-right">
-                    <a href="{% url 'team:deleteEmployee' employee.employee.employee_ID %}" class="btn btn-flat btn-danger">Delete</a>
-                  </div>
-                  <div class="pull-right">
-                    <a href="{% url 'team:updateEmployee' employee.employee.employee_ID %}" class="btn btn-default btn-flat">Update</a>
-                  </div>
+                  {% if user.username == "Manager"%}
+                    <div class="pull-right">
+                      <a onclick="openModal('deleteEmployee', 'Employee',{{employee.employee.employee_ID}}, '{{employee.employee.employee_ID}}', '');" class="btn btn-flat btn-danger">Delete</a>
+                    </div>
+                    <div class="pull-right">
+                      <a href="{% url 'team:updateEmployee' employee.employee.employee_ID %}" class="btn btn-default btn-flat">Update</a>
+                    </div>
+                  {% endif %}
                   <div class="pull-right">
                     <a href="{% url 'team:viewEmployee' employee.employee.employee_ID %}" class="btn btn-default btn-flat">View</a>
                   </div>
@@ -54,53 +56,48 @@
     <!-- /.box -->
   </section>
 
+  <div class="modal modal-danger fade" id="delete-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button title="Close modal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 id="delete_modal_title" name ="modal_title" class="modal-title"></h4>
+          </div>
+          <div class="modal-body">
+            <p id="delete_elt_text" name="delete_elt_text"></p>
+            <p>Deleting this element would be permanent. Proceed anyway?</p>
+          </div>
+          <div class="modal-footer">
+            <button title="Close modal" type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+            <form id="delete-form-modal" name="delete-form-modal" action="" method="post">
+              {% csrf_token %}
+              <input type="hidden" id="delete_elt_ID" name="delete_elt_ID">
+              <button title="Delete Element" type="submit" class="btn btn-outline">Delete</button>
+            </form>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+  </div>
+
   <script>
       $(function () {
         $('#project-table').DataTable()
+      });
+      function openModal(action, modal_title, element_ID, element_title, project_title){
+          document.getElementById("delete_modal_title").innerHTML = 'Delete ' + modal_title;
+          document.getElementById("delete_elt_ID").value = element_ID;
+
+          document.getElementById("delete_elt_text").innerHTML = 'You are about to delete employee <b>' + element_title + '</b>. The employee will be permanently deleted from all projects.';
+
+          if (action == "deleteEmployee")
+            action_full = "{% url 'team:deleteEmployee' %}";
+
+          $('#delete-form-modal').attr('action', action_full);
+
+          $('#delete-modal').modal('show');
+      }
   </script>
-  <!--<section class="content">
-    {% for employee in employees_info %}
-      <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
-        <!-- Widget: user widget style 1 
-        <div class="box box-widget widget-user-2">
-          <!-- Add the bg color to the header using any of the bg-* classes 
-          <div class="widget-user-header bg-yellow">
-            <!-- <div class="widget-user-image">
-              <img class="img-circle" src="{% static "dist/img/photo2.png" %}" alt="Project Logo">
-            </div> -->
-            <!-- /.widget-user-image 
-            <h3 class="widget-user-username">{{employee.employee.employee_firstName}} {{employee.employee.employee_lastName}}</h3>
-            <h5 class="widget-user-desc">{{employee.employee.employee_code}}</h5>
-          </div>
-          <div class="progress active">
-            <div class="{{employee.css_class}}" role="progressbar" aria-valuenow="{{employee.employee.employee_month_ratio}}" aria-valuemin="0" aria-valuemax="100" style="width: {{employee.employee.employee_month_ratio}}%">
-             {{employee.employee.employee_hours_month}}
-            </div>
-          </div>
-          <div class="box-footer no-padding">
-            <ul class="nav nav-stacked">
-              <li><a href="#">Role<span class="pull-right badge bg-muted">{{employee.employee.employee_role}}</span></a></li>
-              <li><a href="#">Status <span class="pull-right badge bg-yellow">{{employee.employee.employee_status}}</span></a></li>
-              <li><a href="#">Total Hours<span class="pull-right badge bg-muted">{{employee.employee.employee_totalHours}}</span></a></li>
-            </ul>
-          </div>
-          <div class="box-footer box-action">
-            <form action="{% url 'team:deleteEmployee' employee.employee.employee_ID %}" method="post">
-              {% csrf_token %}
-              <div class="pull-right">
-                <button type="submit" class="btn btn-flat btn-danger">Delete</button>
-              </div>
-            </form>
-            <div class="pull-right">
-              <a href="{% url 'team:updateEmployee' employee.employee.employee_ID %}" class="btn btn-default btn-flat">Update</a>
-            </div>
-            <div class="pull-right">
-              <a href="{% url 'team:viewEmployee' employee.employee.employee_ID %}" class="btn btn-default btn-flat">View</a>
-            </div>
-          </div>
-        </div>
-        <!-- /.widget-user 
-      </div>
-    {% endfor %}
-  </section>-->
 {% endblock %}

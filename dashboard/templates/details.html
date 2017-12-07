@@ -14,7 +14,7 @@
           <h3 class="widget-user-username">
             {{project.project_title}}
             <button title="Download Report" class="btn btn-success pull-right" id="btnExport" style="margin-right:16px;"><i class="fa fa-file-text"></i></button>
-            {% if project.project_status != "Cancelled" %}
+            {% if project.project_status != "Cancelled" and user.username == "Manager" %}
               <a title="Click to edit project information" href="{% url 'dashboard:edit' project.project_ID %}" type="submit" class="btn btn-primary pull-right" style="margin-right:16px;"><i class="fa fa-edit"></i></a>
             {% endif %}
           </h3>
@@ -81,22 +81,36 @@
                   <div class="col-lg-12">
                     <div class="form-group" style="width: 100%;">
                         <label class='{{text_color}}'>{{message}}</label>
-                        <select {{disable}} class="form-control select2" name="potential_member" data-placeholder="Select an employee" style="width: 100%;">
-                          {% for potential_member in potential_members %}
-                            <option value="{{potential_member.employee_ID}}">{{potential_member.employee_lastName}} {{potential_member.employee_firstName}}</option>
-                          {% endfor %}
-                        </select>
+                        {% if user.username == "Manager" %}
+                          <select {{disable}} class="form-control select2" name="potential_member" data-placeholder="Select an employee" style="width: 100%;">
+                            {% for potential_member in potential_members %}
+                              <option value="{{potential_member.employee_ID}}">{{potential_member.employee_lastName}} {{potential_member.employee_firstName}}</option>
+                            {% endfor %}
+                          </select>
+                        {% endif %}
+                        <select disabled class="form-control select2" name="potential_member" data-placeholder="Select an employee" style="width: 100%;">
+                            {% for potential_member in potential_members %}
+                              <option value="{{potential_member.employee_ID}}">{{potential_member.employee_lastName}} {{potential_member.employee_firstName}}</option>
+                            {% endfor %}
+                          </select>
                     </div>
                     <!-- /input-group -->
                   </div>
                   <!-- /.col-lg-6 -->
-                  <div class="col-lg-12">
-                    <div class="form-group" style="width: 100%;">
-                        <label>Percentage of Implication</label>
-                        <input {{disable}} type="number" max="{{implication_left}}"  min="0"class="form-control" name="Implication_Percentage" step="5" style="width: 100%;">
+                  {% if user.username == "Manager" %}
+                    <div class="col-lg-12">
+                      <div class="form-group" style="width: 100%;">
+                          <label>Percentage of Implication</label>
+                          <input {{disable}} type="number" max="{{implication_left}}"  min="0"class="form-control" name="Implication_Percentage" step="5" style="width: 100%;">
+                      </div>
                     </div>
-                    <!-- /input-group -->
-                  </div>
+                  {% endif %}
+                  <div class="col-lg-12">
+                      <div class="form-group" style="width: 100%;">
+                          <label>Percentage of Implication</label>
+                          <input disabled type="number" max="{{implication_left}}"  min="0"class="form-control" name="Implication_Percentage" step="5" style="width: 100%;">
+                      </div>
+                    </div>
                   <!-- /.col-lg-6 -->
                 </div>
               <!-- /.row -->
@@ -151,17 +165,25 @@
                         <input type="hidden" class="form-control" name="employee_ID" value="{{resource.employee_ID}}" style="width: 56px;">
                         <input type="hidden" class="form-control" name="date_{{resource.employee_ID}}+{{single_date.n}}" value="{{single_date.date}}" style="width: 56px;">
                         <input type="text"  id="{{resource.employee_ID}}+{{single_date.n}}-form"  class="form-control hidden" name="{{resource.employee_ID}}+{{single_date.n}}-form" value="{{resource|get_item:single_date.date}}" style="width: 56px;">
-                        <div id="{{resource.employee_ID}}+{{single_date.n}}-lbl" onclick="editField('{{resource.employee_ID}}+{{single_date.n}}')">
-                          {{resource|get_item:single_date.date}}
-                        </div>
+                        {% if user.username == "Manager" %}
+                          <div id="{{resource.employee_ID}}+{{single_date.n}}-lbl" onclick="editField('{{resource.employee_ID}}+{{single_date.n}}')">
+                            {{resource|get_item:single_date.date}}
+                          </div>
+                        {% endif %}
+                          <div id="{{resource.employee_ID}}+{{single_date.n}}-lbl">
+                            {{resource|get_item:single_date.date}}
+                          </div>
                       </td>
                     {% endfor %}
                       <td>{{resource.total}}</td>
-                      <td><button title="Submit" type="submit" id="{{resource.employee_ID}}-btn" name="{{resource.employee_ID}}-btn" class="btn btn-success hidden"><i class="fa fa-check"></i></button></td>
+                      {% if user.username == "Manager" %}
+                        <td><button title="Submit" type="submit" id="{{resource.employee_ID}}-btn" name="{{resource.employee_ID}}-btn" class="btn btn-success hidden"><i class="fa fa-check"></i></button></td>
+                      {% endif %}
                     </form>
                   <td>
-                    <!--last-->
-                    <button title="Delete Employee" type="submit" class="btn btn-danger" onclick="openModal('deleteMember', 'Employee',{{resource.employee_ID}}, '{{resource.name}}', '{{project.project_title}}');"><i class="fa fa-close"></i></button>
+                    {% if user.username == "Manager" %}
+                      <button title="Delete Employee" type="submit" class="btn btn-danger" onclick="openModal('deleteMember', 'Employee',{{resource.employee_ID}}, '{{resource.name}}', '{{project.project_title}}');"><i class="fa fa-close"></i></button>
+                    {% endif %}
                   </td>
                 </tr>
               {% endfor %}
@@ -230,12 +252,14 @@
                       <input type="checkbox" name="is_done" {% if deliv.is_done == True %} checked {% endif %}/>
                       <!-- todo text -->
                       <span class="text">{{deliv.deliverable.deliverable_title}}</span>
-                      <div class="tools">
-                        {% if deliv.is_done != True %}
-                          <!--najwa-->
-                          <a type="submit" onclick="openModal('deleteDeliverable', 'Deliverable',{{deliv.deliverable_project_ID}}, '{{deliv.deliverable.deliverable_title}}', '{{project.project_title}}');"><i class="fa fa-trash-o"></i></a>
-                        {% endif %}
-                      </div>
+                      {% if user.username == "Manager" %}
+                        <div class="tools">
+                          {% if deliv.is_done != True %}
+                            <!--najwa-->
+                            <a type="submit" onclick="openModal('deleteDeliverable', 'Deliverable',{{deliv.deliverable_project_ID}}, '{{deliv.deliverable.deliverable_title}}', '{{project.project_title}}');"><i class="fa fa-trash-o"></i></a>
+                          {% endif %}
+                        </div>
+                      {% endif %}
                     </li>
                   </form>
                 </li>
@@ -243,7 +267,7 @@
               </ul>
             </div>
             <!-- /.box-body -->
-
+            {% if user.username == "Manager" %}
             <div class="box-footer clearfix no-border">
               <form action="{% url 'dashboard:addDeliverable' project.project_ID %}" method="post">
                 {% csrf_token %}
@@ -268,7 +292,7 @@
                   <div class="box-header with-border">
                     <h4 class="box-title">
                       <a title="Show list of deliverables" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                        Add deliverable to the above list
+                        Modify Deliverable List
                       </a>
                     </h4>
                   </div>
@@ -328,12 +352,8 @@
                     </div>
                   </div>
               </div>
-              <!--<form action="{% url 'dashboard:createDeliverable' project.project_ID %}" method="post">
-                <input name="newDeliv" ID="newDeliv" placeholder="Add new deliverable...">
-
-              </form>-->
-              <!--<a style="float:left" href="#">Click here to modify list of deliverables</a>-->
             </div>
+            {% endif %}
           </div>
           <!-- /.box -->
       </div>
@@ -358,16 +378,19 @@
                       <input type="text" class="form-control" name="assumption_text" value="{{assumption.assumption_text}}" style="width: 56px;">
                     </form>
                     <span id="{{assumption.assumption_ID}}-lbl" class="text">{{assumption.assumption_text}}</span>
-                    <div class="tools">
-                      <a title="Click to edit assumption" onclick="editField('{{assumption.assumption_ID}}')"><i class="fa fa-edit"></i></a>
-                      <!-- najwa -->
-                      <a title="Click to delete assumption" onclick="openModal('deleteAssumption','Assumption', {{assumption.assumption_ID}}, '{{assumption.assumption_text}}', 'project.project_title');"><i class="fa fa-trash-o"></i></a>
-                    </div>
+                    {% if user.username == "Manager" %}
+                      <div class="tools">
+                        <a title="Click to edit assumption" onclick="editField('{{assumption.assumption_ID}}')"><i class="fa fa-edit"></i></a>
+                        <!-- najwa -->
+                        <a title="Click to delete assumption" onclick="openModal('deleteAssumption','Assumption', {{assumption.assumption_ID}}, '{{assumption.assumption_text}}', 'project.project_title');"><i class="fa fa-trash-o"></i></a>
+                      </div>
+                    {% endif %}
                   </li>
                 {% endfor %}
               </ul>
             </div>
             <!-- /.box-body -->
+            {% if user.username == "Manager" %}
             <div class="box-footer clearfix no-border input-group input-group-sm">
               <form action="{% url 'dashboard:addAssumption' project.project_ID %}" method="post">
                 {% csrf_token %}
@@ -379,6 +402,7 @@
                 </div>
               </form>
             </div>
+            {% endif %}
           </div>
           <!-- /.box -->
       </div>
@@ -521,7 +545,7 @@
         <!-- /.modal-content -->
       </div>
       <!-- /.modal-dialog -->
-    </div>
+  </div>
 
   <script>
     var selectedForm;

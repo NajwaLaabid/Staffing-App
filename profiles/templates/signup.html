@@ -3,7 +3,7 @@
 {% block content %}
   <p class="login-box-msg">Register a new membership</p>
 
-  {% if error_message %}<p><strong style="color:red">{{ error_message }}</strong></p>{% endif %}
+  {% if message %}<p><strong style="color:red">{{ message }}</strong></p>{% endif %}
   <form action="{% url 'profiles:signup'%}" method="post">
     {% csrf_token %}
     {% for field in form %}
@@ -15,19 +15,9 @@
         {% endfor %}
       </div>
     {% endfor %}
-      <!--<div class="row">
-        <div class="col-xs-8">
-          <div class="checkbox icheck">
-            <label>
-              <input type="checkbox"> I agree to the <a href="#">terms</a>
-            </label>
-          </div>
-      </div>
-      <!-- /.col -->
-      <div class="col-xs-4">
-        <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
-      </div>
-      <!-- /.col -->
+    <div class="col-xs-4">
+      <button type="submit" class="btn btn-primary btn-block btn-flat">Register</button>
+    </div>
   </form>
 
   <a href="{% url 'profiles:login' %}" class="text-center">I already have a membership</a>

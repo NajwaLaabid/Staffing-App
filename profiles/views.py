@@ -7,44 +7,41 @@ from django.forms.utils import ErrorList
 from .forms import SignUpForm, LoginForm
 
 def signup(request):
-    error_message = ""
+    message = ""
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
-            user_email = form.cleaned_data.get('email')
-            user_name = form.cleaned_data.get('username')
-            user_password = form.cleaned_data.get('password1')
-            if not User.objects.filter(email=user_email).exists():
-                if not User.objects.filter(username=user_name).exists():
-                    form.save()
-                    user = authenticate(username=user_name, password=user_password, email=user_email)
+            user = form.cleaned_data['user']
+            user_password = form.cleaned_data['password1']
+            confirm_password = form.cleaned_data['password2']
+            if confirm_password == user_password:
+                message = "Passwords do not match"
+            if not User.objects.filter(username=user).exists():
+                    user_obj = User.objects.create_user(user, password=user_password)
+                    user = authenticate(username=user, password=user_password)
                     dj_login(request, user)
                     return HttpResponseRedirect('/team/viewDepartments')
-                else:
-                    error_message = "username already exist"
             else:
-                error_message = "email already exist"
+                    message = "Account already exists"
     else:
         form = SignUpForm()
-    return render(request, 'signup.html', {'form': form, 'error_message': error_message})
+    return render(request, 'signup.html', {'form': form, 'message': message})
 
 def login(request):
+    message = ""
     if request.method == 'POST':
-        # form = LoginForm(request.POST)
-        # user = form.login(request.POST)
-        message = ""
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(username=username, password=password)
-        if user:
-            dj_login(request, user)
-            return HttpResponseRedirect('/team/viewDepartments')# Redirect to a success page.
-        else:
-            message = "Invalid credentials"
-            return render(request, 'login.html', {"message" : message})
-    # else:
-    #     form = LoginForm()
-    return render(request, 'login.html', )
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            if user:
+                dj_login(request, user)
+                return HttpResponseRedirect('/team/viewDepartments')# Redirect to a success page.
+            else:
+                message = "Invalid credentials"
+                return render(request, 'login.html', {"form": form, "message" : message})
+    else:
+        form = LoginForm()
+    return render(request, 'login.html', {"form": form, "message" : message})
 
 def logout(request):
     dj_logout(request)
@@ -53,16 +50,21 @@ def logout(request):
 def resetpassword(request):
     message = ""
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user_new_password = request.POST['user_new_password']
-        user = authenticate(username=username, password=password)
-        if user:
-            user.set_password(user_new_password)
-            user.save()
-            dj_login(request, user)
-            return HttpResponseRedirect('/team/viewDepartments')# Redirect to a success page.
-        else:
-            message = "Invalid credentials"
-            return render(request, 'resetpassword.html', {"message" : message})
-    return render(request, 'resetpassword.html', {"message" : message})
+        form = ResetPasswordForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user_new_password = form.cleaned_data['user_new_password']
+            user = authenticate(username=username, password=password)
+            if user:
+                user.set_password(user_new_password)
+                user.save()
+                dj_login(request, user)
+                return HttpResponseRedirect('/team/viewDepartments')# Redirect to a success page.
+            else:
+                message = "Invalid credentials"
+                return render(request, 'resetpassword.html', {"form": form, "message" : message})
+    
+    else:
+        form = ResetPasswordForm()
+    return render(request, 'resetpassword.html', {"form": form, "message" : message})

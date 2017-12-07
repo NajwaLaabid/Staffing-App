@@ -30,7 +30,9 @@
                 <td>{{project.actual_hours}}</td>
                 <td>
                   <a href="{% url 'dashboard:view' project.project_ID %}" class="btn btn-default btn-flat">View</a>
-                  <a href="{% url 'dashboard:edit' project.project_ID %}" class="btn btn-warning btn-flat">Edit</a>
+                  {% if user.username == "Manager" %}
+                    <a href="{% url 'dashboard:edit' project.project_ID %}" class="btn btn-warning btn-flat">Edit</a>
+                  {% endif %}
                 </td>
               </tr>
             {% endfor %}

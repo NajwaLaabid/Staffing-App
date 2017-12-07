@@ -3,9 +3,6 @@ from django.forms import ModelChoiceField
 from django.core.validators import validate_email
 from .models import JesaRoles, Phases, Statuses
 
-class MyModelChoiceField(ModelChoiceField):
-    def label_from_instance(self, obj):
-        return obj.text
 
 class addProjectForm(forms.Form):
 	code = forms.CharField(label="Code", max_length=200, widget=forms.TextInput(
