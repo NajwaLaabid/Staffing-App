@@ -1,0 +1,26 @@
+[
+  {
+    "model": "dashboard.JesaRoles",
+    "fields": {
+      "text": "EPC"
+    }
+  },
+  {
+    "model": "dashboard.JesaRoles",
+    "fields": {
+      "text": "PMC"
+    }
+  },
+  {
+    "model": "dashboard.JesaRoles",
+    "fields": {
+      "text": "EPCM"
+    }
+  },
+  {
+    "model": "dashboard.JesaRoles",
+    "fields": {
+      "text": "EPS"
+    }
+  }
+]

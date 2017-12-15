@@ -1,0 +1,14 @@
+[
+  {
+    "model": "profiles.UserTypes",
+    "fields": {
+      "text": "Manager"
+    }
+  },
+  {
+    "model": "profiles.UserTypes",
+    "fields": {
+      "text": "Employee"
+    }
+  }
+]

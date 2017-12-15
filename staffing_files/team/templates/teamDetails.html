@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <section class="content" style="padding:0">
+    <div class="col-md-12" style="padding:0">
+          <!-- Widget: user widget style 1 -->
+          <div class="box box-widget widget-user">
+            <!-- Add the bg color to the header using any of the bg-* classes -->
+            <div class="widget-user-header bg-aqua-active">
+              <h3 class="widget-user-username">{{employee.employee_firstName}} {{employee.employee_lastName}}</h3>
+              <h5 class="widget-user-desc">{{employee.employee_code}}</h5>
+            </div>
+            <div>
+            </div>
+            <div class="box-footer" style="padding: 0">
+              <div class="row">
+                <div class="col-sm-3 border-right">
+                  <div class="description-block">
+                    <h5 class="description-header">{{employee.employee_status}}</h5>
+                    <span class="description-text">STATUS</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 border-right">
+                  <div class="description-block">
+                    <h5 class="description-header">{{employee.employee_totalHours}}</h5>
+                    <span class="description-text">Total Hours</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3 border-right">
+                  <div class="description-block">
+                    <h5 class="description-header">{{employee.employee_email}}</h5>
+                    <span class="description-text">EMAIL</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-3">
+                  <div class="description-block">
+                    <h5 class="description-header">{{employee.employee_phoneNumber}}</h5>
+                    <span class="description-text">PHONE NUMBER</span>
+                  </div>
+                  <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+              </div>
+              <!-- /.row -->
+            </div>
+          </div>
+          <!-- /.widget-user -->
+        </div>
+
+  <div class="row" style="padding: 0 16px">
+      <div class="col-xs-12">
+        {% for pj in projects_with_dates %}
+        <div class="box">
+          <!--<div class="box-header">
+            <h3 class="box-title">Team</h3>
+
+            <div class="box-tools">
+              <form action="{% url 'team:addProject' employee.employee_ID %}" method="post">
+                <div class="input-group input-group-sm pull-right" style="width: 320px;">
+                    {% csrf_token %}
+                    <select class="form-control select2" name="potential_project" data-placeholder="Select a Project"
+                            style="width: 100%;">
+                      {% for potential_project in potential_projects %}
+                      <option value="{{potential_project.project_ID}}">{{potential_project.project_title}}</option>
+                      {% endfor %}
+                    </select>
+                    <span class="input-group-btn">
+                      <button type="submit" class="btn btn-info btn-flat">Add</button>
+                    </span>
+                </div>
+              </form>
+            </div>
+          </div>-->
+          <!-- /.box-header -->
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+              <tr>
+                <th>Project Title</th>
+                {% for single_date in pj.1 %}
+                <th>{{single_date}}</th>
+                {% endfor %}
+              </tr>
+              <tr>
+                <td>{{pj.0.project_title}}</td>
+                {% for hours_per_month in pj.2 %}
+                <td>{{hours_per_month.hours_month}}</td>
+                {% endfor %}
+              </tr>
+              <!-- <tr>
+                <td>175</td>
+                <td>Mike Doe</td>
+                <td>11-7-2014</td>
+                <td><span class="label label-danger">Denied</span></td>
+                <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
+              </tr> -->
+            </table>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <br>
+        {% endfor %}
+        <!-- /.box -->
+      </div>
+    </div>
+  </section>
+
+  <script>
+    $(function () {
+      $('.select2').select2()
+    })
+  </script>
+{% endblock %}

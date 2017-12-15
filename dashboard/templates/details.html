@@ -588,13 +588,13 @@
           value    : {{project.actual_hours}},
           color    : '#f56954',
           highlight: '#f56954',
-          label    : 'Actual Hours'
+          label    : 'Consumed Hours'
         },
         {
           value    : {{project.estimated_hours|compute_difference:project.actual_hours}},
           color    : '#00a65a',
           highlight: '#00a65a',
-          label    : 'Estimated Hours'
+          label    : 'Remaining Hours'
         }
       ]
       var pieOptions     = {

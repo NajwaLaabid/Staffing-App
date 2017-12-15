@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <section class="content">
+    <div class="box">
+      <div class="box-header">
+        <h3 class="box-title">Employees</h3>
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body">
+        <table id="project-table" class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th>Employee Name</th>
+              <th>Employee Code</th>
+              <th>Employee Role</th>
+              <th>Hours This Month</th>
+              <th>Status</th>
+              <th>Total Estimated Hours</th>
+              <th>Total Hours Left</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for employee in employees_info %}
+              <tr>
+                <td>{{employee.employee.employee_firstName}} {{employee.employee.employee_lastName}}</td>
+                <td>{{employee.employee.employee_code}}</td>
+                <td>{{employee.employee.employee_role}}</td>
+                <td>{{employee.employee.employee_hours_month}}</td>
+                <td class="{{employee.css_class}}">{{employee.employee.employee_status}}</td>
+                <td>{{employee.total_estimated_hours}}</td>
+                <td>{{employee.hours_left}}</td>
+                <td>
+                  {% csrf_token %}
+                  {% if user.username == "Manager"%}
+                    <div class="pull-right">
+                      <a onclick="openModal('deleteEmployee', 'Employee',{{employee.employee.employee_ID}}, '{{employee.employee.employee_ID}}', '');" class="btn btn-flat btn-danger">Delete</a>
+                    </div>
+                    <div class="pull-right">
+                      <a href="{% url 'team:updateEmployee' employee.employee.employee_ID %}" class="btn btn-default btn-flat">Update</a>
+                    </div>
+                  {% endif %}
+                  <div class="pull-right">
+                    <a href="{% url 'team:viewEmployee' employee.employee.employee_ID %}" class="btn btn-default btn-flat">View</a>
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <!-- /.box-body -->
+    </div>
+    <!-- /.box -->
+  </section>
+
+  <div class="modal modal-danger fade" id="delete-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button title="Close modal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 id="delete_modal_title" name ="modal_title" class="modal-title"></h4>
+          </div>
+          <div class="modal-body">
+            <p id="delete_elt_text" name="delete_elt_text"></p>
+            <p>Deleting this element would be permanent. Proceed anyway?</p>
+          </div>
+          <div class="modal-footer">
+            <button title="Close modal" type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+            <form id="delete-form-modal" name="delete-form-modal" action="" method="post">
+              {% csrf_token %}
+              <input type="hidden" id="delete_elt_ID" name="delete_elt_ID">
+              <button title="Delete Element" type="submit" class="btn btn-outline">Delete</button>
+            </form>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+  </div>
+
+  <script>
+      $(function () {
+        $('#project-table').DataTable()
+      });
+      function openModal(action, modal_title, element_ID, element_title, project_title){
+          document.getElementById("delete_modal_title").innerHTML = 'Delete ' + modal_title;
+          document.getElementById("delete_elt_ID").value = element_ID;
+
+          document.getElementById("delete_elt_text").innerHTML = 'You are about to delete employee <b>' + element_title + '</b>. The employee will be permanently deleted from all projects.';
+
+          if (action == "deleteEmployee")
+            action_full = "{% url 'team:deleteEmployee' %}";
+
+          $('#delete-form-modal').attr('action', action_full);
+
+          $('#delete-modal').modal('show');
+      }
+  </script>
+{% endblock %}

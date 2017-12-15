@@ -1,0 +1,44 @@
+[
+  {
+    "model": "dashboard.phases",
+    "fields": {
+      "text": "Feasibility – Phase I"
+    }
+  },
+  {
+    "model": "dashboard.phases",
+    "fields": {
+      "text": "Conceptual – Phase II"
+    }
+  },
+  {
+    "model": "dashboard.phases",
+    "fields": {
+      "text": "Detail – Phase IV"
+    }
+  },
+  {
+    "model": "dashboard.phases",
+    "fields": {
+      "text": "Basic – Phase III"
+    }
+  },
+  {
+    "model": "dashboard.phases",
+    "fields": {
+      "text": "Construction – Phase V"
+    }
+  },
+  {
+    "model": "dashboard.phases",
+    "fields": {
+      "text": "Commissioning – Phase VI"
+    }
+  },
+  {
+    "model": "dashboard.phases",
+    "fields": {
+      "text": "Closeout – Phase VII"
+    }
+  }
+]

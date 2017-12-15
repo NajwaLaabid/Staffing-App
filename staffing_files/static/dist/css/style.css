@@ -1,0 +1,102 @@
+.widget-user-2 .widget-user-image>img {
+    width: 65px;
+    height: 65px;
+    float: left;
+}
+
+.box-action{
+  background-color: #f9f9f9;
+}
+
+.box-action .pull-right{
+  margin-left: 8px;
+}
+
+.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.navbar-nav>.user-menu>.dropdown-menu>li.user-header,
+.widget-user .widget-user-header
+{
+  height : auto;
+}
+
+.widget-user-2 .widget-user-username, .widget-user-2 .widget-user-desc{
+  margin-left: 0;
+}
+
+.todo-list li {
+  border-radius: 2px;
+  padding: 10px;
+  background: #f4f4f4;
+  margin-bottom: 2px;
+  border-left: 2px solid #e6e7e8;
+  color: #444;
+}
+
+.todo-list li.done {
+    color: #999;
+}
+
+.todo-list li.done span{
+  text-decoration: line-through;
+}
+
+.todo-list li .label{
+    font-size: 14px;
+}
+
+.progress-bar-yellow-perso {
+  background-color: #FFCA28;
+}
+
+.lbl-graph{
+  height: 24px;
+  width: 56px;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 8px;
+}
+
+.lbl-graph.estimated{
+  background-color:#00a65a;
+}
+
+.lbl-graph.consumed{
+  background-color:#f56954;
+}
+
+/*tooltips personalized*/
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+
+/*tooltips personalized*/
+    /* Position the tooltip */
+
+    /*tooltips personalized*/
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+
+

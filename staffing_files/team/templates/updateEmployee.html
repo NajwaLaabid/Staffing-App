@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+  <section class="content-header">
+      <h1>
+        Update Employee
+        <!-- <small>Preview page</small> -->
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="{% url 'team:index' %}"><i class="fa fa-team"></i> Team</a></li>
+        <li class="active">Update Employee</li>
+      </ol>
+  </section>
+  <section class="content col-md-6 col-centered">
+    <div class="box box-primary">
+      <!-- /.box-header -->
+      {% if message %}<p><strong style="margin-left:5px;">Error: </strong><strong style="color:red">{{ message }}</strong></p>{% endif %}
+      <!-- form start -->
+      <form action="{% url 'team:updateEmployee' employee.employee_ID %}" method="post" role="form">
+        {% csrf_token %}
+        <div class="box-body">
+          {% for field in form %}
+            {% if field.label != "Role" %}
+            <div class="form-group has-feedback">
+              <label for="employee_code">{{ field.label }}</label>
+              {{ field }} 
+              <span class="glyphicon glyphicon-{{ field.help_text }} form-control-feedback"></span>
+              {% for error in field.errors %}
+              <p style="color: red">{{ error }}</p>
+              {% endfor %}
+            </div>
+            {% endif %}
+          {% endfor %}
+          <div class="form-group">
+            <label>{{form.fields.role.label}}</label>
+            {{form.role}}
+          </div>
+        </div>
+        <!-- /.box-body -->
+        <div class="box-footer">
+            <button type="submit" class="btn btn-primary pull-right">Save</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <script>
+    $(document).ready(function () {
+      //Initialize Select2 Elements
+      $('.select2').select2();
+      $('#employee_role').val('{{employee.employee_role}}').trigger('change');
+      $('.slider').slider();
+    });
+  </script>
+{% endblock %}

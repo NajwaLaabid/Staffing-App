@@ -1,0 +1,792 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load calendar_filter %}
+{% load update_filter %}
+
+{% block content %}
+  <section class="content" style="padding:0">
+
+    <div class="col-md-12" style="padding:0">
+      <!-- Widget: user widget style 1 -->
+      <div class="box box-widget widget-user">
+        <!-- Add the bg color to the header using any of the bg-* classes -->
+        <div class="widget-user-header bg-aqua-active">
+          <h3 class="widget-user-username">
+            {{project.project_title}}
+            <button title="Download Report" class="btn btn-success pull-right" id="btnExport" style="margin-right:16px;"><i class="fa fa-file-text"></i></button>
+            {% if project.project_status != "Cancelled" and user.username == "Manager" %}
+              <a title="Click to edit project information" href="{% url 'dashboard:edit' project.project_ID %}" type="submit" class="btn btn-primary pull-right" style="margin-right:16px;"><i class="fa fa-edit"></i></a>
+            {% endif %}
+          </h3>
+          <h5 class="widget-user-desc">{{project.project_code}}</h5>
+        </div>
+        <div class="box-footer" style="padding: 0; border-top:0">
+          <div class="row">
+            <div class="col-sm-3 border-right {% if project.project_status == 'Cancelled' or project.project_status == 'Closed' or project.project_status == 'Hold' %} bg-red {% elif project.project_status == 'On going' %} bg-green {% endif %}">
+              <div class="description-block">
+                <h5 class="description-header">{{project.project_status}}</h5>
+                <span class="description-text">STATUS</span>
+              </div>
+              <!-- /.description-block -->
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-3 border-right">
+              <div class="description-block">
+                <h5 class="description-header">{{project.project_phase}}</h5>
+                <span class="description-text">PHASE</span>
+              </div>
+              <!-- /.description-block -->
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-3 border-right">
+              <div class="description-block">
+                <h5 class="description-header">{{resources|length}}</h5>
+                <span class="description-text">TEAM</span>
+              </div>
+              <!-- /.description-block -->
+            </div>
+            <!-- /.col -->
+            <div class="col-sm-3">
+              <div class="description-block">
+                <h5 class="description-header">{{project.jesa_role}}</h5>
+                <span class="description-text">JESA ROLE</span>
+              </div>
+              <!-- /.description-block -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+      </div>
+      <!-- /.widget-user -->
+    </div>
+
+    <!-- add member & project details -->
+    <div class="row" style="padding: 0 16px">
+      <!-- TO DO List -->
+      <div class="col-md-3 col-xs-12">
+        <div class="box box-primary">
+          <div class="box-header">
+            <i class="ion ion-clipboard"></i>
+
+            <h3 class="box-title">Add a member</h3>
+
+          </div>
+          <!-- /.box-header -->
+          <form action="{% url 'dashboard:addMember' project.project_ID %}" method="post">
+            {% csrf_token %}
+            <div class="box-body">
+
+                <div class="row">
+                  <div class="col-lg-12">
+                    <div class="form-group" style="width: 100%;">
+                        <label class='{{text_color}}'>{{message}}</label>
+                        {% if user.username == "Manager" %}
+                          <select {{disable}} class="form-control select2" name="potential_member" data-placeholder="Select an employee" style="width: 100%;">
+                            {% for potential_member in potential_members %}
+                              <option value="{{potential_member.employee_ID}}">{{potential_member.employee_lastName}} {{potential_member.employee_firstName}}</option>
+                            {% endfor %}
+                          </select>
+                        {% endif %}
+                        {% if user.username == "Employee" %}
+                        <select disabled class="form-control select2" name="potential_member" data-placeholder="Select an employee" style="width: 100%;">
+                          {% for potential_member in potential_members %}
+                            <option value="{{potential_member.employee_ID}}">{{potential_member.employee_lastName}} {{potential_member.employee_firstName}}</option>
+                          {% endfor %}
+                        </select>
+                        {% endif %}
+                    </div>
+                    <!-- /input-group -->
+                  </div>
+                  <!-- /.col-lg-6 -->
+                  {% if user.username == "Manager" %}
+                    <div class="col-lg-12">
+                      <div class="form-group" style="width: 100%;">
+                          <label>Percentage of Implication</label>
+                          <input {{disable}} type="number" max="{{implication_left}}"  min="0"class="form-control" name="Implication_Percentage" step="5" style="width: 100%;">
+                      </div>
+                    </div>
+                  {% endif %}
+                  {% if user.username == "Employee" %}
+                  <div class="col-lg-12">
+                      <div class="form-group" style="width: 100%;">
+                          <label>Percentage of Implication</label>
+                          <input disabled type="number" max="{{implication_left}}"  min="0"class="form-control" name="Implication_Percentage" step="5" style="width: 100%;">
+                      </div>
+                  </div>
+                  {% endif %}
+                  <!-- /.col-lg-6 -->
+                </div>
+              <!-- /.row -->
+
+            </div>
+            <!-- /.box-body -->
+
+            <div class="box-footer">
+              <button title="Add a new member" type="submit" class="btn btn-info pull-right">Add New Member</button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+        <!-- /.box -->
+      <div class="col-md-9 col-xs-12">
+        <div class="box box-primary">
+          <div class="box-header">
+            <h3 class="box-title">Team</h3>
+          </div>
+          <!-- /.box-header --> 
+          <div class="box-body table-responsive no-padding">
+            <table class="table table-hover">
+              <!--<th>Max Hours </th>
+              {% for max_hour in max_hours %}
+                <th>
+                  <form action="{% url 'dashboard:saveMaxHours' project.project_ID %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" class="form-control" name="date" value="{{max_hour.date}}" style="width: 56px;">
+                    <select class="form-control select2 calendar-max" name="max_hours" id="max_hours_{{max_hour.date}}-{{max_hour.hours}}" data-placeholder="max hours" value="{{max_hour.hours}}" style="width: 100%;">
+                        <option value="160">160</option>
+                        <option value="200">200</option>
+                    </select>
+                  </form>
+                </th>
+              {% endfor %}-->
+              <tr>
+                <th>Name</th>
+                {% for single_date in date_range %}
+                  <th>{{single_date}}</th>
+                {% endfor %}
+                <th>Total</th>
+              </tr>
+
+              {% for resource in resources_view %}
+                <tr>
+                  <td>{{resource.name}}</td>
+                    <form class="hidden" id="hours-form" name="hours_form" action="{% url 'dashboard:saveMemberHours' project.project_ID nb_dates %}" method="post">
+                    {% for single_date in date_range_coupled %}
+                      <td>
+                        {% csrf_token %}
+                        <input type="hidden" class="form-control" name="employee_ID" value="{{resource.employee_ID}}" style="width: 56px;">
+                        <input type="hidden" class="form-control" name="date_{{resource.employee_ID}}+{{single_date.n}}" value="{{single_date.date}}" style="width: 56px;">
+                        <input type="text"  id="{{resource.employee_ID}}+{{single_date.n}}-form"  class="form-control hidden" name="{{resource.employee_ID}}+{{single_date.n}}-form" value="{{resource|get_item:single_date.date}}" style="width: 56px;">
+                        {% if user.username == "Manager" %}
+                          <div id="{{resource.employee_ID}}+{{single_date.n}}-lbl" onclick="editField('{{resource.employee_ID}}+{{single_date.n}}')">
+                            {{resource|get_item:single_date.date}}
+                          </div>
+                        {% endif %}
+                        {% if user.username == "Employee" %}
+                          <div id="{{resource.employee_ID}}+{{single_date.n}}-lbl">
+                            {{resource|get_item:single_date.date}}
+                          </div>
+                        {% endif %}
+                      </td>
+                    {% endfor %}
+                      <td>{{resource.total}}</td>
+                      {% if user.username == "Manager" %}
+                        <td><button title="Submit" type="submit" id="{{resource.employee_ID}}-btn" name="{{resource.employee_ID}}-btn" class="btn btn-success hidden"><i class="fa fa-check"></i></button></td>
+                      {% endif %}
+                    </form>
+                  <td>
+                    {% if user.username == "Manager" %}
+                      <button title="Delete Employee" type="submit" class="btn btn-danger" onclick="openModal('deleteMember', 'Employee',{{resource.employee_ID}}, '{{resource.name}}', '{{project.project_title}}');"><i class="fa fa-close"></i></button>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </table>
+          </div>
+          <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+      </div>
+    </div>
+     <!-- charts -->
+    <div class="row" style="padding: 0 16px">
+      <div class="col-md-6">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <h3 class="box-title">Hours</h3>
+          </div>
+          <div class="box-body">
+            <canvas id="hoursCamembert" style="height:250px"></canvas>
+            <br><br>
+            <span class="text">Estimated Hours: <b>{{project.estimated_hours}}</b></span>
+            <span style="float:right" class="text">Consumed Hours: <b>{{project.actual_hours}}</b></span>
+            <br><br>
+            <b>legend</b>
+            <br>
+            <br>
+            <span class="lbl-graph estimated">Estimated Hours</span>
+            <br>
+            <br>
+            <span class="lbl-graph consumed">Consumed Hours</span>
+          </div>
+        </div>
+      </div>
+          <!-- Hours -->
+      <div class="col-md-6">
+        <div class="box box-primary">
+          <div class="box-header with-border">
+            <h3 class="box-title">Hours</h3>
+          </div>
+          <div class="box-body">
+            <canvas id="hoursChart" style="height:250px"></canvas>
+          </div>
+          <!-- /.box-body -->
+        </div>
+      </div>
+    </div>
+
+    <!-- deliverables, assumptions, resources & remaining budget -->
+    <div class="row" style="padding: 0 16px">
+      <div class="col-md-6 col-xs-12">
+        <!-- TO DO List -->
+          <div class="box box-primary">
+            <div class="box-header">
+              <i class="ion ion-clipboard"></i>
+              <h3 class="box-title">Deliverables</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
+              <ul class="todo-list">
+                {% for deliv in deliverables %}
+                  <form action="{% url 'dashboard:updateDelivrable' project.project_ID %}" method="post">
+                    {% csrf_token %}
+                    <li class="{% if deliv.is_done == True %} done {% endif %}">
+                      <input type="hidden" class="form-control" name="deliverable_project_ID" value="{{deliv.deliverable_project_ID}}">
+                      <input type="checkbox" name="is_done" {% if deliv.is_done == True %} checked {% endif %}/>
+                      <!-- todo text -->
+                      <span class="text">{{deliv.deliverable.deliverable_title}}</span>
+                      {% if user.username == "Manager" %}
+                        <div class="tools">
+                          {% if deliv.is_done != True %}
+                            <!--najwa-->
+                            <a type="submit" onclick="openModal('deleteDeliverable', 'Deliverable',{{deliv.deliverable_project_ID}}, '{{deliv.deliverable.deliverable_title}}', '{{project.project_title}}');"><i class="fa fa-trash-o"></i></a>
+                          {% endif %}
+                        </div>
+                      {% endif %}
+                    </li>
+                  </form>
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+            <!-- /.box-body -->
+            {% if user.username == "Manager" %}
+            <div class="box-footer clearfix no-border">
+              <form action="{% url 'dashboard:addDeliverable' project.project_ID %}" method="post">
+                {% csrf_token %}
+                <div class="box-footer clearfix no-border input-group input-group-sm" style="wid">
+                  <select class="form-control select2" name="deliverable_title" data-placeholder="Select a Deliverable" style="width: 100%;">
+                    {% for dpg in deliverables_per_group %}
+                    <optgroup label="{{dpg.group}}">
+                      {% for deliv in dpg.deliverables %}
+                        <option value="{{dpg.group}}_{{deliv.deliverable_title}}">
+                          {{deliv.deliverable_title}}
+                        </option>
+                      {% endfor %}
+                    <optgroup>
+                    {% endfor %}
+                  </select>
+                  <span class="input-group-btn">
+                    <button title="Add deliverable" type="submit" class="btn btn-default">Add Deliverable</button>
+                  </span>
+                </div>
+              </form>
+              <div class="panel box box-danger">
+                  <div class="box-header with-border">
+                    <h4 class="box-title">
+                      <a title="Show list of deliverables" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                        Modify Deliverable List
+                      </a>
+                    </h4>
+                  </div>
+                  <div id="collapseOne" class="panel-collapse collapse">
+                    <div class="box-body">
+                      <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
+                      <ul class="todo-list ui-sortable" data-widget="todo-list">
+                        {% for dpg in deliverables_per_group %}
+                          <li>
+                            <!-- drag handle -->
+                            <span style="cursor:pointer">
+                              <a title="Click to show deliverables in this group" onclick="hideSubList('{{dpg.group}}-list')"><i class="fa fa-angle-down"></i></a>
+                            </span>
+                            <!-- todo text -->
+                            <form class="hidden" id="{{dpg.group}}-form" action="{% url 'dashboard:editDeliverableGroup' project.project_ID dpg.group %}" method="post">
+                              {% csrf_token %}
+                              <input type="text" class="form-control" name="deliv_group" value="{{dpg.group}}" style="width: 56px;">
+                            </form>
+                            <span id="{{dpg.group}}-lbl" class="text">{{dpg.group}}</span>
+                            <div class="tools">
+                             <a title="Click to edit deliverable group" onclick="editField('{{dpg.group}}')"><i class="fa fa-edit"></i></a>
+                              <a title="Click to delete deliverable group" type="submit" onclick="openModal('deleteDeliverableGroup','Deliverable Main Category', '{{dpg.group}}', '{{dpg.group}}', '{{project.project_title}}');"><i class="fa fa-trash-o"></i></a>
+                            </div>
+                            <ul id="{{dpg.group}}-list" name="{{dpg.group}}-list" class="todo-list ui-sortable hidden">
+                            {% for deliv in dpg.deliverables %}
+                              <li>
+                                <!-- drag handle -->
+                                <span class="handle ui-sortable-handle">
+                                  <i class="fa fa-gear"></i>
+                                </span>
+                                <!-- todo text -->
+                                <form class="hidden" id="{{deliv.deliverable_title}}-form" action="{% url 'dashboard:editPossibleDeliverable' project.project_ID deliv.deliverable_title %}" method="post">
+                              {% csrf_token %}
+                                  <input type="text" class="form-control" name="deliv_title" value="{{deliv.deliverable_title}}" style="width: 56px;">
+                                </form>
+                                <span id="{{deliv.deliverable_title}}-lbl" class="text">{{deliv.deliverable_title}}</span>
+                                <div class="tools">
+                                  <a title="Click to edit deliverable" onclick="editField('{{deliv.deliverable_title}}')"><i class="fa fa-edit"></i></a>
+                                  <a title="Click to delete deliverable from list" type="submit"  onclick="openModal('deletePossibleDeliverable','Possible Deliverable', {{deliv.deliverable_ID}}, '{{deliv.deliverable_title}}', 'project.project_title');"><i class="fa fa-trash-o"></i></a>
+                                </div>
+                              </li>
+                            {% endfor %}
+                            </ul>
+                          </li>
+                        {% endfor %}
+                      </ul>
+                    </div>
+                    <div class="box-body">
+                      <form action="{% url 'dashboard:createDeliverable' project.project_ID %}" method="post">
+                        {% csrf_token %}
+                        <input name="deliverable_group" placeholder="Deliverable main category...">
+                        <input name="deliverable" placeholder="Deliverable...">
+                        <span>
+                          <button title="Add deliverable to the list above" type="submit">Add</button>
+                        </span>
+                      </form>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+          <!-- /.box -->
+      </div>
+      <div class="col-md-6 col-xs-12">
+        <!-- TO DO List -->
+          <div class="box box-primary">
+            <div class="box-header">
+              <i class="ion ion-clipboard"></i>
+
+              <h3 class="box-title">Assumptions</h3>
+
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+              <!-- See dist/js/pages/dashboard.js to activate the todoList plugin -->
+              <ul class="todo-list">
+                {% for assumption in assumptions %}
+                  <li>
+                    {% csrf_token %}
+                    <form class="hidden" id="{{assumption.assumption_ID}}-form" action="{% url 'dashboard:editAssumption' project.project_ID assumption.assumption_text %}" method="post">
+                    {% csrf_token %}
+                      <input type="text" class="form-control" name="assumption_text" value="{{assumption.assumption_text}}" style="width: 56px;">
+                    </form>
+                    <span id="{{assumption.assumption_ID}}-lbl" class="text">{{assumption.assumption_text}}</span>
+                    {% if user.username == "Manager" %}
+                      <div class="tools">
+                        <a title="Click to edit assumption" onclick="editField('{{assumption.assumption_ID}}')"><i class="fa fa-edit"></i></a>
+                        <!-- najwa -->
+                        <a title="Click to delete assumption" onclick="openModal('deleteAssumption','Assumption', {{assumption.assumption_ID}}, '{{assumption.assumption_text}}', 'project.project_title');"><i class="fa fa-trash-o"></i></a>
+                      </div>
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+            <!-- /.box-body -->
+            {% if user.username == "Manager" %}
+            <div class="box-footer clearfix no-border input-group input-group-sm">
+              <form action="{% url 'dashboard:addAssumption' project.project_ID %}" method="post">
+                {% csrf_token %}
+                <div class="box-footer clearfix no-border input-group input-group-sm" style="wid">
+                  <input type="text" name="assumption_text" class="form-control" id="assumption_text" placeholder="Your assumption ...">
+                  <span class="input-group-btn">
+                    <button title="Add assumption" type="submit" class="btn btn-default"> Add Assumption</button>
+                  </span>
+                </div>
+              </form>
+            </div>
+            {% endif %}
+          </div>
+          <!-- /.box -->
+      </div>
+    </div>
+  </section>
+
+  <div id="dvData" class="hidden">
+    <table>
+        <tr>
+          <td>{{project.project_code}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>{{project.project_title}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>{{project.project_status}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>{{project.project_phase}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>{{project.jesa_role}}</td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <th>Name</th>
+          {% for single_date in date_range %}
+            <th>{{single_date}}</th>
+          {% endfor %}
+          <th>Total</th>
+        </tr>
+
+        {% for resource in resources_view %}
+          <tr>
+            <td>{{resource.name}}</td>
+            {% for single_date in date_range %}
+              <td>
+                {{resource|get_item:single_date}}
+              </td>
+            {% endfor %}
+            <td>{{resource.total}}</td>
+          </tr>
+        {% endfor %}
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td>Ressources</td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          {% for resource in resources %}
+            <td>{{resource.Employee.employee_lastName}} {{resource.Employee.employee_firstName}}</td>
+            <td>{{resource.Employee.employee_role}}</td>
+            <td>{{resource.estimated_hours}}</td>
+          {% endfor %}
+        </tr>
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+
+        <tr>
+          <td></td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>Deliverables</td>
+          <td></td>
+          <td></td>
+        </tr>
+        <tr>
+          {% for deliv in deliverables %}
+            <td>{{deliv.deliverable_title}}</td>
+          {% endfor %}
+        </tr>
+    </table>
+  </div>
+
+  <!-- /.modal -->
+
+  <div class="modal modal-danger fade" id="delete-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button title="Close modal" type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span></button>
+            <h4 id="delete_modal_title" name ="modal_title" class="modal-title"></h4>
+          </div>
+          <div class="modal-body">
+            <p id="delete_elt_text" name="delete_elt_text"></p>
+            <p>Deleting this element would be permanent. Proceed anyway?</p>
+          </div>
+          <div class="modal-footer">
+            <button title="Close modal" type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+            <form id="delete-form-modal" name="delete-form-modal" action="" method="post">
+              {% csrf_token %}
+              <input type="hidden" id="delete_elt_ID" name="delete_elt_ID">
+              <button title="Delete Element" type="submit" class="btn btn-outline">Delete</button>
+            </form>
+          </div>
+        </div>
+        <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+  </div>
+
+  <script>
+    var selectedForm;
+    $(function () {
+      $('.select2').select2();
+
+      {% for max_hour in max_hours %}
+        $('#max_hours_{{max_hour.date}}-{{max_hour.hours}}').on("select2:select", function(e) {
+           this.parentElement.submit()
+        });
+      {% endfor %}
+
+      {% for max_hour in max_hours %}
+        $('#max_hours_{{max_hour.date}}-{{max_hour.hours}}').val('{{max_hour.hours}}').trigger('change');
+      {% endfor %}
+
+      $('.todo-list').todoList({
+         onCheck  : function () {
+           this.parent().parent().submit()
+           window.console.log($(this), 'The element has been checked');
+         },
+         onUnCheck: function () {
+           this.parent().parent().submit()
+           window.console.log($(this), 'The element has been unchecked');
+         }
+       });
+
+
+      //Get context with jQuery - using jQuery's .get() method.
+      var pieChartCanvas = $('#hoursCamembert').get(0).getContext('2d')
+      var pieChart       = new Chart(pieChartCanvas)
+      var PieData        = [
+          {
+          value    : {{project.actual_hours}},
+          color    : '#f56954',
+          highlight: '#f56954',
+          label    : 'Actual Hours'
+        },
+        {
+          value    : {{project.estimated_hours|compute_difference:project.actual_hours}},
+          color    : '#00a65a',
+          highlight: '#00a65a',
+          label    : 'Estimated Hours'
+        }
+      ]
+      var pieOptions     = {
+        //Boolean - Whether we should show a stroke on each segment
+        segmentShowStroke    : true,
+        //String - The colour of each segment stroke
+        segmentStrokeColor   : '#fff',
+        //Number - The width of each segment stroke
+        segmentStrokeWidth   : 2,
+        //Number - The percentage of the chart that we cut out of the middle
+        percentageInnerCutout: 50, // This is 0 for Pie charts
+        //Number - Amount of animation steps
+        animationSteps       : 100,
+        //String - Animation easing effect
+        animationEasing      : 'easeOutBounce',
+        //Boolean - Whether we animate the rotation of the Doughnut
+        animateRotate        : true,
+        //Boolean - Whether we animate scaling the Doughnut from the centre
+        animateScale         : false,
+        //Boolean - whether to make the chart responsive to window resizing
+        responsive           : true,
+        // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+        maintainAspectRatio  : true,
+        //String - A legend template
+        legendTemplate       : ''
+      }
+      //Create pie or douhnut chart
+      // You can switch between pie and douhnut using the method below.
+      pieChart.Doughnut(PieData, pieOptions)
+
+      data = [];
+
+      {% for single_date in date_range %}
+        singleDate =  0;
+        {% for resource in resources_view %}
+          singleDate+= {{resource|get_item:single_date}};
+        {% endfor %}
+        data.push(singleDate)
+      {% endfor %}
+
+      var areaChartData = {
+      labels  : {{date_range|safe}},
+      datasets: [
+        {
+          label               : 'Digital Goods',
+          fillColor           : 'rgba(60,141,188,0.9)',
+          strokeColor         : 'rgba(60,141,188,0.8)',
+          pointColor          : '#3b8bba',
+          pointStrokeColor    : 'rgba(60,141,188,1)',
+          pointHighlightFill  : '#fff',
+          pointHighlightStroke: 'rgba(60,141,188,1)',
+          data                : data
+        }
+      ]
+    }
+
+        //-------------
+        //- BAR CHART -
+        //-------------
+        var barChartCanvas                   = $('#hoursChart').get(0).getContext('2d')
+        var barChart                         = new Chart(barChartCanvas)
+        var barChartData                     = areaChartData
+        var barChartOptions                  = {
+          //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+          scaleBeginAtZero        : true,
+          //Boolean - Whether grid lines are shown across the chart
+          scaleShowGridLines      : true,
+          //String - Colour of the grid lines
+          scaleGridLineColor      : 'rgba(0,0,0,.05)',
+          //Number - Width of the grid lines
+          scaleGridLineWidth      : 1,
+          //Boolean - Whether to show horizontal lines (except X axis)
+          scaleShowHorizontalLines: true,
+          //Boolean - Whether to show vertical lines (except Y axis)
+          scaleShowVerticalLines  : true,
+          //Boolean - If there is a stroke on each bar
+          barShowStroke           : true,
+          //Number - Pixel width of the bar stroke
+          barStrokeWidth          : 2,
+          //Number - Spacing between each of the X value sets
+          barValueSpacing         : 5,
+          //Number - Spacing between data sets within X values
+          barDatasetSpacing       : 1,
+          //Boolean - whether to make the chart responsive
+          responsive              : true,
+          maintainAspectRatio     : true,
+        }
+        barChartOptions.datasetFill = false
+        barChart.Bar(barChartData, barChartOptions)
+
+    //   //-------------
+    //   //- PIE CHART -
+    //   //-------------
+    //   // Get context with jQuery - using jQuery's .get() method.
+    //   var pieChartCanvas = $('#hoursCamembert').get(0).getContext('2d')
+    //   var pieChart       = new Chart(pieChartCanvas)
+    //   var PieData        = [
+    //     {
+    //       value    : {{project.estimated_hours|compute_difference:project.actual_hours}},
+    //       color    : '#f56954',
+    //       highlight: '#f56954',
+    //       label    : 'Consumed Hours'
+    //     },
+    //     {
+    //       value    : {{project.initial_budget}},
+    //       color    : '#00a65a',
+    //       highlight: '#00a65a',
+    //       label    : 'Remaining Hours'
+    //     }
+    //   ]
+    //   var pieOptions     = {
+    //     //Boolean - Whether we should show a stroke on each segment
+    //     segmentShowStroke    : true,
+    //     //String - The colour of each segment stroke
+    //     segmentStrokeColor   : '#fff',
+    //     //Number - The width of each segment stroke
+    //     segmentStrokeWidth   : 2,
+    //     //Number - The percentage of the chart that we cut out of the middle
+    //     percentageInnerCutout: 50, // This is 0 for Pie charts
+    //     //Number - Amount of animation steps
+    //     animationSteps       : 100,
+    //     //String - Animation easing effect
+    //     animationEasing      : 'easeOutBounce',
+    //     //Boolean - Whether we animate the rotation of the Doughnut
+    //     animateRotate        : true,
+    //     //Boolean - Whether we animate scaling the Doughnut from the centre
+    //     animateScale         : false,
+    //     //Boolean - whether to make the chart responsive to window resizing
+    //     responsive           : true,
+    //     // Boolean - whether to maintain the starting aspect ratio or not when responsive, if set to false, will take up entire container
+    //     maintainAspectRatio  : true,
+    //     //String - A legend template
+    //     legendTemplate       : ''
+    //   }
+    //   //Create pie or douhnut chart
+    //   // You can switch between pie and douhnut using the method below.
+    //   pieChart.Doughnut(PieData, pieOptions)
+   });
+
+    function editField(field_id){
+      var id_btn = 'empty';
+      id_btn= field_id.split('+')[0];
+      document.getElementById(field_id + "-lbl").classList.add("hidden");
+      document.getElementById(field_id + "-form").classList.remove("hidden");
+      document.getElementById(id_btn + "-btn").classList.remove("hidden");
+      if(id_btn == 'empty'){
+        if(selectedForm !== undefined) selectedForm.submit();
+        selectedForm = document.getElementById(field_id + "-form");
+      }
+    }
+
+    function hideSubList(field_id){
+      //toggle was not working. change if get it to work
+      if(document.getElementById(field_id).classList.contains('hidden'))
+        document.getElementById(field_id).classList.remove("hidden");
+      else
+        document.getElementById(field_id).classList.add("hidden");
+    }
+
+    //najwa
+    function openModal(action, modal_title, element_ID, element_title, project_title){
+        document.getElementById("delete_modal_title").innerHTML = 'Delete ' + modal_title;
+        document.getElementById("delete_elt_ID").value = element_ID;
+
+        if (action == "deleteDeliverableGroup")
+          document.getElementById("delete_elt_text").innerHTML = 'You are about to delete <b>' + element_title + '</b> from project <b>' + project_title + '</b> Note that deleting this category would delete all the deliverables within it. ';
+        else
+          document.getElementById("delete_elt_text").innerHTML = 'You are about to delete ' + element_title + ' from project ' + project_title;
+
+        $('#delete-modal').modal('show');
+
+        if (action == "deleteDeliverable")
+          action_full = "{% url 'dashboard:deleteDeliverable' project.project_ID %}";
+
+        else if (action == "deleteAssumption")
+          action_full = "{% url 'dashboard:deleteAssumption' project.project_ID %}";
+
+        else if (action == "deletePossibleDeliverable")
+          action_full = "{% url 'dashboard:deletePossibleDeliverable' project.project_ID %}";
+
+        else if (action == "deleteDeliverableGroup")
+          action_full = "{% url 'dashboard:deleteDeliverableGroup' project.project_ID %}";
+
+        else if (action == "deleteMember")
+          action_full = "{% url 'dashboard:deleteMember' project.project_ID %}";
+
+        $('#delete-form-modal').attr('action', action_full);
+    }
+
+    $("#btnExport").click(function (e) {
+        window.open('data:application/vnd.ms-excel,' + $('#dvData').html());
+        e.preventDefault();
+    });
+  </script>
+{% endblock %}
