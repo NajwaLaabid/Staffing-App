@@ -60,6 +60,7 @@
   border-radius: 8px;
 }
 
+
 .lbl-graph.estimated{
   background-color:#00a65a;
 }
@@ -97,6 +98,3 @@
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
-
-
-
