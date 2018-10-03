@@ -1,34 +1,17 @@
-Run the server with the following command line
-`python manage.py runserver`
+# Staffing App
 
-Deploy staticfiles
-`python manage.py collectstatic`
+## Project Desription 
 
-create super user to access django admin
-`python manage.py runserver`
+Staffing App is a simple project management app meant to be used by small teams for relatively small scale projects. The App supports the following services/features:
 
-Start an app
-`python manage.py startapp APP_NAME`
+* Tracking of project timeline
+* Tracking of resource allocation per project (resource being the employers assigned to the project, hence the name staffing app)
+* Tracking of project assignment per employee
+* Analysis of project development over time and comparison between actual and expected performance
+* Managerial dashboard to manage assignment and monitor the workflow
 
-In case Github does not wanna proceed with the add & commit
-`rm ./.git/index.lock`
+## Technologies Used
 
-To cancel a pull update on your local workplace
-`git reset .\db.sqlite3`
+This project is developed using the [Django Framework](https://www.djangoproject.com/).
 
-migrate db after creating the Models
-`python manage.py makemigrations <nameofapplication>`
-`python manage.py migrate`
-
-automatically populate a model in django
-- Create folder fixtures
-- Add data in a file inside fixtures. Give it a unique name.
-- Run following command:
-`python manage.py loaddata <fixturename>`
-
-create superUser
-`python manage.py createsuperuser`
-
-
-Link to template
-https://adminlte.io/themes/AdminLTE/pages/UI/general.html
+Info about how to install Django can be found [here](https://docs.djangoproject.com/en/2.1/topics/install/).
