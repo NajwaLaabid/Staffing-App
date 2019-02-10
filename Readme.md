@@ -17,3 +17,7 @@ The app was initially developed for [JESA Morocco](http://www.ocpgroup.ma/excell
 This project is developed using the [Django Framework](https://www.djangoproject.com/).
 
 Info about how to install Django can be found [here](https://docs.djangoproject.com/en/2.1/topics/install/).
+
+## Updates of Django version
+
+This project was developed using Django 1.11.5 in 2017. There appears to be security issues with this version and below. The recommended Django version as of  01/02/2019 is 1.11.18 or later. Code compatibility of this repo is not guaranteed. There are no current plans for continuing work on this project. You may use the recommended version of Django at your own risk. 
